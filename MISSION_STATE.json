@@ -1,20 +1,23 @@
 {
-  "current_objective": "M0 Repair Round 2 — close verify replay + transaction gaps",
+  "current_objective": "M0 repair round 2 complete \u2014 external re-audit",
   "current_hypothesis": "Source-bound replay verify and rollback-safe multi-file commit close re-audit P0s",
-  "status": "M0_PARTIAL",
-  "last_verified_commit": null,
-  "commands_run": [],
+  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": "34cdbd724b9fab636d72e1680325fffda55f1379",
+  "commands_run": [
+    "uv run ruff check . #0",
+    "uv run mypy src #0",
+    "uv run pytest -q #92 passed",
+    "uv run normshift benchmark #17/17",
+    "uv run normshift measure #15/15",
+    "uv run normshift verify --source-root . #0"
+  ],
   "verified_artifacts": [
     "docs/EXTERNAL_REAUDIT.md",
     "docs/M0_REPAIR_ROUND2.md"
   ],
-  "known_failures": [
-    "Round2 P0: verify did not replay extraction (fixed in this branch)",
-    "Round2 P0: multi-artifact commit-phase rollback (fixed in this branch)",
-    "Round2 P0: package revision identity (pending final pin)"
-  ],
+  "known_failures": [],
   "unresolved_risks": [
     "Awaiting external re-audit after round 2 packaging"
   ],
-  "next_action": "Finish gates, pin one revision, package bundle+manifest"
+  "next_action": "STOP. External re-audit. No M1/M2 feature work."
 }

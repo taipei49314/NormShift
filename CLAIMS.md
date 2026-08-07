@@ -15,12 +15,12 @@ Implementer is **not** Claim / Evidence / Audit / Release Authority.
 
 | ID | Claim | Scope | Supporting evidence | Unsupported boundary | Last verified commit | Reviewer status |
 |----|-------|-------|---------------------|----------------------|----------------------|-----------------|
-| C1 | Local HTML extraction under rfc2119/whatwg | M0 | extract path + fixtures | Full NL standards | PINNED_COMMIT | unreviewed |
-| C2 | Frozen 17-case adversarial benchmark | M0 | `normshift benchmark` | Universal accuracy | PINNED_COMMIT | unreviewed |
-| C3 | Verify is source-bound via deterministic replay | M0 | `verify` + round2 tests | Cryptographic authenticity | PINNED_COMMIT | unreviewed |
-| C4 | Multi-artifact writes are rollback-safe on commit failure | M0 I/O | `write_transaction` tests | Cross-directory single-syscall atomicity | PINNED_COMMIT | unreviewed |
-| C5 | Classification FP includes unexpected labels; forbid is gate-only | measure | scoring unit tests | Public leaderboard claims | PINNED_COMMIT | unreviewed |
-| C6 | Single immutable source pair per measure case | measure | read-count test | Multi-process FS races | PINNED_COMMIT | unreviewed |
+| C1 | Local HTML extraction under rfc2119/whatwg | M0 | extract path + fixtures | Full NL standards | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
+| C2 | Frozen 17-case adversarial benchmark | M0 | `normshift benchmark` | Universal accuracy | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
+| C3 | Verify is source-bound via deterministic replay | M0 | `verify` + round2 tests | Cryptographic authenticity | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
+| C4 | Multi-artifact writes are rollback-safe on commit failure | M0 I/O | `write_transaction` tests | Cross-directory single-syscall atomicity | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
+| C5 | Classification FP includes unexpected labels; forbid is gate-only | measure | scoring unit tests | Public leaderboard claims | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
+| C6 | Single immutable source pair per measure case | measure | read-count test | Multi-process FS races | 34cdbd724b9fab636d72e1680325fffda55f1379 | unreviewed |
 
 ## Retracted
 
