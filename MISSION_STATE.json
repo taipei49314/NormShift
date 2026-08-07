@@ -2,7 +2,7 @@
   "current_objective": "M0 repair round 2 complete \u2014 external re-audit",
   "current_hypothesis": "Source-bound replay verify and rollback-safe multi-file commit close re-audit P0s",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "34cdbd724b9fab636d72e1680325fffda55f1379",
+  "last_verified_commit": "261ef50550ab4e8e7df54ce4de4517fdb11467b2",
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
