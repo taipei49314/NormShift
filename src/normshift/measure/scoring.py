@@ -218,22 +218,6 @@ def score_classification(
     obs_c = Counter(observed)
     forbid_set = set(forbid or [])
 
-    if forbid_set and any(c in forbid_set for c in obs_c):
-        bad = sum(obs_c[c] for c in forbid_set if c in obs_c)
-        return ClassificationMetrics(
-            precision=0.0,
-            recall=0.0,
-            f1=0.0,
-            true_positives=0,
-            false_positives=bad,
-            false_negatives=sum(exp_c.values()),
-            expected=sorted(expected),
-            observed=sorted(observed),
-            case_passed=False,
-            exact_pass=False,
-            permissive_pass=False,
-        )
-
     if not expected and not forbid_set:
         if len(observed) == 0:
             return ClassificationMetrics(
@@ -293,6 +277,7 @@ def score_classification(
     fp = sum(max(0, obs_c[k] - exp_c.get(k, 0)) for k in obs_c)
 
     prec, rec, f1 = _prf(tp, fp, fn)
+    # Metrics fixed first; gate policy applied only to pass flags
     exact_pass = exp_c == obs_c
     permissive_pass = all(obs_c.get(k, 0) >= v for k, v in exp_c.items())
     if forbid_set and any(c in forbid_set for c in obs_c):

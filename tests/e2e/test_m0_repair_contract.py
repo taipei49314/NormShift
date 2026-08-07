@@ -110,7 +110,11 @@ def test_verify_recomputes_evidence_hashes(tmp_path: Path) -> None:
     report.write_bytes(canonical_json_bytes(data))
     r = verify_report_file(report)
     assert not r.ok
-    assert any("evidence_hashes" in e for e in r.errors)
+    # Replay or evidence integrity must reject the forged hashes
+    assert any(
+        "evidence" in e.lower() or "changes do not match" in e.lower() or "replay" in e.lower()
+        for e in r.errors
+    )
 
 
 def test_diff_rejects_output_equal_old_source(tmp_path: Path) -> None:

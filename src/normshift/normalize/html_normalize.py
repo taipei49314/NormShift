@@ -7,7 +7,6 @@ from dataclasses import dataclass
 
 from lxml import etree, html
 
-# Tags whose *entire* content is non-extractable for keyword hits AND evidence.
 BLOCK_IGNORE_TAGS = frozenset(
     {
         "script",
@@ -22,17 +21,34 @@ BLOCK_IGNORE_TAGS = frozenset(
     }
 )
 
-# Inline code: preserve text in evidence, but protect from keyword matches.
 INLINE_CODE_TAGS = frozenset({"code", "var"})
+QUOTE_TAGS = frozenset({"blockquote", "q"})
 
-INFORMATIVE_CLASS_RE = re.compile(
-    r"\b(example|note|informative|non-normative|nonnormative|illustration|"
-    r"sample|issue|warning|advisement|annotation|ednote|editor-note|"
-    r"impl|implementation-note|prac|practice|xxx|todo)\b",
-    re.IGNORECASE,
+INFORMATIVE_CLASS_TOKENS = frozenset(
+    {
+        "example",
+        "note",
+        "informative",
+        "non-normative",
+        "nonnormative",
+        "illustration",
+        "sample",
+        "issue",
+        "warning",
+        "advisement",
+        "annotation",
+        "ednote",
+        "editor-note",
+        "impl",
+        "implementation-note",
+        "prac",
+        "practice",
+        "xxx",
+        "todo",
+    }
 )
 
-# Only clearly non-normative section titles (not Security Considerations / Appendix).
+# Soft section-title hints (never override explicit normative markers)
 INFORMATIVE_SECTION_RE = re.compile(
     r"^(acknowledg|"
     r"references$|normative references$|informative references$|"
@@ -41,15 +57,18 @@ INFORMATIVE_SECTION_RE = re.compile(
     re.IGNORECASE,
 )
 
+HISTORICAL_FRAMING_RE = re.compile(
+    r"\b(previous\s+specification|old\s+version|formerly\s+required|"
+    r"old\s+text\s+was|historical(?:ly)?|earlier\s+draft|was\s+required)\b",
+    re.IGNORECASE,
+)
+
 HEADING_TAGS = frozenset({f"h{i}" for i in range(1, 7)})
 WS_RE = re.compile(r"\s+")
-QUOTE_TAGS = frozenset({"blockquote", "q"})
 
 
 @dataclass(frozen=True)
 class NormalizedBlock:
-    """A normalized text block with structural context."""
-
     text: str
     normalized_text: str
     section_path: str
@@ -57,7 +76,6 @@ class NormalizedBlock:
     structural_index: int
     is_informative: bool
     xpath: str
-    # Ranges in `text` that are protected from keyword matching (inline code).
     protected_spans: tuple[tuple[int, int], ...] = ()
 
 
@@ -69,8 +87,8 @@ def _local_name(tag: object) -> str:
     return tag.lower()
 
 
-def _class_attr(el: etree._Element) -> str:
-    return str(el.get("class") or "")
+def _class_tokens(el: etree._Element) -> set[str]:
+    return {t for t in str(el.get("class") or "").lower().split() if t}
 
 
 def normalize_whitespace(text: str) -> str:
@@ -78,7 +96,6 @@ def normalize_whitespace(text: str) -> str:
 
 
 def editorial_normalize(text: str) -> str:
-    """Normalize for editorial comparison (whitespace/punct-insensitive core)."""
     t = text.lower()
     t = WS_RE.sub(" ", t).strip()
     t = re.sub(r"[\"'`“”‘’]", "", t)
@@ -122,121 +139,145 @@ def _element_xpath(el: etree._Element, root: etree._Element) -> str:
     return "/" + "/".join(parts)
 
 
-def _is_informative_region(el: etree._Element) -> bool:
+def _explicit_normative_token(el: etree._Element) -> bool | None:
+    """Return True/False if explicit marker, None if unknown."""
     anc: etree._Element | None = el
     while anc is not None:
-        an = _local_name(anc.tag)
-        if an in BLOCK_IGNORE_TAGS:
-            return True
-        if an in QUOTE_TAGS:
-            return True
-        if INFORMATIVE_CLASS_RE.search(_class_attr(anc)):
-            return True
-        # Explicit markers take precedence
         dn = (anc.get("data-normative") or "").lower()
-        if dn in {"false", "0", "no"}:
-            return True
         if dn in {"true", "1", "yes"}:
-            return False
-        classes = _class_attr(anc)
-        if re.search(r"\binformative\b", classes, re.I) and not re.search(
-            r"\bnormative\b", classes, re.I
-        ):
             return True
-        if re.search(r"\bnormative\b", classes, re.I):
+        if dn in {"false", "0", "no"}:
+            return False
+        tokens = _class_tokens(anc)
+        if "non-normative" in tokens or "nonnormative" in tokens:
+            return False
+        if "informative" in tokens and "normative" not in tokens:
+            return False
+        if "normative" in tokens:
+            return True
+        if tokens & INFORMATIVE_CLASS_TOKENS:
             return False
         role = (anc.get("role") or "").lower()
         if role in {"note", "doc-example", "doc-note", "doc-tip"}:
+            return False
+        anc = anc.getparent()
+    return None
+
+
+def _is_informative_region(el: etree._Element) -> bool:
+    # Quote ancestors are informative for keyword authority
+    anc: etree._Element | None = el
+    while anc is not None:
+        if _local_name(anc.tag) in BLOCK_IGNORE_TAGS:
+            return True
+        if _local_name(anc.tag) in QUOTE_TAGS:
             return True
         anc = anc.getparent()
+    marker = _explicit_normative_token(el)
+    if marker is False:
+        return True
+    if marker is True:
+        return False
     return False
 
 
 def _is_explicitly_normative(el: etree._Element) -> bool:
-    anc: etree._Element | None = el
-    while anc is not None:
-        dn = (anc.get("data-normative") or "").lower()
-        if dn in {"true", "1", "yes"}:
-            return True
-        if re.search(r"\bnormative\b", _class_attr(anc), re.I):
-            return True
-        anc = anc.getparent()
-    return False
+    return _explicit_normative_token(el) is True
 
 
 def extract_block_text_with_spans(
     el: etree._Element,
 ) -> tuple[str, tuple[tuple[int, int], ...]]:
-    """Collect visible text; preserve inline code; omit block-ignore subtrees.
+    """Build normalized text with offset-accurate protected spans.
 
-    Returns (text, protected_spans) where protected_spans are code ranges in text.
+    Protection covers inline code and quotation descendants. Historical framing
+    also protects double/single quoted spans for keyword matching.
     """
-    parts: list[str] = []
-    protected: list[tuple[int, int]] = []
+    # Stream of (char, protected)
+    stream: list[tuple[str, bool]] = []
 
     def emit(s: str, *, protect: bool) -> None:
-        if not s:
-            return
-        start = sum(len(p) for p in parts)
-        parts.append(s)
-        if protect:
-            protected.append((start, start + len(s)))
+        for ch in s:
+            stream.append((ch, protect))
 
-    def walk(node: etree._Element, ignored: bool, in_code: bool) -> None:
+    def walk(node: etree._Element, in_code: bool, in_quote: bool) -> None:
         nname = _local_name(node.tag) if isinstance(node.tag, str) else ""
         if nname in HEADING_TAGS:
             return
         if nname in BLOCK_IGNORE_TAGS:
             return
         now_code = in_code or nname in INLINE_CODE_TAGS
-        now_ignored = ignored  # only block ignore skips entirely
-        if node.text and not now_ignored:
-            emit(node.text, protect=now_code)
+        now_quote = in_quote or nname in QUOTE_TAGS
+        protect = now_code or now_quote
+        if node.text:
+            emit(node.text, protect=protect)
         for child in node:
             if isinstance(child.tag, str):
-                walk(child, now_ignored, now_code)
-            if child.tail and not ignored:
-                # Tail belongs to parent context, not child's code protection
-                emit(child.tail, protect=in_code)
+                walk(child, now_code, now_quote)
+            if child.tail:
+                # tail belongs to parent context
+                emit(child.tail, protect=in_code or in_quote)
 
     root_name = _local_name(el.tag)
     if root_name in BLOCK_IGNORE_TAGS:
         return "", ()
     root_code = root_name in INLINE_CODE_TAGS
+    root_quote = root_name in QUOTE_TAGS
     if el.text:
-        emit(el.text, protect=root_code)
+        emit(el.text, protect=root_code or root_quote)
     for child in el:
         if isinstance(child.tag, str):
-            walk(child, False, root_code)
+            walk(child, root_code, root_quote)
         if child.tail:
             emit(child.tail, protect=False)
 
-    raw = "".join(parts)
-    # Build mapping from raw offsets to normalized text offsets while collapsing WS.
-    # Simpler approach: normalize full string, re-find protected content substrings.
-    text = normalize_whitespace(raw)
-    # Map protected spans by finding protected substrings after normalize
-    prot_out: list[tuple[int, int]] = []
-    for s, e in protected:
-        frag = normalize_whitespace(raw[s:e])
-        if not frag:
+    # Collapse whitespace while tracking protection of non-space chars
+    out_chars: list[str] = []
+    out_prot: list[bool] = []
+    prev_space = True  # strip leading
+    for ch, prot in stream:
+        if ch.isspace():
+            if prev_space:
+                continue
+            out_chars.append(" ")
+            out_prot.append(False)
+            prev_space = True
+        else:
+            out_chars.append(ch)
+            out_prot.append(prot)
+            prev_space = False
+    # strip trailing space
+    while out_chars and out_chars[-1] == " ":
+        out_chars.pop()
+        out_prot.pop()
+
+    text = "".join(out_chars)
+
+    # Historical framing: protect quoted segments for keyword authority
+    if HISTORICAL_FRAMING_RE.search(text):
+        for m in re.finditer(r'"([^"]+)"|\'([^\']+)\'|"([^"]+)"|\'([^\']+)\'', text):
+            s, e = m.start(0), m.end(0)
+            for i in range(s, e):
+                if 0 <= i < len(out_prot):
+                    out_prot[i] = True
+
+    # Collapse protected flags into spans
+    spans: list[tuple[int, int]] = []
+    i = 0
+    n = len(out_prot)
+    while i < n:
+        if not out_prot[i]:
+            i += 1
             continue
-        # Find non-overlapping occurrences
-        start = 0
-        while True:
-            idx = text.find(frag, start)
-            if idx < 0:
-                break
-            span = (idx, idx + len(frag))
-            if not any(a <= span[0] and span[1] <= b for a, b in prot_out):
-                prot_out.append(span)
-                break
-            start = idx + 1
-    return text, tuple(prot_out)
+        j = i
+        while j < n and out_prot[j]:
+            j += 1
+        spans.append((i, j))
+        i = j
+    return text, tuple(spans)
 
 
 def normalize_html(raw: bytes) -> list[NormalizedBlock]:
-    """Parse HTML and emit ordered normalized blocks for extraction."""
     try:
         tree = html.fromstring(raw)
     except Exception as exc:  # noqa: BLE001
@@ -295,7 +336,6 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
         explicit_norm = _is_explicitly_normative(el)
         is_info = _is_informative_region(el) and not explicit_norm
 
-        # Soft section title hints only when not explicitly normative
         leaf_section = section_stack[-1][1] if section_stack else ""
         if (
             not explicit_norm
@@ -307,6 +347,9 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
         text, protected = extract_block_text_with_spans(el)
         if not text or len(text) < 3:
             continue
+
+        # Whole-block historical quotation without remaining unquoted modal text
+        # stays extractable only for unprotected spans; keyword finder handles spans.
 
         section_path = " > ".join(t for _, t in section_stack) if section_stack else "(root)"
         xpath = _element_xpath(el, root)

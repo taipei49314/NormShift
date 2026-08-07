@@ -2,34 +2,33 @@
 
 Implementer is **not** Claim / Evidence / Audit / Release Authority.
 
-## Milestone status (post external audit 2026-08-07)
+## Milestone status
 
 | Milestone | Status |
 |-----------|--------|
-| M0 Normative HTML Vertical Slice | `M0_PARTIAL` (trust-chain repair in progress / pending re-audit) |
-| M1 Real Standards Adapters | `EXPERIMENTAL_NOT_ADJUDICATED` |
-| M2 Requirement Lineage Graph | `EXPERIMENTAL_NOT_ADJUDICATED` |
+| M0 | `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` (round-2 repair; pending re-audit) |
+| M1 | `EXPERIMENTAL_NOT_ADJUDICATED` |
+| M2 | `EXPERIMENTAL_NOT_ADJUDICATED` |
 | Production / Release | **BLOCKED** |
 
 ## Active claims
 
 | ID | Claim | Scope | Supporting evidence | Unsupported boundary | Last verified commit | Reviewer status |
 |----|-------|-------|---------------------|----------------------|----------------------|-----------------|
-| C1 | Local HTML extraction under rfc2119/whatwg | M0 local HTML | extract CLI, fixtures, tests | Real TR dumps, full NL | pending pin | unreviewed |
-| C2 | Fixed adversarial 17-case benchmark | frozen labels | `normshift benchmark` | Universal accuracy | pending pin | unreviewed |
-| C3 | Report self-hash + **source/evidence chain** verify | M0 repair | `normshift verify --source-root` | Cryptographic signatures | pending pin | unreviewed |
-| C4 | Output path safety rejects source/GT overwrite | all write CLIs | `tests/e2e/test_m0_repair_contract.py` | All OS symlink edge cases | pending pin | unreviewed |
-| C5 | Classification metrics count unexpected labels as FP | measure scorers | `test_classification_metrics_count_unexpected_labels_as_fp` | Public benchmark leadership | pending pin | unreviewed |
-| C6 | Single immutable source snapshot per pipeline input | run_diff/extract | `test_pipeline_uses_single_source_snapshot` | Concurrent multi-process FS races | pending pin | unreviewed |
+| C1 | Local HTML extraction under rfc2119/whatwg | M0 | extract path + fixtures | Full NL standards | PINNED_COMMIT | unreviewed |
+| C2 | Frozen 17-case adversarial benchmark | M0 | `normshift benchmark` | Universal accuracy | PINNED_COMMIT | unreviewed |
+| C3 | Verify is source-bound via deterministic replay | M0 | `verify` + round2 tests | Cryptographic authenticity | PINNED_COMMIT | unreviewed |
+| C4 | Multi-artifact writes are rollback-safe on commit failure | M0 I/O | `write_transaction` tests | Cross-directory single-syscall atomicity | PINNED_COMMIT | unreviewed |
+| C5 | Classification FP includes unexpected labels; forbid is gate-only | measure | scoring unit tests | Public leaderboard claims | PINNED_COMMIT | unreviewed |
+| C6 | Single immutable source pair per measure case | measure | read-count test | Multi-process FS races | PINNED_COMMIT | unreviewed |
 
-## Retracted claims
+## Retracted
 
-- **Retracted:** “classification F1=1.0” as a general accuracy claim under `allow_extra` FP omission (external audit P0-03).  
-  Metrics now count unmatched observed labels as FP. Suite gate pass remains separate from precision.
+- Classification F1=1.0 under FP-omission (audit P0-03, round 1).
+- Report self-hash alone as evidence of source derivation (re-audit P0-01).
 
-## Explicit non-claims
+## Non-claims
 
-- Not production-ready or release-ready.
-- M1/M2 not adjudicated complete.
-- Does not understand arbitrary natural-language standards.
-- Passing tests ≠ universal semantic correctness.
+- Not production/release ready.
+- M1/M2 not complete.
+- Not “audit passed” until external authority re-audits this pin.

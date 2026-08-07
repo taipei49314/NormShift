@@ -1,5 +1,16 @@
 # Design Decisions
 
+## D014 — Verify must deterministically replay extraction (2026-08-07 r2)
+
+**Decision:** `normshift verify` reloads sources once, re-extracts, re-aligns,
+and re-classifies; report content must match replay. Self-consistent forgeries
+are rejected.
+
+## D015 — Multi-file writes are rollback-safe
+
+**Decision:** `write_transaction` backups existing finals before replace and
+restores all on any commit-phase failure. Not globally atomic visibility.
+
 ## D010 — M0 freeze after external audit rejection (2026-08-07)
 
 **Decision:** No new feature work (M1/M2 expansion, adapters, lineage features,

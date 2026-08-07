@@ -1,30 +1,20 @@
 {
-  "current_objective": "M0 Trust-Chain Repair complete \u2014 stop for external re-audit",
-  "current_hypothesis": "Strict verify + path safety + honest metrics + extraction fixes restore M0 trust contract",
-  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "7b63dbdd23a97058085bf917d52edd3fc144fc24",
-  "commands_run": [
-    "uv run ruff check .  # 0",
-    "uv run mypy src  # 0",
-    "uv run pytest -q  # 0, 71 passed",
-    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # 17/17",
-    "uv run normshift measure --ground-truth benchmark/measure_suite.jsonl --out evidence/m0-repair/metrics.json  # 0",
-    "uv run normshift diff ... evidence/m0-repair/report.json  # 0",
-    "uv run normshift verify evidence/m0-repair/report.json --source-root .  # 0",
-    "negative: source mutation/deletion/collisions  # non-zero as required"
-  ],
+  "current_objective": "M0 Repair Round 2 — close verify replay + transaction gaps",
+  "current_hypothesis": "Source-bound replay verify and rollback-safe multi-file commit close re-audit P0s",
+  "status": "M0_PARTIAL",
+  "last_verified_commit": null,
+  "commands_run": [],
   "verified_artifacts": [
-    "evidence/m0-repair/M0_REPAIR_EVIDENCE.md",
-    "evidence/m0-repair/report.json",
-    "evidence/m0-repair/report.md",
-    "evidence/m0-repair/metrics.json",
-    "evidence/m0-repair/negative/"
+    "docs/EXTERNAL_REAUDIT.md",
+    "docs/M0_REPAIR_ROUND2.md"
   ],
-  "known_failures": [],
+  "known_failures": [
+    "Round2 P0: verify did not replay extraction (fixed in this branch)",
+    "Round2 P0: multi-artifact commit-phase rollback (fixed in this branch)",
+    "Round2 P0: package revision identity (pending final pin)"
+  ],
   "unresolved_risks": [
-    "Awaiting external re-audit",
-    "M1/M2 experimental code not removed, not claimed complete",
-    "Symlink edge cases residual"
+    "Awaiting external re-audit after round 2 packaging"
   ],
-  "next_action": "STOP. Request external re-audit. No M1/M2 feature work."
+  "next_action": "Finish gates, pin one revision, package bundle+manifest"
 }

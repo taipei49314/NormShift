@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "project": "NormShift",
+  "audit_date": "2026-08-07",
+  "audited_package": "NormShift-M0-Repair.zip",
+  "package_sha256": "bf3eab8db1cf2525182201f3e88e734d4399dd228ae02fd9153b0ec7f3ffa878",
+  "verdict": {
+    "m0": "M0_PARTIAL",
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "release": "BLOCKED"
+  },
+  "external_gates": {
+    "pytest_non_hypothesis": {"status": "PASS", "count": 69},
+    "hypothesis_tests": {"status": "NOT_RUN", "count": 2, "reason": "dependency unavailable"},
+    "manual_property_cases": {"status": "PASS", "count": 40000},
+    "benchmark": {"status": "PASS", "passed": 17, "total": 17},
+    "measure": {"status": "PASS", "passed": 15, "total": 15},
+    "deterministic_json": "PASS",
+    "deterministic_markdown": "PASS",
+    "source_mutation_detection": "PASS",
+    "source_deletion_detection": "PASS",
+    "basic_path_collision": "PASS",
+    "source_evidence_replay": "FAIL",
+    "multi_output_commit_rollback": "FAIL",
+    "exact_revision_evidence": "FAIL"
+  },
+  "p0": [
+    "Verifier accepts rehashed invalid locators, fabricated requirement text, arbitrary requirement IDs, paired changes with null IDs, and forged provenance metadata.",
+    "Multi-artifact transaction overwrites the first pre-existing output when the second final replacement fails.",
+    "Package commit differs from verified commit and no Git bundle/tree manifest permits revision inspection."
+  ],
+  "p1": [
+    "run_measure reads each source twice per case.",
+    "class=non-normative is treated as normative.",
+    "Repeated inline code text protects the wrong occurrence.",
+    "Inline q/plain historical quotation can be extracted as current requirements.",
+    "forbid gate policy corrupts TP/FP/FN metrics."
+  ]
+}

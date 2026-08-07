@@ -9,7 +9,6 @@ from typing import Any
 
 from normshift import __version__
 from normshift.evidence.hashing import canonical_json_bytes, integrity_payload_hash
-from normshift.extract.extractor import extract_requirements
 from normshift.measure.scoring import (
     AlignmentGoldItem,
     AlignmentPrediction,
@@ -185,9 +184,22 @@ def run_measure(ground_truth: Path) -> MeasureReport:
             old_path = _resolve_path(base, str(case["old"]))
             new_path = _resolve_path(base, str(case["new"]))
 
-            old_doc = extract_requirements(old_path, profile, adapter=adapter)
-            new_doc = extract_requirements(new_path, profile, adapter=adapter)
-            diff = run_diff(old_path, new_path, profile=profile, adapter=adapter)
+            # One immutable load per path for the whole case
+            from normshift.extract.extractor import extract_from_source
+            from normshift.source import load_immutable_source
+
+            old_src = load_immutable_source(old_path, adapter=adapter)
+            new_src = load_immutable_source(new_path, adapter=adapter)
+            old_doc = extract_from_source(old_src, profile)
+            new_doc = extract_from_source(new_src, profile)
+            diff = run_diff(
+                old_path,
+                new_path,
+                profile=profile,
+                adapter=adapter,
+                old_source=old_src,
+                new_source=new_src,
+            )
 
             # Extraction: score old+new jointly as multiset of predictions vs gold
             gold_ext = _extraction_gold_from_case(case, "old") + _extraction_gold_from_case(

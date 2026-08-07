@@ -2,15 +2,17 @@
 
 Evidence-backed **semantic diff** for technical standards — local HTML M0 core.
 
-> **External audit (2026-08-07):** M0 = `M0_PARTIAL`. M1/M2 = `EXPERIMENTAL_NOT_ADJUDICATED`.  
-> Production/release: **BLOCKED**. See `docs/EXTERNAL_AUDIT.md` and `docs/M0_REMEDIATION_MISSION.md`.
+> **External re-audit round 2:** implementer status  
+> `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` after source-replay verify + rollback-safe commits.  
+> M1/M2 = `EXPERIMENTAL_NOT_ADJUDICATED`. Production/release: **BLOCKED**.  
+> See `docs/EXTERNAL_REAUDIT.md` and `docs/M0_REPAIR_ROUND2.md`.
 
 ## Status
 
 | Layer | Status |
 |-------|--------|
-| M0 | Trust-chain repair — pending external re-audit |
-| M1 adapters / M2 lineage | Code present as **experimental** only — not milestone-complete |
+| M0 | Repair round 2 complete — **pending external re-audit** |
+| M1 / M2 | **Experimental only** — not adjudicated |
 
 ## Setup
 

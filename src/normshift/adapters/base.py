@@ -84,7 +84,7 @@ def build_provenance(
         content_type=side.get("content_type", content_type),
         content_sha256=digest,
         byte_length=len(raw),
-        local_path=str(path.as_posix()),
+        local_path=str(path.resolve().as_posix()),
         canonical_source=side.get("canonical_source"),
         etag=side.get("etag"),
         last_modified=side.get("last_modified"),
