@@ -373,4 +373,79 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
         )
         structural_index += 1
 
+    # RFC Editor plain-HTML pages are often a single <pre> (no <p>/<li>).
+    # Fall back to blank-line paragraphs so real RFCs still extract.
+    if not blocks:
+        blocks = _blocks_from_pre_elements(root, structural_index=structural_index)
+
     return blocks
+
+
+def _blocks_from_pre_elements(
+    root: etree._Element,
+    *,
+    structural_index: int = 0,
+) -> list[NormalizedBlock]:
+    """Split <pre> (and body plain text) into paragraph-like blocks."""
+    out: list[NormalizedBlock] = []
+    idx = structural_index
+    pres = [
+        el
+        for el in root.iter()
+        if isinstance(el.tag, str) and _local_name(el.tag) == "pre"
+    ]
+    sources: list[tuple[etree._Element, str]] = []
+    if pres:
+        for pre in pres:
+            sources.append((pre, "".join(pre.itertext())))
+    else:
+        # Entire document as one text stream
+        sources.append((root, "".join(root.itertext())))
+
+    for el, raw_text in sources:
+        if not raw_text or not raw_text.strip():
+            continue
+        # Prefer blank-line paragraphs; also hard-split very long runs
+        chunks = re.split(r"\n\s*\n+", raw_text)
+        if len(chunks) <= 1:
+            # Line-wrapped RFC: group non-empty lines into soft paragraphs of ~4–8 lines
+            lines = [ln.rstrip() for ln in raw_text.splitlines()]
+            buf: list[str] = []
+            chunks = []
+            for ln in lines:
+                if not ln.strip():
+                    if buf:
+                        chunks.append("\n".join(buf))
+                        buf = []
+                    continue
+                buf.append(ln)
+                # Break near sentence ends to keep blocks extractable
+                if len(buf) >= 6 and re.search(r"[.!?]\s*$", ln):
+                    chunks.append("\n".join(buf))
+                    buf = []
+            if buf:
+                chunks.append("\n".join(buf))
+
+        xpath = _element_xpath(el, root)
+        for chunk in chunks:
+            # Collapse hard wraps inside a paragraph for keyword matching
+            text = normalize_whitespace(chunk.replace("\n", " "))
+            if len(text) < 12:
+                continue
+            # Skip pure banner / TOC noise
+            if re.match(r"^(Internet Engineering Task Force|Table of Contents)\b", text):
+                continue
+            out.append(
+                NormalizedBlock(
+                    text=text,
+                    normalized_text=text,
+                    section_path="(pre-text)",
+                    source_locator=f"xpath:{xpath}#p{idx}",
+                    structural_index=idx,
+                    is_informative=False,
+                    xpath=xpath,
+                    protected_spans=(),
+                )
+            )
+            idx += 1
+    return out

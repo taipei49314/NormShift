@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [master, main, "expedition/**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Sync
+        run: uv sync --frozen --all-extras --dev
+      - name: Ruff
+        run: uv run ruff check .
+      - name: Mypy
+        run: uv run mypy src
+      - name: Pytest
+        run: uv run pytest -q
+      - name: M0 benchmark
+        run: uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
+      - name: Real provisional benchmark
+        run: uv run normshift benchmark-real --root .
+      - name: Demo diff + verify
+        run: |
+          uv run normshift diff fixtures/corpus/rfc/sample-v1.html fixtures/corpus/rfc/sample-v2.html \
+            --source-root . --adapter rfc --profile rfc2119 \
+            --json /tmp/demo.json --markdown /tmp/demo.md
+          uv run normshift verify /tmp/demo.json --source-root .

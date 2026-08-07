@@ -1,62 +1,191 @@
 # NormShift
 
-Evidence-backed **semantic diff** for technical standards (local HTML M0 core).
+### Evidence-backed semantic diff for technical standards
 
-> **Status:** M0 trust-core repair (round 4). Production/release **BLOCKED**.  
-> M1/M2 code may exist as **EXPERIMENTAL_NOT_ADJUDICATED** only.  
-> See `docs/EXTERNAL_AUDIT_R3_FINAL.md` and `docs/GROK_M0_REPAIR_ROUND4.md`.
+[![CI](https://img.shields.io/badge/CI-github%20actions-blue)](.github/workflows/ci.yml)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](pyproject.toml)
+[![Status](https://img.shields.io/badge/status-experimental-orange)](#status)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 
-## Setup
+**NormShift tells you what actually changed in a standard — with source locators you can re-verify offline.**
+
+Not a chatbot. Not an embedding search. A **deterministic pipeline**:
+
+```text
+HTML snapshots → extract obligations → align versions → classify changes → evidence report → replay verify
+```
+
+---
+
+## The problem
+
+Standards evolve in silence:
+
+| Quiet change | Why it hurts |
+|--------------|--------------|
+| `SHOULD` → `MUST` | Compliance scope explodes overnight |
+| New condition / exception | Implementations become non-conformant |
+| Moved + reworded clause | Reviewers think nothing changed |
+| Historical “previous specification said MUST…” | Naïve extractors invent false requirements |
+
+Teams need a **local, reproducible** instrument — not another cloud LLM that cannot prove source binding.
+
+---
+
+## 30-second demo
 
 ```bash
 uv sync --frozen --all-extras --dev
+
+uv run normshift diff \
+  fixtures/corpus/rfc/sample-v1.html \
+  fixtures/corpus/rfc/sample-v2.html \
+  --source-root . --adapter rfc --profile rfc2119 \
+  --json /tmp/normshift.json --markdown /tmp/normshift.md
+
+uv run normshift verify /tmp/normshift.json --source-root .
+# OK integrity=… verification_scope=FULL
+
+uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
+# 17/17
 ```
 
-## CLI
+Open `/tmp/normshift.md` — every change points back to source text and locators.
+
+---
+
+## What you get
+
+| Capability | Detail |
+|------------|--------|
+| **Semantic classes** | STRENGTHENED, WEAKENED, POLARITY_FLIP, CONDITION/EXCEPTION, MOVED, ADDED/REMOVED, AMBIGUOUS… |
+| **Source-bound verify** | Rebuild extraction→alignment→classification and compare canonical report bytes |
+| **Portable evidence** | `--source-root` relative POSIX refs; relocate the repo and re-verify |
+| **Override scope** | `--old-source` / `--new-source` print `verification_scope=FULL` or `verification_scope=CONTENT_ONLY_OVERRIDE` (exit 0 only on success) |
+| **Strict JSON boundary** | Reject duplicate keys, non-finite numbers, coerced types (M0 trust path) |
+| **Adapters** | RFC HTML/XML, W3C, WHATWG, generic HTML |
+| **Expedition** | Allowlisted HTTPS acquire, lineage graph, static observatory |
+
+---
+
+## Real standards (expedition run)
+
+On branch `expedition/real-standards-observatory`, live official captures (local store):
+
+| Document | Extracted obligations (run-dependent) |
+|----------|--------------------------------------:|
+| RFC 9110 (HTTP Semantics) | **400+** |
+| RFC 8949 (CBOR) | **40+** |
+| RFC 8259 (JSON) via plain `<pre>` HTML | **20+** |
+| W3C Trace Context L1 → L2 | **114** classified change events (ambiguity preserved) |
+
+> Numbers are experimental extractions, not adjudicated gold labels.
 
 ```bash
-uv run normshift extract DOC.html --profile rfc2119 --out out.requirements.json
-uv run normshift diff OLD.html NEW.html --profile rfc2119 \
-  --source-root . \
-  --json report.json --markdown report.md
-uv run normshift verify report.json --source-root .
-uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
-uv run normshift measure --ground-truth benchmark/measure_suite.jsonl --out metrics.json
+# Optional: pull allowlisted official HTML into content-addressed store
+uv run normshift acquire https://www.rfc-editor.org/rfc/rfc8259.html \
+  --store .normshift/store --policy config/source-policy.json
+
+# Full offline expansion script (uses store + fixtures)
+uv run python scripts/expedition_expand.py
+uv run python scripts/make_github_demo.py
 ```
 
-### Portable source identity (`--source-root`)
+Showcase write-up: [`docs/SHOWCASE.md`](docs/SHOWCASE.md) · Architecture: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
-- Reports store **portable** POSIX source references relative to a declared root.
-- Generation: `normshift diff ... --source-root ROOT` resolves OLD/NEW under `ROOT`, rejects traversal and symlink escape, and never emits an absolute path with `source_ref_mode=source_root_relative`.
-- When `--source-root` is omitted, the process CWD is the root; sources outside CWD fail closed.
-- Verify: `normshift verify report.json --source-root ROOT` resolves declared refs under `ROOT`.
+---
 
-### Override scope (`--old-source` / `--new-source`)
+## Architecture (one screen)
 
-- Overrides relocate source **bytes** for content replay; they do **not** attest the declared logical path.
-- Declared refs in the report must still be portable relative paths (absolute/traversal rejected).
-- Successful verify always prints a machine-readable scope:
-  - `verification_scope=FULL` — normal source-root resolution
-  - `verification_scope=CONTENT_ONLY_OVERRIDE` — override path(s) used
-- Exit code: `0` only on success; non-zero on any failure (including strict JSON rejection).
+```text
+Acquire (HTTPS allowlist) ──► Snapshot store (SHA-256)
+                                    │ offline
+                              Adapters (RFC/W3C/WHATWG)
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              ▼                     ▼                     ▼
+           Extract               Align+Classify        Lineage
+              └─────────────────────┬─────────────────────┘
+                                    ▼
+                         Evidence report (JSON/MD)
+                                    ▼
+                         Verify = full pipeline replay
+                                    ▼
+                         Static observatory + feeds
+```
 
-## Verification gate (M0)
+Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+
+---
+
+## CLI map
+
+```text
+normshift extract | diff | verify | benchmark | measure
+normshift acquire | snapshot show|verify|export
+normshift inspect | adapter --out diagnostics.json
+normshift lineage build|export|verify|graph
+normshift observatory build|verify|poll
+normshift benchmark-real
+```
+
+---
+
+## Status
+
+| Layer | Status |
+|-------|--------|
+| M0 trust core | Implementer packages through R4/R5 — **external audit decides** |
+| Expedition (M1–M3-shaped) | **`EXPERIMENTAL_NOT_ADJUDICATED`** |
+| Production / SaaS | **Not a goal of this repo state** |
+
+We deliberately do **not** claim `AUDIT_PASSED`, `PRODUCTION_READY`, or gold-labeled accuracy.
+
+Authority rules: implementer ≠ auditor. Labels: `AUTO` / `PROVISIONAL` only unless an external adjudicator says otherwise.
+
+---
+
+## Tests & gates
 
 ```bash
 uv run ruff check .
 uv run mypy src
 uv run pytest -q
 uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
-uv run normshift measure --ground-truth benchmark/measure_suite.jsonl \
-  --out evidence/m0-repair-round4/metrics.json
-uv run normshift diff fixtures/synthetic/spec-v1.html fixtures/synthetic/spec-v2.html \
-  --source-root . \
-  --profile rfc2119 \
-  --json evidence/m0-repair-round4/report.json \
-  --markdown evidence/m0-repair-round4/report.md
-uv run normshift verify evidence/m0-repair-round4/report.json --source-root .
+uv run normshift benchmark-real --root .
 ```
+
+CI: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+---
+
+## Project layout
+
+```text
+src/normshift/     pipeline, adapters, verify, acquire, lineage, observatory
+fixtures/          synthetic + family corpus (redistributable)
+benchmark/         frozen adversarial cases
+corpus/            catalog + hash-only official snapshot index
+artifacts/         expedition evidence (regenerable)
+docs/              charter, architecture, showcase, audit handoffs
+```
+
+---
+
+## Contributing / branch policy
+
+- **`master`**: audited M0 packages — treat as frozen during external review.
+- **`expedition/real-standards-observatory`**: ambitious observatory work; may move fast.
+- Do not invent gold labels. Prefer failing closed and recording ambiguity.
+
+---
 
 ## License
 
 Apache-2.0
+
+---
+
+<p align="center">
+  <b>Read the standard. Diff the obligations. Verify the evidence.</b>
+</p>

@@ -20,61 +20,17 @@ class KeywordMatch:
 # Longer / more specific patterns first to avoid partial conflicts.
 # Each pattern uses token boundaries so "mustard" does not match "must".
 _RFC2119_PATTERNS: list[tuple[re.Pattern[str], Modality, Polarity]] = [
-    (
-        re.compile(r"\bMUST\s+NOT\b"),
-        Modality.MUST_NOT,
-        Polarity.NEGATIVE,
-    ),
-    (
-        re.compile(r"\bSHALL\s+NOT\b"),
-        Modality.MUST_NOT,
-        Polarity.NEGATIVE,
-    ),
-    (
-        re.compile(r"\bSHOULD\s+NOT\b"),
-        Modality.SHOULD_NOT,
-        Polarity.NEGATIVE,
-    ),
-    (
-        re.compile(r"\bNOT\s+RECOMMENDED\b"),
-        Modality.SHOULD_NOT,
-        Polarity.NEGATIVE,
-    ),
-    (
-        re.compile(r"\bMUST\b"),
-        Modality.MUST,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bSHALL\b"),
-        Modality.MUST,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bREQUIRED\b"),
-        Modality.MUST,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bSHOULD\b"),
-        Modality.SHOULD,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bRECOMMENDED\b"),
-        Modality.SHOULD,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bMAY\b"),
-        Modality.MAY,
-        Polarity.AFFIRMATIVE,
-    ),
-    (
-        re.compile(r"\bOPTIONAL\b"),
-        Modality.MAY,
-        Polarity.AFFIRMATIVE,
-    ),
+    (re.compile(r"\bMUST\s+NOT\b"), Modality.MUST_NOT, Polarity.NEGATIVE),
+    (re.compile(r"\bSHALL\s+NOT\b"), Modality.MUST_NOT, Polarity.NEGATIVE),
+    (re.compile(r"\bSHOULD\s+NOT\b"), Modality.SHOULD_NOT, Polarity.NEGATIVE),
+    (re.compile(r"\bNOT\s+RECOMMENDED\b"), Modality.SHOULD_NOT, Polarity.NEGATIVE),
+    (re.compile(r"\bMUST\b"), Modality.MUST, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bSHALL\b"), Modality.MUST, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bREQUIRED\b"), Modality.MUST, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bSHOULD\b"), Modality.SHOULD, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bRECOMMENDED\b"), Modality.SHOULD, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bMAY\b"), Modality.MAY, Polarity.AFFIRMATIVE),
+    (re.compile(r"\bOPTIONAL\b"), Modality.MAY, Polarity.AFFIRMATIVE),
 ]
 
 _WHATWG_PATTERNS: list[tuple[re.Pattern[str], Modality, Polarity]] = [
