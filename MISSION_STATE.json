@@ -2,7 +2,7 @@
   "current_objective": "M2 Requirement Lineage Graph (core) + hold for definition/xref follow-up",
   "current_hypothesis": "Strict multi-version alignment with persistent lineage IDs prevents mass false add/remove while exposing split/continue edges",
   "status": "M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": null,
+  "last_verified_commit": "8747a1bbc62740f9da6a38264ec09c3d3680bd6a",
   "commands_run": [
     "uv run ruff check .  # 0",
     "uv run mypy src  # 0",
@@ -19,7 +19,7 @@
   "unresolved_risks": [
     "Definition and cross-reference dependency graph not implemented",
     "Merge detection may under-fire on real standards",
-    "External audit pending for M0–M2",
+    "External audit pending for M0\u2013M2",
     "No remote push (operator hold)"
   ],
   "next_action": "Add definition/xref dependency analysis toward fuller M2 exit; no push unless instructed"
