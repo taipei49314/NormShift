@@ -1,0 +1,355 @@
+{
+  "changes": [
+    {
+      "alignment_score": null,
+      "change_id": "f93f794491edba95",
+      "classification": "ADDED",
+      "classification_reasons": [
+        "No aligned prior requirement; treated as addition."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "07ee953b49345bd0bf91dc428648140933d191fb86b1b0129731dd49a2a8224a",
+        "1ae9fc93f3442129837bf34ef1c9e64f502c1be0d271d66cd7eddcd19cc7409e",
+        "734373a3f32ffac0af9bf18d865c82aa24cbc0fb601f743bed62add9f23b8727"
+      ],
+      "modality_transition": "∅->MUST",
+      "new_requirement_id": "2593f1c3f0090050",
+      "new_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "new_source_locator": "id:req-ack|xpath:/body/div/p[5]",
+      "new_text": "Receivers MUST acknowledge STREAM frames promptly.",
+      "old_requirement_id": null,
+      "old_section_path": null,
+      "old_source_locator": null,
+      "old_text": null
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 0.8832,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 0.9344,
+          "modality_match": 0.4,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 0.9573,
+          "token_similarity": 0.9355
+        },
+        "modality_match": 0.4,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 0.9573,
+        "token_similarity": 0.9355
+      },
+      "change_id": "08b604dfaaf99bbd",
+      "classification": "STRENGTHENED",
+      "classification_reasons": [
+        "Obligation strengthened: SHOULD -> MUST."
+      ],
+      "confidence": 0.92,
+      "evidence_hashes": [
+        "215456f8aa68e98ae80cf131d2ac6c9d8cbee04188404b9f7be434aff1cc2459",
+        "2a74a83c20d5849903c6bec435316ef3e79d1bf6260e994bd2a42ae053399915",
+        "832ce89d4d066cc91de351a8b96a7eef60a08f65418e84ddff9a9524a2e63abc",
+        "9c1ac7eb8441de5e710ca70440c6087eed954453fe97d5942a81745ac9fc3342",
+        "c52cd244180c0f4a4da9d994eb3ce4c9899528912cfd36ede59a6bfe1fe3ba17"
+      ],
+      "modality_transition": "SHOULD->MUST",
+      "new_requirement_id": "947f69ba9ba99c24",
+      "new_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "new_source_locator": "id:req-retry|xpath:/body/div/p[3]",
+      "new_text": "A server MUST retry a handshake when the first attempt fails.",
+      "old_requirement_id": "210cca233d92c95f",
+      "old_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "old_source_locator": "id:req-retry|xpath:/body/div/p[3]",
+      "old_text": "A server SHOULD retry a handshake when the first attempt fails."
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 1.0,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 1.0,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 1.0,
+          "token_similarity": 1.0
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 1.0,
+        "token_similarity": 1.0
+      },
+      "change_id": "78412bc6caa6b574",
+      "classification": "UNCHANGED",
+      "classification_reasons": [
+        "Identical normalized text, modality, and section → UNCHANGED."
+      ],
+      "confidence": 0.99,
+      "evidence_hashes": [
+        "194afbae0af3a8c9831e751964061892c157145e076f68d9da1505b73b44f610",
+        "6ec92d8e4423aa884aec090742fc4a3c612e72ee7ab0909e9c0a0551ba1f0bca",
+        "d7598611110b4ec751799d4c1b2d2bff19468f0a524efb3e5321a71067e09fd0",
+        "f26413b36d4492dc35f6067367bee6f8f253ddabf127739008667c7190bc4900",
+        "ff45999d7e31771c6d15f8f456ecfaeddeae41317891dff72d868aebde748316"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "564e44e536b7b0ee",
+      "new_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "new_source_locator": "id:req-frame|xpath:/body/div/p[4]",
+      "new_text": "Senders MUST include a frame type on every frame.",
+      "old_requirement_id": "50b6babcd1c50c5e",
+      "old_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "old_source_locator": "id:req-frame|xpath:/body/div/p[4]",
+      "old_text": "Senders MUST include a frame type on every frame."
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 1.0,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 1.0,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 1.0,
+          "token_similarity": 1.0
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 1.0,
+        "token_similarity": 1.0
+      },
+      "change_id": "51cc0e8dda45891f",
+      "classification": "UNCHANGED",
+      "classification_reasons": [
+        "Identical normalized text, modality, and section → UNCHANGED."
+      ],
+      "confidence": 0.99,
+      "evidence_hashes": [
+        "0626949ffb0056d6c607c3646ba66dec039900b5d7a1aba12a511ab9ef7c983d",
+        "194afbae0af3a8c9831e751964061892c157145e076f68d9da1505b73b44f610",
+        "8e552ac3de6abed223e712af8c482b2c9a2c7746876b2c85c602b8e52f48acab",
+        "95e4995cba80ec676310846e15b4195867c9bb32635167b9fb0b2a5a6e350ceb",
+        "f325c11b1b5c27e2182fcf8e58da0bb5f9ec06343a32c2757bca17c6a057478c"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "87a0255e114475b1",
+      "new_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "new_source_locator": "id:req-conn|xpath:/body/div/p[2]",
+      "new_text": "Endpoints MUST establish a connection before exchanging application data.",
+      "old_requirement_id": "ce20bc64f75e0d15",
+      "old_section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "old_source_locator": "id:req-conn|xpath:/body/div/p[2]",
+      "old_text": "Endpoints MUST establish a connection before exchanging application data."
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "311d6cd101c2d3bc78c4d597f4d0959e474878d29c0b89cca2b03b1c84d49eec"
+  },
+  "new_document": {
+    "byte_length": 1236,
+    "document_family": "rfc",
+    "path": "fixtures/corpus/rfc/sample-v2.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.rfc",
+      "adapter_version": "1.0.0",
+      "byte_length": 1236,
+      "canonical_source": "https://www.rfc-editor.org/rfc/rfc9000.html",
+      "content_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "content_type": "text/html",
+      "document_family": "rfc",
+      "etag": "W/\"rfc9000-excerpt-v2\"",
+      "fetch_metadata": {
+        "corpus_note": "Synthetic offline excerpt modeled on RFC HTML structure; not a full RFC download."
+      },
+      "last_modified": "2026-02-01T00:00:00Z",
+      "local_path": "fixtures/corpus/rfc/sample-v2.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+    "source_ref_mode": "source_root_relative",
+    "version": "RFC9000-excerpt-2"
+  },
+  "new_requirements": [
+    {
+      "action": "establish a connection before exchanging application data",
+      "actor": "Endpoints",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "document_version": "RFC9000-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "483a71d6661c1d0b1c9a325c62a0ccfe325756a84918b1e11331a60bd6822d08",
+      "modality": "MUST",
+      "normalized_text": "Endpoints MUST establish a connection before exchanging application data.",
+      "original_text": "Endpoints MUST establish a connection before exchanging application data.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "87a0255e114475b1",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "source_locator": "id:req-conn|xpath:/body/div/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "retry a handshake",
+      "actor": "server",
+      "condition": "when the first attempt fails",
+      "confidence": 0.95,
+      "document_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "document_version": "RFC9000-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "012772c7824b7e2788d09e085a8305d4b973822018bcd7e823231c131d7cbd94",
+      "modality": "MUST",
+      "normalized_text": "A server MUST retry a handshake when the first attempt fails.",
+      "original_text": "A server MUST retry a handshake when the first attempt fails.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "947f69ba9ba99c24",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "source_locator": "id:req-retry|xpath:/body/div/p[3]",
+      "structural_index": 2
+    },
+    {
+      "action": "include a frame type on every frame",
+      "actor": "Senders",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "document_version": "RFC9000-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "c6255c5ef526697527c737888de95b44058d215323ba329013bbfd92fc2e30da",
+      "modality": "MUST",
+      "normalized_text": "Senders MUST include a frame type on every frame.",
+      "original_text": "Senders MUST include a frame type on every frame.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "564e44e536b7b0ee",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "source_locator": "id:req-frame|xpath:/body/div/p[4]",
+      "structural_index": 4
+    },
+    {
+      "action": "acknowledge STREAM frames promptly",
+      "actor": "Receivers",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "document_version": "RFC9000-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "2c2e31e4b982cfdf8fbbf3d341cc58d58e69468c8b6f0fd26643af76185882c2",
+      "modality": "MUST",
+      "normalized_text": "Receivers MUST acknowledge STREAM frames promptly.",
+      "original_text": "Receivers MUST acknowledge STREAM frames promptly.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "2593f1c3f0090050",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "source_locator": "id:req-ack|xpath:/body/div/p[5]",
+      "structural_index": 5
+    }
+  ],
+  "old_document": {
+    "byte_length": 1163,
+    "document_family": "rfc",
+    "path": "fixtures/corpus/rfc/sample-v1.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.rfc",
+      "adapter_version": "1.0.0",
+      "byte_length": 1163,
+      "canonical_source": "https://www.rfc-editor.org/rfc/rfc9000.html",
+      "content_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+      "content_type": "text/html",
+      "document_family": "rfc",
+      "etag": "W/\"rfc9000-excerpt-v1\"",
+      "fetch_metadata": {
+        "corpus_note": "Synthetic offline excerpt modeled on RFC HTML structure; not a full RFC download."
+      },
+      "last_modified": "2026-01-01T00:00:00Z",
+      "local_path": "fixtures/corpus/rfc/sample-v1.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+    "source_ref_mode": "source_root_relative",
+    "version": "RFC9000-excerpt-1"
+  },
+  "old_requirements": [
+    {
+      "action": "establish a connection before exchanging application data",
+      "actor": "Endpoints",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+      "document_version": "RFC9000-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "483a71d6661c1d0b1c9a325c62a0ccfe325756a84918b1e11331a60bd6822d08",
+      "modality": "MUST",
+      "normalized_text": "Endpoints MUST establish a connection before exchanging application data.",
+      "original_text": "Endpoints MUST establish a connection before exchanging application data.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "ce20bc64f75e0d15",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "source_locator": "id:req-conn|xpath:/body/div/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "retry a handshake",
+      "actor": "server",
+      "condition": "when the first attempt fails",
+      "confidence": 0.95,
+      "document_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+      "document_version": "RFC9000-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "6dcd9aea1e70154ef016a60fe38585eda2b2f9c89bc41cb0ad73e6cc591cfd0b",
+      "modality": "SHOULD",
+      "normalized_text": "A server SHOULD retry a handshake when the first attempt fails.",
+      "original_text": "A server SHOULD retry a handshake when the first attempt fails.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "210cca233d92c95f",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 2. Connections",
+      "source_locator": "id:req-retry|xpath:/body/div/p[3]",
+      "structural_index": 2
+    },
+    {
+      "action": "include a frame type on every frame",
+      "actor": "Senders",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+      "document_version": "RFC9000-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "c6255c5ef526697527c737888de95b44058d215323ba329013bbfd92fc2e30da",
+      "modality": "MUST",
+      "normalized_text": "Senders MUST include a frame type on every frame.",
+      "original_text": "Senders MUST include a frame type on every frame.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "50b6babcd1c50c5e",
+      "section_path": "RFC 9000: QUIC Excerpt (synthetic corpus) > 3. Frames",
+      "source_locator": "id:req-frame|xpath:/body/div/p[4]",
+      "structural_index": 4
+    }
+  ],
+  "profile": "rfc2119",
+  "schema_version": "1.0.0",
+  "summary": {
+    "change_count": 4,
+    "classification_counts": {
+      "ADDED": 1,
+      "STRENGTHENED": 1,
+      "UNCHANGED": 2
+    },
+    "new_requirement_count": 4,
+    "old_requirement_count": 3
+  },
+  "tool_version": "0.3.1"
+}

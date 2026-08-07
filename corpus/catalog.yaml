@@ -1,0 +1,85 @@
+schema_version: "1.0.0"
+status: EXPERIMENTAL_NOT_ADJUDICATED
+label_authority: AUTO
+families:
+  - ietf
+  - w3c
+  - whatwg
+snapshots:
+  - id: synth-rfc-v1
+    family: ietf
+    path: fixtures/corpus/rfc/sample-v1.html
+    redistributable: true
+    rationale: In-repo RFC-like fixture for offline expedition gates
+  - id: synth-rfc-v2
+    family: ietf
+    path: fixtures/corpus/rfc/sample-v2.html
+    redistributable: true
+  - id: synth-w3c-v1
+    family: w3c
+    path: fixtures/corpus/w3c/sample-v1.html
+    redistributable: true
+  - id: synth-w3c-v2
+    family: w3c
+    path: fixtures/corpus/w3c/sample-v2.html
+    redistributable: true
+  - id: synth-whatwg-v1
+    family: whatwg
+    path: fixtures/corpus/whatwg/sample-v1.html
+    redistributable: true
+  - id: synth-whatwg-v2
+    family: whatwg
+    path: fixtures/corpus/whatwg/sample-v2.html
+    redistributable: true
+  - id: synth-lineage-v1
+    family: html
+    path: fixtures/lineage/v1.html
+    redistributable: true
+  - id: synth-lineage-v2
+    family: html
+    path: fixtures/lineage/v2.html
+    redistributable: true
+  - id: synth-lineage-v3
+    family: html
+    path: fixtures/lineage/v3.html
+    redistributable: true
+pairs:
+  - id: rfc-sample-v1-v2
+    family: ietf
+    old: synth-rfc-v1
+    new: synth-rfc-v2
+    adapter: rfc
+    relation: version-pair
+    label_authority: AUTO
+  - id: w3c-sample-v1-v2
+    family: w3c
+    old: synth-w3c-v1
+    new: synth-w3c-v2
+    adapter: w3c
+    relation: version-pair
+    label_authority: AUTO
+  - id: whatwg-sample-v1-v2
+    family: whatwg
+    old: synth-whatwg-v1
+    new: synth-whatwg-v2
+    adapter: whatwg
+    relation: version-pair
+    label_authority: AUTO
+  - id: lineage-v1-v2
+    family: html
+    old: synth-lineage-v1
+    new: synth-lineage-v2
+    adapter: html
+    relation: version-pair
+    label_authority: AUTO
+  - id: lineage-v2-v3
+    family: html
+    old: synth-lineage-v2
+    new: synth-lineage-v3
+    adapter: html
+    relation: version-pair
+    label_authority: AUTO
+limitations:
+  - Official live acquisition may be unavailable offline
+  - Counts may be below expedition targets until network corpus expansion
+  - All labels AUTO/PROVISIONAL

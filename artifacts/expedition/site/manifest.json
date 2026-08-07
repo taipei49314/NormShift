@@ -1,0 +1,18 @@
+{
+  "discovery_count": 0,
+  "files": {
+    "discovery.html": "d4341ef8c311b74e99b93fac617c68c806c6af51a791a76351963428a9c8371f",
+    "feed.json": "b1a71dce0bec3db0472bac632999d0494faf616fc0ebca342a6ef9b99a2755ff",
+    "feed.xml": "bbf7f95aafca9693994fe9b63e80c06e812f28213938274ed40cd7f5a5ea190c",
+    "index.html": "8df872f29a8cdd90b9b331daf31a2195d41f754dc7bba6c5562d4091218cc10c",
+    "limitations.html": "36b93fbb5d79cd9b1ccd08bd0ed3aeb15154ee7e921ca4ed49c66871700656bc",
+    "provenance.html": "c0e211fe4c3479a06d1e6ef4e9ce8c05e2e40afea8c683e25691a0c8b1edd39d",
+    "snapshots.html": "2d84aca13afc4a3fda2f6aa458328d5045d6c2be5a62d652a11dde226e5ebc43"
+  },
+  "generated_at": "2026-08-07T08:15:27+00:00",
+  "offline": true,
+  "schema_version": "1.0.0",
+  "snapshot_count": 6,
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+  "title": "NormShift Real Standards Observatory"
+}

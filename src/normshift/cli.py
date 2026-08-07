@@ -27,6 +27,14 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
+# Expedition sub-apps (experimental)
+snapshot_app = typer.Typer(help="Snapshot store commands (expedition)", no_args_is_help=True)
+lineage_app = typer.Typer(help="Requirement lineage (expedition)", no_args_is_help=True)
+observatory_app = typer.Typer(help="Local observatory (expedition)", no_args_is_help=True)
+app.add_typer(snapshot_app, name="snapshot")
+app.add_typer(lineage_app, name="lineage")
+app.add_typer(observatory_app, name="observatory")
+
 
 class ProfileOpt(StrEnum):
     rfc2119 = "rfc2119"
@@ -176,14 +184,14 @@ def ingest_cmd(
     typer.echo(f"ingested {adapted.family.value} → {out}")
 
 
-@app.command("lineage")
-def lineage_cmd(
+@lineage_app.command("graph")
+def lineage_graph_cmd(
     documents: list[Path] = typer.Argument(..., help="Ordered document versions (2+)"),
     profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
     adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
     json_out: Path = typer.Option(..., "--json", help="Lineage graph JSON path"),
 ) -> None:
-    """Build a requirement lineage graph across ordered document versions."""
+    """Build JSON requirement lineage graph across ordered document versions (M0 path)."""
     if len(documents) < 2:
         typer.echo("error: lineage requires at least two documents", err=True)
         raise typer.Exit(code=2)
@@ -343,6 +351,231 @@ def measure_cmd(
                 typer.echo(f"  FAIL {c.case_id}: {c.detail}", err=True)
         raise typer.Exit(code=1)
     raise typer.Exit(code=0)
+
+
+@app.command("acquire")
+def acquire_cmd(
+    url: str = typer.Argument(..., help="Official HTTPS URL (allowlisted)"),
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+    policy: Path = typer.Option(Path("config/source-policy.json"), "--policy"),
+    adapter_hint: str | None = typer.Option(None, "--adapter-hint"),
+    import_file: Path | None = typer.Option(
+        None, "--import-file", help="Offline import bytes as if acquired from URL"
+    ),
+) -> None:
+    """Acquire an official source snapshot into the content-addressed store."""
+    from normshift.acquire.fetcher import AcquisitionError, acquire_url, import_local_bytes
+    from normshift.acquire.store import SnapshotStore
+
+    try:
+        st = SnapshotStore(store)
+        if import_file is not None:
+            man = import_local_bytes(
+                import_file,
+                store=st,
+                source_url=url,
+                policy_path=policy,
+                adapter_hint=adapter_hint,
+            )
+        else:
+            man = acquire_url(
+                url,
+                store=st,
+                policy_path=policy,
+                adapter_hint=adapter_hint,
+            )
+    except AcquisitionError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(
+        f"acquired {man['snapshot_id']} sha256={man['content_sha256']} "
+        f"bytes={man['byte_length']} → {store}"
+    )
+
+
+@app.command("inspect")
+def inspect_cmd(
+    document: Path = typer.Argument(...),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Inspect a document via adapter diagnostics (expedition)."""
+    from normshift.adapters.contract import diagnose_document
+
+    diag = diagnose_document(document, adapter=_to_adapter(adapter))
+    typer.echo(json.dumps(diag, indent=2, sort_keys=True, ensure_ascii=False))
+    if not diag.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@app.command("adapter")
+def adapter_diagnose_cmd(
+    document: Path = typer.Argument(...),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+    out: Path | None = typer.Option(None, "--out"),
+) -> None:
+    """Adapter diagnose (alias surface for expedition contract)."""
+    from normshift.adapters.contract import diagnose_document
+
+    diag = diagnose_document(document, adapter=_to_adapter(adapter))
+    text = json.dumps(diag, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    if out is not None:
+        atomic_write_text(out, text)
+        typer.echo(f"wrote diagnostics → {out}")
+    else:
+        typer.echo(text)
+    if not diag.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@snapshot_app.command("show")
+def snapshot_show_cmd(
+    snapshot_id: str = typer.Argument(...),
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+) -> None:
+    from normshift.acquire.store import SnapshotStore, SnapshotStoreError
+
+    try:
+        man = SnapshotStore(store).read_manifest(snapshot_id)
+    except SnapshotStoreError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(json.dumps(man, indent=2, sort_keys=True, ensure_ascii=False))
+
+
+@snapshot_app.command("verify")
+def snapshot_verify_cmd(
+    snapshot_id: str = typer.Argument(...),
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+) -> None:
+    from normshift.acquire.store import SnapshotStore, SnapshotStoreError
+
+    try:
+        result = SnapshotStore(store).verify_snapshot(snapshot_id)
+    except SnapshotStoreError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(json.dumps(result, indent=2, sort_keys=True))
+    if not result.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@snapshot_app.command("export")
+def snapshot_export_cmd(
+    snapshot_id: str = typer.Argument(...),
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+    out: Path = typer.Option(..., "--out"),
+) -> None:
+    from normshift.acquire.store import SnapshotStore, SnapshotStoreError
+
+    try:
+        path = SnapshotStore(store).export_snapshot(snapshot_id, out)
+    except SnapshotStoreError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(f"exported {snapshot_id} → {path}")
+
+
+@lineage_app.command("build")
+def lineage_build_cmd(
+    documents: list[Path] = typer.Argument(..., help="Ordered document versions"),
+    db: Path = typer.Option(..., "--db"),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Build multi-version lineage into SQLite (expedition)."""
+    from normshift.lineage.graph_builder import build_lineage_from_paths
+    from normshift.lineage.store import LineageStore
+
+    if len(documents) < 2:
+        typer.echo("error: need at least two documents", err=True)
+        raise typer.Exit(code=2)
+    store = LineageStore(db)
+    try:
+        summary = build_lineage_from_paths(
+            documents,
+            store=store,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+    finally:
+        store.close()
+    typer.echo(json.dumps(summary, indent=2, sort_keys=True))
+
+
+@lineage_app.command("export")
+def lineage_export_cmd(
+    db: Path = typer.Option(..., "--db"),
+    jsonl: Path = typer.Option(..., "--jsonl"),
+) -> None:
+    from normshift.lineage.store import LineageStore
+
+    store = LineageStore(db)
+    try:
+        raw = store.export_jsonl(jsonl)
+    finally:
+        store.close()
+    typer.echo(f"exported {len(raw)} bytes → {jsonl}")
+
+
+@lineage_app.command("verify")
+def lineage_verify_cmd(jsonl: Path = typer.Argument(...)) -> None:
+    """Structural verify of lineage JSONL export."""
+    if not jsonl.is_file():
+        typer.echo(f"error: not found: {jsonl}", err=True)
+        raise typer.Exit(code=2)
+    nodes = edges = 0
+    for line in jsonl.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        obj = json.loads(line)
+        if obj.get("record") == "node":
+            nodes += 1
+        elif obj.get("record") == "edge":
+            edges += 1
+    typer.echo(json.dumps({"ok": True, "nodes": nodes, "edges": edges}))
+
+
+@observatory_app.command("build")
+def observatory_build_cmd(
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+    out: Path = typer.Option(..., "--out"),
+) -> None:
+    from normshift.acquire.store import SnapshotStore
+    from normshift.observatory.builder import build_observatory
+
+    man = build_observatory(store=SnapshotStore(store), out_dir=out)
+    typer.echo(
+        f"observatory: snapshots={man['snapshot_count']} "
+        f"files={len(man['files'])} → {out}"
+    )
+
+
+@observatory_app.command("verify")
+def observatory_verify_cmd(
+    manifest: Path = typer.Argument(..., help="site/manifest.json"),
+) -> None:
+    from normshift.observatory.builder import verify_observatory_manifest
+
+    site = manifest.parent if manifest.name == "manifest.json" else manifest
+    result = verify_observatory_manifest(site)
+    typer.echo(json.dumps(result, indent=2, sort_keys=True))
+    if not result.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@app.command("corpus")
+def corpus_verify_cmd(
+    catalog: Path = typer.Argument(..., help="corpus/catalog.yaml"),
+) -> None:
+    """Verify corpus catalog structure (expedition)."""
+    if not catalog.is_file():
+        typer.echo(f"error: catalog not found: {catalog}", err=True)
+        raise typer.Exit(code=2)
+    text = catalog.read_text(encoding="utf-8")
+    if "pairs:" not in text and "snapshots:" not in text:
+        typer.echo("error: catalog missing pairs/snapshots sections", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "catalog": str(catalog)}))
 
 
 def main() -> None:

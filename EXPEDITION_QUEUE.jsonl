@@ -1,0 +1,9 @@
+{"id":"Q0","priority":0,"item":"CP0 bootstrap branch state debt docs","status":"in_progress"}
+{"id":"Q1","priority":1,"item":"M1-A acquisition and snapshot store","status":"pending"}
+{"id":"Q2","priority":2,"item":"M1-B adapter diagnose contract","status":"pending"}
+{"id":"Q3","priority":3,"item":"M1-C corpus catalog and pairs","status":"pending"}
+{"id":"Q4","priority":4,"item":"CP3 real pair evidence-linked diff","status":"pending"}
+{"id":"Q5","priority":5,"item":"M2 lineage sqlite+jsonl","status":"pending"}
+{"id":"Q6","priority":6,"item":"M3 observatory static site+feeds","status":"pending"}
+{"id":"Q7","priority":7,"item":"CP7 cross-family killer demo","status":"pending"}
+{"id":"Q8","priority":8,"item":"CP8 expedition package","status":"pending"}

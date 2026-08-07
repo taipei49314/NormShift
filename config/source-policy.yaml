@@ -1,0 +1,37 @@
+# Official-source acquisition allowlist (HTTPS only). No arbitrary crawl.
+schema_version: "1.0.0"
+policy_name: normshift-official-standards
+allow_https_only: true
+max_redirects: 5
+max_bytes: 52428800  # 50 MiB
+allowed_content_types:
+  - text/html
+  - application/xhtml+xml
+  - application/xml
+  - text/xml
+  - application/json
+  - text/plain
+domains:
+  ietf:
+    hosts:
+      - www.rfc-editor.org
+      - rfc-editor.org
+      - www.ietf.org
+      - datatracker.ietf.org
+    adapter_hints: [ietf-rfc-html, ietf-rfc-xml, rfc]
+  w3c:
+    hosts:
+      - www.w3.org
+      - w3c.github.io
+    adapter_hints: [w3c-html, w3c]
+  whatwg:
+    hosts:
+      - html.spec.whatwg.org
+      - streams.spec.whatwg.org
+      - fetch.spec.whatwg.org
+      - dom.spec.whatwg.org
+      - url.spec.whatwg.org
+    adapter_hints: [whatwg-html, whatwg]
+redirect_policy:
+  require_final_host_allowlisted: true
+offline_after_acquire: true

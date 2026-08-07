@@ -153,7 +153,7 @@ def test_lineage_rejects_output_equal_any_input(tmp_path: Path) -> None:
     before = v1.read_bytes()
     r = runner.invoke(
         app,
-        ["lineage", str(v1), str(v2), "--json", str(v1)],
+        ["lineage", "graph", str(v1), str(v2), "--json", str(v1)],
     )
     assert r.exit_code != 0
     assert v1.read_bytes() == before

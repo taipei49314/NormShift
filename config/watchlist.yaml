@@ -1,0 +1,20 @@
+schema_version: "1.0.0"
+entries:
+  - id: rfc9110
+    family: ietf
+    official_source: https://www.rfc-editor.org/rfc/rfc9110.html
+    adapter: ietf-rfc-html
+    polling_mode: manual
+    importance: [http, core]
+  - id: w3c-trace-context
+    family: w3c
+    official_source: https://www.w3.org/TR/trace-context/
+    adapter: w3c-html
+    polling_mode: manual
+    importance: [observability]
+  - id: whatwg-fetch
+    family: whatwg
+    official_source: https://fetch.spec.whatwg.org/
+    adapter: whatwg-html
+    polling_mode: manual
+    importance: [web-platform]

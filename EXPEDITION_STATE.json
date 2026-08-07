@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "baseline_commit": "878bfd3a6bb7b649652e81936216277fc8151d5e",
+  "expedition_branch": "expedition/real-standards-observatory",
+  "current_phase": "CP7-CP8",
+  "current_objective": "Expedition candidate package for external audit handoff",
+  "status": "EXPEDITION_CANDIDATE_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": null,
+  "completed_vertical_slices": [
+    "CP0-bootstrap",
+    "CP1-acquisition-store",
+    "CP2-adapter-diagnose",
+    "CP3-real-pair-diff",
+    "CP4-corpus-catalog",
+    "CP5-lineage-sqlite-jsonl",
+    "CP6-observatory-static",
+    "CP7-cross-family-demo"
+  ],
+  "commands_run": [
+    "uv run pytest -q #153 passed",
+    "uv run normshift acquire --import-file (x6)",
+    "uv run normshift diff (rfc/w3c/whatwg pairs)",
+    "uv run normshift verify rfc-pair #0 FULL",
+    "uv run normshift lineage build/export/verify",
+    "uv run normshift observatory build/verify"
+  ],
+  "tests_passed": 153,
+  "tests_failed": 0,
+  "corpus_counts": {
+    "families": 3,
+    "snapshots_catalog": 9,
+    "pairs": 5,
+    "store_snapshots": 6,
+    "requirement_instances": "see pair reports",
+    "alignments_proposed": "pair changes",
+    "change_events_proposed": 9,
+    "ambiguous_cases": 2,
+    "split_merge_candidates": 0
+  },
+  "unresolved_risks": [
+    "Live official multi-version corpus not fully expanded offline",
+    "Deferred M0 audit debt open",
+    "Redistribution limits on official bytes"
+  ],
+  "deferred_items": [
+    "canonical representation edge cases",
+    "portable source-ref grammar",
+    "clause-level historical authority",
+    "single authoritative attestation manifest"
+  ],
+  "next_action": "External audit of expedition package; do not merge to main"
+}
