@@ -1,8 +1,8 @@
 {
   "current_objective": "Adopt official North Star charter; hold M0 pending external audit",
-  "current_hypothesis": "Full NORMSHIFT_NORTH_STAR charter is the governance source of truth; M0 work already satisfies North Star §10 M0 exit items and must not expand into M1 until external audit",
+  "current_hypothesis": "Full NORMSHIFT_NORTH_STAR charter is the governance source of truth; M0 work already satisfies North Star \u00a710 M0 exit items and must not expand into M1 until external audit",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": null,
+  "last_verified_commit": "7447b97b63e5c40266c9530e211ce68a213531c5",
   "commands_run": [
     "uv sync --all-extras --dev",
     "uv run ruff check .  # exit 0",
