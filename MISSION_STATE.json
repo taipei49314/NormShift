@@ -1,8 +1,8 @@
 {
-  "current_objective": "M0 Trust-Chain Repair complete — stop for external re-audit",
+  "current_objective": "M0 Trust-Chain Repair complete \u2014 stop for external re-audit",
   "current_hypothesis": "Strict verify + path safety + honest metrics + extraction fixes restore M0 trust contract",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": null,
+  "last_verified_commit": "7b63dbdd23a97058085bf917d52edd3fc144fc24",
   "commands_run": [
     "uv run ruff check .  # 0",
     "uv run mypy src  # 0",

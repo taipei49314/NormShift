@@ -6,7 +6,7 @@
 
 ## Final commit
 
-Recorded at closeout tip (must equal pack tip). See `git rev-parse HEAD` after final commit.
+7b63dbdd23a97058085bf917d52edd3fc144fc24
 
 ## Environment
 
