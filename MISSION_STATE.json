@@ -2,7 +2,7 @@
   "current_objective": "M1 Real Standards Adapters & Provenance",
   "current_hypothesis": "Offline multi-family adapters with sidecar provenance and fail-closed loads satisfy North Star M1 exit criteria without network or LLM",
   "status": "M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": null,
+  "last_verified_commit": "5fbc9c5a368bc94feba3adb35a6d44e8989ac0cc",
   "commands_run": [
     "uv run ruff check .  # exit 0",
     "uv run mypy src  # exit 0",
