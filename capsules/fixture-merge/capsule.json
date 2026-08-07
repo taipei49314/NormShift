@@ -1,0 +1,55 @@
+{
+  "adapter": "html",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.document",
+    "source/new.manifest.json",
+    "source/old.document",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": null,
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_fixture-merge_5ad50a3bcb77",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": true,
+    "new": "redistributable",
+    "old": "redistributable"
+  },
+  "new_snapshot": {
+    "content_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+    "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-new.html",
+    "version_label": "merge-new"
+  },
+  "offline_replay": true,
+  "old_snapshot": {
+    "content_sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+    "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-old.html",
+    "version_label": "merge-old"
+  },
+  "pair_id": "fixture-merge",
+  "profile": "rfc2119",
+  "report_sha256": "5ad50a3bcb77a27749910e51ba568b21ae084dd716a29f2a866d974d9e9e515c",
+  "requirements_sha256": {
+    "new": "9c3f285c6aa03f9e13c0c1bc075a2ec7f37fc3f60e172b887ea2810acf00d931",
+    "old": "025f72b9781c16952e5148e8325b231a39143a24ff4da6f573978d429ae61e04"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

@@ -27,13 +27,19 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
-# Expedition sub-apps (experimental)
+# Expedition / foundry sub-apps (experimental)
 snapshot_app = typer.Typer(help="Snapshot store commands (expedition)", no_args_is_help=True)
 lineage_app = typer.Typer(help="Requirement lineage (expedition)", no_args_is_help=True)
 observatory_app = typer.Typer(help="Local observatory (expedition)", no_args_is_help=True)
+campaign_app = typer.Typer(help="Declarative campaign engine (foundry)", no_args_is_help=True)
+capsule_app = typer.Typer(help="Pair evidence capsules (foundry)", no_args_is_help=True)
+review_app = typer.Typer(help="Review packets and ledger (foundry)", no_args_is_help=True)
 app.add_typer(snapshot_app, name="snapshot")
 app.add_typer(lineage_app, name="lineage")
 app.add_typer(observatory_app, name="observatory")
+app.add_typer(campaign_app, name="campaign")
+app.add_typer(capsule_app, name="capsule")
+app.add_typer(review_app, name="review")
 
 
 class ProfileOpt(StrEnum):
@@ -648,9 +654,155 @@ def observatory_poll_cmd(
     typer.echo(json.dumps({"results": results, "experimental": True}, indent=2))
 
 
+@campaign_app.command("validate")
+def campaign_validate_cmd(plan: Path = typer.Argument(...)) -> None:
+    from normshift.campaign.runner import validate_plan
+
+    try:
+        result = validate_plan(plan)
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(json.dumps(result, indent=2, sort_keys=True))
+
+
+@campaign_app.command("run")
+def campaign_run_cmd(
+    plan: Path = typer.Argument(...),
+    workspace: Path = typer.Option(Path(".normshift/foundry-24h"), "--workspace"),
+    mode: str = typer.Option("offline", "--mode", help="acquire|offline"),
+    source_date_epoch: int | None = typer.Option(None, "--source-date-epoch"),
+) -> None:
+    from normshift.campaign.runner import run_campaign
+
+    if mode not in {"acquire", "offline"}:
+        typer.echo("error: mode must be acquire|offline", err=True)
+        raise typer.Exit(code=2)
+    try:
+        run = run_campaign(
+            plan,
+            workspace=workspace,
+            mode=mode,  # type: ignore[arg-type]
+            source_date_epoch=source_date_epoch,
+        )
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"error: campaign failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        json.dumps(
+            {
+                "run_id": run.run_id,
+                "campaign_id": run.campaign_id,
+                "pairs": len(run.pair_capsule_ids),
+                "packets_set": run.review_packet_set_id,
+                "counts": run.counts,
+                "status": run.status,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+
+
+@campaign_app.command("verify")
+def campaign_verify_cmd(
+    run_manifest: Path = typer.Argument(...),
+    workspace: Path = typer.Option(Path(".normshift/foundry-24h"), "--workspace"),
+) -> None:
+    from normshift.campaign.runner import verify_run_manifest
+
+    result = verify_run_manifest(run_manifest, workspace=workspace)
+    typer.echo(json.dumps(result, indent=2, sort_keys=True))
+    if not result.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@capsule_app.command("verify")
+def capsule_verify_cmd(capsule_dir: Path = typer.Argument(...)) -> None:
+    from normshift.capsule.verifier import verify_capsule
+
+    result = verify_capsule(capsule_dir)
+    typer.echo(json.dumps(result, indent=2, sort_keys=True))
+    if not result.get("ok"):
+        raise typer.Exit(code=1)
+
+
+@review_app.command("packets")
+def review_packets_cmd(
+    build: bool = typer.Option(False, "--build"),
+    run_manifest: Path | None = typer.Option(None, "--run-manifest"),
+    out: Path | None = typer.Option(None, "--out"),
+) -> None:
+    """Build is performed by campaign run; this validates packets file exists."""
+    if out and out.is_file():
+        n = sum(1 for line in out.read_text(encoding="utf-8").splitlines() if line.strip())
+        typer.echo(json.dumps({"ok": True, "packets": n, "path": str(out)}))
+        return
+    typer.echo("error: use campaign run to build packets; pass --out to count", err=True)
+    raise typer.Exit(code=2)
+
+
+@review_app.command("ledger")
+def review_ledger_cmd(
+    action: str = typer.Argument(..., help="validate|merge"),
+    paths: list[Path] = typer.Argument(...),
+    out: Path | None = typer.Option(None, "--out"),
+) -> None:
+    from normshift.review.ledger import merge_ledgers, validate_ledger
+
+    if action == "validate":
+        result = validate_ledger(paths[0], allow_external=False)
+        typer.echo(json.dumps(result, indent=2))
+        if not result.get("ok"):
+            raise typer.Exit(code=1)
+    elif action == "merge":
+        if out is None:
+            typer.echo("error: --out required for merge", err=True)
+            raise typer.Exit(code=2)
+        result = merge_ledgers(paths, out)
+        typer.echo(json.dumps(result, indent=2))
+        if not result.get("ok"):
+            raise typer.Exit(code=1)
+    else:
+        raise typer.Exit(code=2)
+
+
+@review_app.command("status")
+def review_status_cmd(
+    packets: Path = typer.Argument(...),
+    decisions: Path | None = typer.Argument(None),
+    out: Path | None = typer.Option(None, "--out"),
+) -> None:
+    from normshift.evidence.hashing import canonical_json_bytes
+    from normshift.review.status import review_status
+
+    st = review_status(packets, decisions)
+    text = canonical_json_bytes(st).decode("utf-8")
+    if out:
+        atomic_write_text(out, text)
+    typer.echo(text)
+
+
+@app.command("corpus-evaluate")
+def corpus_evaluate_cmd(
+    campaign_manifest: Path = typer.Option(..., "--campaign-manifest"),
+    out: Path = typer.Option(..., "--out"),
+) -> None:
+    """Re-emit layered metrics from an existing campaign metrics file if present."""
+    metrics_guess = Path("artifacts/foundry-24h/metrics.json")
+    if metrics_guess.is_file():
+        text = metrics_guess.read_text(encoding="utf-8")
+        atomic_write_text(out, text if text.endswith("\n") else text + "\n")
+        typer.echo(f"wrote layered metrics → {out}")
+        return
+    typer.echo("error: run campaign first to produce metrics", err=True)
+    raise typer.Exit(code=2)
+
+
 def main() -> None:
     app()
 
 
 if __name__ == "__main__":
     main()
+

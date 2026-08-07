@@ -1,0 +1,55 @@
+{
+  "adapter": "w3c",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.document",
+    "source/new.manifest.json",
+    "source/old.document",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": null,
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_fixture-w3c_cff9a7d1be7a",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": true,
+    "new": "redistributable",
+    "old": "redistributable"
+  },
+  "new_snapshot": {
+    "content_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+    "source_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+    "version_label": "fixture-w3c-v2"
+  },
+  "offline_replay": true,
+  "old_snapshot": {
+    "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+    "source_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+    "version_label": "fixture-w3c-v1"
+  },
+  "pair_id": "fixture-w3c",
+  "profile": "rfc2119",
+  "report_sha256": "cff9a7d1be7aa02d7cc8abfad13d29adc89540ea9fa9e6b34e8acdb60c439f26",
+  "requirements_sha256": {
+    "new": "9f86479a4aac20597ba6debadf9413f3702b1319c6ca2aeb4be17742e74143e5",
+    "old": "6ba614e5e86d3cbe0059f7ff4a095d6aaf198e93bc779466ddfc5f21b3238e90"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

@@ -1,0 +1,44 @@
+{
+  "document_family": "generic_html",
+  "document_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+  "document_version": "sha256:79fa6b92b261",
+  "extractor_version": "0.3.1",
+  "profile": "rfc2119",
+  "provenance": {
+    "adapter_id": "normshift.adapters.html",
+    "adapter_version": "1.0.0",
+    "byte_length": 119,
+    "canonical_source": null,
+    "content_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+    "content_type": "text/html",
+    "document_family": "generic_html",
+    "etag": null,
+    "fetch_metadata": {},
+    "last_modified": null,
+    "local_path": ".normshift/foundry-24h/materialized/merge-new.html",
+    "normalization_version": "1.0.0"
+  },
+  "requirements": [
+    {
+      "action": "log authentication failures and authorization denials",
+      "actor": "Servers",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+      "document_version": "sha256:79fa6b92b261",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "388ae775dbee6b8380b17d1e562cc589ba166d35284f045ca1ce6817b14afabe",
+      "modality": "MUST",
+      "normalized_text": "Servers MUST log authentication failures and authorization denials.",
+      "original_text": "Servers MUST log authentication failures and authorization denials.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "476187ffa2576aea",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p",
+      "structural_index": 0
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_path": ".normshift/foundry-24h/materialized/merge-new.html"
+}

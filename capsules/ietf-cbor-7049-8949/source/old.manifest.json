@@ -1,0 +1,28 @@
+{
+  "acquisition_mode": "https",
+  "adapter_hint": "rfc",
+  "byte_length": 156765,
+  "content_sha256": "87689807793837a99ae24c29b4de07cc861a006531abcf45ab56dcff6d77d9ca",
+  "content_type": "text/html",
+  "etag": "W/\"00668bfaf4f9844e6cba3886790776d1\"",
+  "family": "ietf",
+  "filename": "rfc7049.html",
+  "final_url": "https://www.rfc-editor.org/rfc/rfc7049.html",
+  "last_modified": null,
+  "license_note": "IETF Trust Legalese — bytes not redistributed in public archive",
+  "license_reference": "IETF Trust Legalese — bytes not redistributed in public archive",
+  "logical_path": "materialized/rfc7049.html",
+  "observations": {
+    "same_bytes_different_url_prior": [],
+    "same_url_different_bytes_prior": []
+  },
+  "redirects": [],
+  "redistribution_status": "unknown_fail_closed",
+  "retrieved_at": "2026-08-07T08:55:37+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "snap_87689807793837a9_8400f804",
+  "snapshot_key": "rfc7049",
+  "source_url": "https://www.rfc-editor.org/rfc/rfc7049.html",
+  "status_code": 200,
+  "version_label": "RFC7049"
+}

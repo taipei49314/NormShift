@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_w3c-trace-context_adda99fd863c",
+  "change_id": "0d6a3188eef4d842",
+  "confidence": 0.55,
+  "id": "w3c-trace-context:0d6a3188eef4",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "w3c-trace-context",
+  "review_status": "UNREVIEWED",
+  "summary": "Add a new key/value pair. The new key/value pair SHOULD be added to the beginning of the list. Adding a key/value pair MUST NOT result in the same key being present multiple times."
+}

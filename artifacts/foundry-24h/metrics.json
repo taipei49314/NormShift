@@ -1,0 +1,65 @@
+{
+  "inventory": {
+    "real_snapshots_planned": 6,
+    "synthetic_snapshots_planned": 13
+  },
+  "layer_a_synthetic_gold": {
+    "note": "Use frozen fixture gold suite via `normshift benchmark`",
+    "status": "SEPARATE_COMMAND",
+    "synthetic_pairs_in_campaign": 5,
+    "synthetic_snapshots_in_campaign": 13
+  },
+  "layer_b_real_provisional": {
+    "accuracy_metrics": "NOT_COMPUTED_AUTO_IS_NOT_GOLD",
+    "ambiguity_rate": 0.09216589861751152,
+    "auto_change_proposals_by_class": {
+      "ADDED": 95,
+      "AMBIGUOUS": 20,
+      "CONDITION_ADDED": 1,
+      "CONDITION_REMOVED": 1,
+      "MOVED": 37,
+      "REMOVED": 49,
+      "STRENGTHENED": 3,
+      "UNCHANGED": 11
+    },
+    "discovery_items": 217,
+    "label_authority": "AUTO",
+    "lineage_chains": [
+      "lineage-3ver",
+      "split-chain",
+      "merge-chain"
+    ],
+    "logical_versions": 19,
+    "pair_capsule_ids": [
+      "cap_fixture-rfc_25b6e989f1da",
+      "cap_fixture-w3c_cff9a7d1be7a",
+      "cap_fixture-whatwg_c2435dcc4c84",
+      "cap_w3c-trace-context_adda99fd863c",
+      "cap_ietf-json-7159-8259_978a40e22efa",
+      "cap_ietf-cbor-7049-8949_e5ef9ae243f8",
+      "cap_fixture-split_8e8c3da0e1f5",
+      "cap_fixture-merge_5ad50a3bcb77"
+    ],
+    "real_pair_count": 3,
+    "review_packets": 183,
+    "review_packets_by_class": {
+      "ADDED": 95,
+      "AMBIGUOUS": 20,
+      "CONDITION_ADDED": 1,
+      "CONDITION_REMOVED": 1,
+      "MOVED": 3,
+      "REMOVED": 49,
+      "STRENGTHENED": 3,
+      "UNCHANGED": 11
+    },
+    "snapshot_observations": 19,
+    "synthetic_pair_count": 5,
+    "unique_content_objects": 19
+  },
+  "layer_c_externally_reviewed": {
+    "reason": "NO_EXTERNAL_REVIEW_ARTIFACT",
+    "status": "NOT_AVAILABLE"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+<html><body>
+<p>Servers MUST log authentication failures.</p>
+<p>Servers MUST log authorization denials.</p>
+</body></html>

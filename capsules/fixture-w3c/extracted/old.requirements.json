@@ -1,0 +1,63 @@
+{
+  "document_family": "w3c",
+  "document_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+  "document_version": "WD-excerpt-1",
+  "extractor_version": "0.3.1",
+  "profile": "rfc2119",
+  "provenance": {
+    "adapter_id": "normshift.adapters.w3c",
+    "adapter_version": "1.0.0",
+    "byte_length": 1202,
+    "canonical_source": null,
+    "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+    "content_type": "text/html",
+    "document_family": "w3c",
+    "etag": null,
+    "fetch_metadata": {},
+    "last_modified": null,
+    "local_path": ".normshift/foundry-24h/materialized/fixture-w3c-v1.html",
+    "normalization_version": "1.0.0"
+  },
+  "requirements": [
+    {
+      "action": "support the open() method",
+      "actor": "Implementations",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "document_version": "WD-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "d77d269fd388245badfe2ea2f30b1d89aedfe93f3104a18bb9e6c5632446fa22",
+      "modality": "MUST",
+      "normalized_text": "Implementations MUST support the open() method.",
+      "original_text": "Implementations MUST support the open() method.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "8093ff9f005d0c87",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c1|xpath:/body/main/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "display a warning",
+      "actor": "User agents",
+      "condition": "when certificates are invalid",
+      "confidence": 0.95,
+      "document_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "document_version": "WD-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "eeaa142e9cd7fa2026573bad73b31cd8d740740a6a0336cdd8516b718eceddde",
+      "modality": "SHOULD",
+      "normalized_text": "User agents SHOULD display a warning when certificates are invalid.",
+      "original_text": "User agents SHOULD display a warning when certificates are invalid.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "1963d29573c5481e",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c2|xpath:/body/main/p[3]",
+      "structural_index": 2
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_path": ".normshift/foundry-24h/materialized/fixture-w3c-v1.html"
+}

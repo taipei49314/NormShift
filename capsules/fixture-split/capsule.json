@@ -1,0 +1,55 @@
+{
+  "adapter": "html",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.document",
+    "source/new.manifest.json",
+    "source/old.document",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": null,
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_fixture-split_8e8c3da0e1f5",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": true,
+    "new": "redistributable",
+    "old": "redistributable"
+  },
+  "new_snapshot": {
+    "content_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+    "source_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+    "version_label": "split-new"
+  },
+  "offline_replay": true,
+  "old_snapshot": {
+    "content_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+    "source_url": "https://www.rfc-editor.org/rfc/foundry-split-old.html",
+    "version_label": "split-old"
+  },
+  "pair_id": "fixture-split",
+  "profile": "rfc2119",
+  "report_sha256": "8e8c3da0e1f531f63b0224aaa2efb56c7aa38673c8d21ebbb5a6fd39de8e5c1c",
+  "requirements_sha256": {
+    "new": "054566f25031feadd881a7c382ed858b8f7b1598a36eb9f8bcce5c86a283a14d",
+    "old": "35d64e34f9d6a8020641dfa7cc6a68862d7c55d049bd9ec21871ad15bd0e3e6b"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

@@ -1,0 +1,369 @@
+{
+  "schema_version": "1.0.0",
+  "campaign_id": "foundry-24h",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+  "source_policy": "config/source-policy.json",
+  "store": ".normshift/store",
+  "source_date_epoch": 1700000000,
+  "snapshots": [
+    {
+      "snapshot_key": "fixture-rfc-v1",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v1.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/rfc/sample-v1.html",
+      "version_label": "fixture-rfc-v1",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "fixture-rfc-v2",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/rfc/sample-v2.html",
+      "version_label": "fixture-rfc-v2",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "fixture-w3c-v1",
+      "family": "synthetic",
+      "source_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/w3c/sample-v1.html",
+      "version_label": "fixture-w3c-v1",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "fixture-w3c-v2",
+      "family": "synthetic",
+      "source_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/w3c/sample-v2.html",
+      "version_label": "fixture-w3c-v2",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "fixture-whatwg-v1",
+      "family": "synthetic",
+      "source_url": "https://html.spec.whatwg.org/fixture-v1",
+      "adapter": "whatwg",
+      "profile": "whatwg",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/whatwg/sample-v1.html",
+      "version_label": "fixture-whatwg-v1",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "fixture-whatwg-v2",
+      "family": "synthetic",
+      "source_url": "https://html.spec.whatwg.org/fixture-v2",
+      "adapter": "whatwg",
+      "profile": "whatwg",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/corpus/whatwg/sample-v2.html",
+      "version_label": "fixture-whatwg-v2",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+      "required": true
+    },
+    {
+      "snapshot_key": "lineage-v1",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v1.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/lineage/v1.html",
+      "version_label": "lineage-v1",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "lineage-v2",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v2.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/lineage/v2.html",
+      "version_label": "lineage-v2",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "lineage-v3",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v3.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/lineage/v3.html",
+      "version_label": "lineage-v3",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo synthetic fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "w3c-trace-context-1",
+      "family": "w3c",
+      "source_url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "trace-context-1-rec-20211123",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "W3C document license — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "w3c-trace-context-2",
+      "family": "w3c",
+      "source_url": "https://www.w3.org/TR/trace-context-2/",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "trace-context-2",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "W3C document license — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "rfc7159",
+      "family": "ietf",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc7159.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "RFC7159",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "IETF Trust Legalese — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "rfc8259",
+      "family": "ietf",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "RFC8259",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "IETF Trust Legalese — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "rfc7049",
+      "family": "ietf",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc7049.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "RFC7049",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "IETF Trust Legalese — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "rfc8949",
+      "family": "ietf",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8949.html",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "acquisition_mode": "https",
+      "version_label": "RFC8949",
+      "redistribution_status": "unknown_fail_closed",
+      "license_reference": "IETF Trust Legalese — bytes not redistributed in public archive",
+      "required": true
+    },
+    {
+      "snapshot_key": "split-old",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-split-old.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/foundry/lineage-split/old.html",
+      "version_label": "split-old",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo foundry fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "split-new",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/foundry/lineage-split/new.html",
+      "version_label": "split-new",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo foundry fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "merge-old",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-old.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/foundry/lineage-merge/old.html",
+      "version_label": "merge-old",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo foundry fixture",
+      "required": true
+    },
+    {
+      "snapshot_key": "merge-new",
+      "family": "synthetic",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-new.html",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "acquisition_mode": "import_file",
+      "local_import_path": "fixtures/foundry/lineage-merge/new.html",
+      "version_label": "merge-new",
+      "redistribution_status": "redistributable",
+      "license_reference": "in-repo foundry fixture",
+      "required": true
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "fixture-rfc",
+      "old_snapshot_key": "fixture-rfc-v1",
+      "new_snapshot_key": "fixture-rfc-v2",
+      "relation": "version-pair",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "importance_tags": ["fixture", "ci"],
+      "include_bytes_if_redistributable": true
+    },
+    {
+      "pair_id": "fixture-w3c",
+      "old_snapshot_key": "fixture-w3c-v1",
+      "new_snapshot_key": "fixture-w3c-v2",
+      "relation": "version-pair",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "importance_tags": ["fixture"],
+      "include_bytes_if_redistributable": true
+    },
+    {
+      "pair_id": "fixture-whatwg",
+      "old_snapshot_key": "fixture-whatwg-v1",
+      "new_snapshot_key": "fixture-whatwg-v2",
+      "relation": "version-pair",
+      "adapter": "whatwg",
+      "profile": "whatwg",
+      "importance_tags": ["fixture"],
+      "include_bytes_if_redistributable": true
+    },
+    {
+      "pair_id": "w3c-trace-context",
+      "old_snapshot_key": "w3c-trace-context-1",
+      "new_snapshot_key": "w3c-trace-context-2",
+      "relation": "version-pair",
+      "adapter": "w3c",
+      "profile": "rfc2119",
+      "importance_tags": ["real", "official"],
+      "include_bytes_if_redistributable": false
+    },
+    {
+      "pair_id": "ietf-json-7159-8259",
+      "old_snapshot_key": "rfc7159",
+      "new_snapshot_key": "rfc8259",
+      "relation": "version-pair",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "importance_tags": ["real", "official", "json"],
+      "include_bytes_if_redistributable": false
+    },
+    {
+      "pair_id": "ietf-cbor-7049-8949",
+      "old_snapshot_key": "rfc7049",
+      "new_snapshot_key": "rfc8949",
+      "relation": "version-pair",
+      "adapter": "rfc",
+      "profile": "rfc2119",
+      "importance_tags": ["real", "official", "cbor"],
+      "include_bytes_if_redistributable": false
+    },
+    {
+      "pair_id": "fixture-split",
+      "old_snapshot_key": "split-old",
+      "new_snapshot_key": "split-new",
+      "relation": "split-demo",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "importance_tags": ["fixture", "split"],
+      "include_bytes_if_redistributable": true
+    },
+    {
+      "pair_id": "fixture-merge",
+      "old_snapshot_key": "merge-old",
+      "new_snapshot_key": "merge-new",
+      "relation": "merge-demo",
+      "adapter": "html",
+      "profile": "rfc2119",
+      "importance_tags": ["fixture", "merge"],
+      "include_bytes_if_redistributable": true
+    }
+  ],
+  "lineage_chains": [
+    {
+      "chain_id": "lineage-3ver",
+      "ordered_snapshot_keys": ["lineage-v1", "lineage-v2", "lineage-v3"],
+      "family": "synthetic",
+      "adapter": "html",
+      "profile": "rfc2119"
+    },
+    {
+      "chain_id": "split-chain",
+      "ordered_snapshot_keys": ["split-old", "split-new"],
+      "family": "synthetic",
+      "adapter": "html",
+      "profile": "rfc2119"
+    },
+    {
+      "chain_id": "merge-chain",
+      "ordered_snapshot_keys": ["merge-old", "merge-new"],
+      "family": "synthetic",
+      "adapter": "html",
+      "profile": "rfc2119"
+    }
+  ],
+  "outputs": {
+    "run_manifest": "artifacts/foundry-24h/run-manifest.json",
+    "capsules_dir": "capsules",
+    "review_dir": "artifacts/foundry-24h/review",
+    "lineage_dir": "artifacts/foundry-24h/lineage",
+    "observatory_dir": "artifacts/foundry-24h/observatory",
+    "metrics": "artifacts/foundry-24h/metrics.json",
+    "dossiers_dir": "artifacts/foundry-24h/dossiers"
+  },
+  "authority_policy": {
+    "max_auto_label": "AUTO",
+    "allow_implementer_external_review": false
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "adapter": "rfc",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.document",
+    "source/new.manifest.json",
+    "source/old.document",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": null,
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_fixture-rfc_25b6e989f1da",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": true,
+    "new": "redistributable",
+    "old": "redistributable"
+  },
+  "new_snapshot": {
+    "content_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+    "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+    "version_label": "fixture-rfc-v2"
+  },
+  "offline_replay": true,
+  "old_snapshot": {
+    "content_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+    "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v1.html",
+    "version_label": "fixture-rfc-v1"
+  },
+  "pair_id": "fixture-rfc",
+  "profile": "rfc2119",
+  "report_sha256": "25b6e989f1dafb42565df409031e07161496c9cbd023d5a1e010686f1622c2ce",
+  "requirements_sha256": {
+    "new": "7302a5105cebd779a5296ed5fd98928c059bb5de91d30ef2c1e0071d3207a96f",
+    "old": "81f5c25849f92c6894ca2965bfd71fee45acefe85ee3d9a8eec9c5ad2ed0e6a7"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

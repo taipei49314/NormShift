@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_ietf-cbor-7049-8949_e5ef9ae243f8",
+  "change_id": "3c026f9b0e3154b4",
+  "confidence": 0.55,
+  "id": "ietf-cbor-7049-8949:3c026f9b0e31",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "ietf-cbor-7049-8949",
+  "review_status": "UNREVIEWED",
+  "summary": "The syntax and semantics for fragment identifiers for a specific \"xxx/yyy+cbor\" SHOULD be processed as follows:¶"
+}

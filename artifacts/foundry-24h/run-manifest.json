@@ -1,0 +1,244 @@
+{
+  "artifact_hashes": {
+    "artifacts/foundry-24h/metrics.json": "82438711d365d6d7438c541782dcb076096bda69e05f404fe953042eaafa5c0a",
+    "artifacts/foundry-24h/observatory/manifest.json": "f15a9c061591543d18a9c20c7736f4d04920a9b3d0a6d8c3de272532b9d02bf8",
+    "artifacts/foundry-24h/review/packets.jsonl": "d3b7d16504dd9de708a2ca4a094fa4131a9192b58504290fd91b63b906784f6b",
+    "artifacts/foundry-24h/run-manifest.json": "50f88cc58643e9a0f7a3a3b060d32f7a782f56c4cc2d0b0671349d1ac5a6583a",
+    "capsules/fixture-merge/capsule.json": "0b8a48b4c5ddb6ebaae07aab7abc52dd3f5ddc0ff4416efb682b41177c7bbe0e",
+    "capsules/fixture-rfc/capsule.json": "5715d567f39b86dc7c2122e74fdb6482b51fd3c0895ec1264905f1470a743105",
+    "capsules/fixture-split/capsule.json": "8c73824216c34076985a867a450f6c008f0cd3cb9cfcb604960084b58e0f055b",
+    "capsules/fixture-w3c/capsule.json": "f8c10c779e3c7e157d4d7ab3fe136cfee6ceadafb18961ed8203257d106a413e",
+    "capsules/fixture-whatwg/capsule.json": "020feb93a46faaa4e2763a7a37798b0c5656947bd01cddaf22e934e33dc71655",
+    "capsules/ietf-cbor-7049-8949/capsule.json": "dcd5ae7469d506d18e0ab73f4ceebff41b7e7def553917d4c3bc7e1cd02f2889",
+    "capsules/ietf-json-7159-8259/capsule.json": "6ec2c034dc8baa3938b53290236d3755ddf4138a41e7c0407755c2da5fa95d64",
+    "capsules/w3c-trace-context/capsule.json": "dcc2471b6c68a71715568c91b6b367f2bd8a36ace1fec3ee926162ad8dbd55de"
+  },
+  "campaign_id": "foundry-24h",
+  "campaign_plan_sha256": "7f3efab3bd1eef406e525b2a70cf6e59ae58ecf0791273282cd214ad6c39073b",
+  "code_version": "0.3.1",
+  "counts": {
+    "discovery_items": 217,
+    "lineage_chains": 3,
+    "pairs": 8,
+    "review_packets": 183,
+    "snapshot_observations": 19,
+    "unique_content_objects": 19
+  },
+  "label_authority": "AUTO",
+  "lineage_export_ids": [
+    "lineage-3ver",
+    "split-chain",
+    "merge-chain"
+  ],
+  "mode": "acquire",
+  "observatory_manifest_id": "obs_f15a9c061591543d",
+  "pair_capsule_ids": [
+    "cap_fixture-rfc_25b6e989f1da",
+    "cap_fixture-w3c_cff9a7d1be7a",
+    "cap_fixture-whatwg_c2435dcc4c84",
+    "cap_w3c-trace-context_adda99fd863c",
+    "cap_ietf-json-7159-8259_978a40e22efa",
+    "cap_ietf-cbor-7049-8949_e5ef9ae243f8",
+    "cap_fixture-split_8e8c3da0e1f5",
+    "cap_fixture-merge_5ad50a3bcb77"
+  ],
+  "review_packet_set_id": "rps_d3b7d16504dd9de7",
+  "run_id": "run_80ba8ed8c6bc",
+  "schema_version": "1.0.0",
+  "snapshots": [
+    {
+      "byte_length": 1163,
+      "content_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v1.html",
+      "observation_id": "snap_ce963be51d85848e_9997cd35",
+      "snapshot_key": "fixture-rfc-v1",
+      "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v1.html",
+      "version_label": "fixture-rfc-v1"
+    },
+    {
+      "byte_length": 1236,
+      "content_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+      "observation_id": "snap_73b2aa2b39edd7b5_b382901e",
+      "snapshot_key": "fixture-rfc-v2",
+      "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+      "version_label": "fixture-rfc-v2"
+    },
+    {
+      "byte_length": 1202,
+      "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "family": "synthetic",
+      "final_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+      "observation_id": "snap_7ddf62a67fa7086e_aed7b5ad",
+      "snapshot_key": "fixture-w3c-v1",
+      "source_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+      "version_label": "fixture-w3c-v1"
+    },
+    {
+      "byte_length": 1307,
+      "content_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+      "family": "synthetic",
+      "final_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+      "observation_id": "snap_da83242c7bf6a625_653a01a7",
+      "snapshot_key": "fixture-w3c-v2",
+      "source_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+      "version_label": "fixture-w3c-v2"
+    },
+    {
+      "byte_length": 889,
+      "content_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+      "family": "synthetic",
+      "final_url": "https://html.spec.whatwg.org/fixture-v1",
+      "observation_id": "snap_cfa04c916868abea_f8cc49b3",
+      "snapshot_key": "fixture-whatwg-v1",
+      "source_url": "https://html.spec.whatwg.org/fixture-v1",
+      "version_label": "fixture-whatwg-v1"
+    },
+    {
+      "byte_length": 970,
+      "content_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "family": "synthetic",
+      "final_url": "https://html.spec.whatwg.org/fixture-v2",
+      "observation_id": "snap_85b1dc30504d8676_302acd76",
+      "snapshot_key": "fixture-whatwg-v2",
+      "source_url": "https://html.spec.whatwg.org/fixture-v2",
+      "version_label": "fixture-whatwg-v2"
+    },
+    {
+      "byte_length": 532,
+      "content_sha256": "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/lineage-v1.html",
+      "observation_id": "snap_8e744ead195471b9_089bc77b",
+      "snapshot_key": "lineage-v1",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v1.html",
+      "version_label": "lineage-v1"
+    },
+    {
+      "byte_length": 644,
+      "content_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/lineage-v2.html",
+      "observation_id": "snap_e62a2e3f78355d75_b65a6281",
+      "snapshot_key": "lineage-v2",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v2.html",
+      "version_label": "lineage-v2"
+    },
+    {
+      "byte_length": 790,
+      "content_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/lineage-v3.html",
+      "observation_id": "snap_d29a973e7c4de29f_d12d2050",
+      "snapshot_key": "lineage-v3",
+      "source_url": "https://www.rfc-editor.org/rfc/lineage-v3.html",
+      "version_label": "lineage-v3"
+    },
+    {
+      "byte_length": 100612,
+      "content_sha256": "9e7228d2a91c5aa4bef6e7f610366a2000274ee51699053e10c8ac3f0b8965be",
+      "family": "w3c",
+      "final_url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/",
+      "observation_id": "snap_9e7228d2a91c5aa4_09bc784a",
+      "snapshot_key": "w3c-trace-context-1",
+      "source_url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/",
+      "version_label": "trace-context-1-rec-20211123"
+    },
+    {
+      "byte_length": 115810,
+      "content_sha256": "eb6c2546003639d6884e8357d90c5dfde95c70494e6e1339ba2219bebb29be11",
+      "family": "w3c",
+      "final_url": "https://www.w3.org/TR/trace-context-2/",
+      "observation_id": "snap_eb6c2546003639d6_0bbcb33b",
+      "snapshot_key": "w3c-trace-context-2",
+      "source_url": "https://www.w3.org/TR/trace-context-2/",
+      "version_label": "trace-context-2"
+    },
+    {
+      "byte_length": 35554,
+      "content_sha256": "17dfda25ae6cd5715b08e2c96e257101a1d7f9eb27e1711e5b6544138bb35954",
+      "family": "ietf",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc7159.html",
+      "observation_id": "snap_17dfda25ae6cd571_72852e6e",
+      "snapshot_key": "rfc7159",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc7159.html",
+      "version_label": "RFC7159"
+    },
+    {
+      "byte_length": 37946,
+      "content_sha256": "5302d6ccb6cf221817bdd1f8cd7221661d4519372e0ac0b4cf641e11e8037de7",
+      "family": "ietf",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+      "observation_id": "snap_5302d6ccb6cf2218_3cb84408",
+      "snapshot_key": "rfc8259",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+      "version_label": "RFC8259"
+    },
+    {
+      "byte_length": 156765,
+      "content_sha256": "87689807793837a99ae24c29b4de07cc861a006531abcf45ab56dcff6d77d9ca",
+      "family": "ietf",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc7049.html",
+      "observation_id": "snap_87689807793837a9_8400f804",
+      "snapshot_key": "rfc7049",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc7049.html",
+      "version_label": "RFC7049"
+    },
+    {
+      "byte_length": 338064,
+      "content_sha256": "6ac12612df1382746ff194ddeef0ce70a6c4f95d9071844c10a9092b0016eeba",
+      "family": "ietf",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc8949.html",
+      "observation_id": "snap_6ac12612df138274_d2dec564",
+      "snapshot_key": "rfc8949",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc8949.html",
+      "version_label": "RFC8949"
+    },
+    {
+      "byte_length": 113,
+      "content_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/foundry-split-old.html",
+      "observation_id": "snap_d63972e3179c1218_2febee0c",
+      "snapshot_key": "split-old",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-split-old.html",
+      "version_label": "split-old"
+    },
+    {
+      "byte_length": 165,
+      "content_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+      "observation_id": "snap_9a21cd2f0625f04d_3b015427",
+      "snapshot_key": "split-new",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+      "version_label": "split-new"
+    },
+    {
+      "byte_length": 140,
+      "content_sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/foundry-merge-old.html",
+      "observation_id": "snap_9c0d2dbc6850f9b6_c7b702e3",
+      "snapshot_key": "merge-old",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-old.html",
+      "version_label": "merge-old"
+    },
+    {
+      "byte_length": 119,
+      "content_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+      "family": "synthetic",
+      "final_url": "https://www.rfc-editor.org/rfc/foundry-merge-new.html",
+      "observation_id": "snap_79fa6b92b26144ae_4052f91f",
+      "snapshot_key": "merge-new",
+      "source_url": "https://www.rfc-editor.org/rfc/foundry-merge-new.html",
+      "version_label": "merge-new"
+    }
+  ],
+  "source_date_epoch": 1700000000,
+  "source_policy_sha256": "e0aefbda1d93305c4d97a20c452f59cb2dc3bd1ae0edfda916c78774948af0dc",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+  "unresolved_blockers": []
+}

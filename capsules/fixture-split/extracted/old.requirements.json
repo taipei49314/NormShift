@@ -1,0 +1,44 @@
+{
+  "document_family": "generic_html",
+  "document_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+  "document_version": "sha256:d63972e3179c",
+  "extractor_version": "0.3.1",
+  "profile": "rfc2119",
+  "provenance": {
+    "adapter_id": "normshift.adapters.html",
+    "adapter_version": "1.0.0",
+    "byte_length": 113,
+    "canonical_source": null,
+    "content_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+    "content_type": "text/html",
+    "document_family": "generic_html",
+    "etag": null,
+    "fetch_metadata": {},
+    "last_modified": null,
+    "local_path": ".normshift/foundry-24h/materialized/split-old.html",
+    "normalization_version": "1.0.0"
+  },
+  "requirements": [
+    {
+      "action": "authenticate every request using a bearer token",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+      "document_version": "sha256:d63972e3179c",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "313e55fa05582e43534ae506e0626a309ace033e808dd52a1b17e12b37ce16dd",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST authenticate every request using a bearer token.",
+      "original_text": "Clients MUST authenticate every request using a bearer token.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "20d9c1b256208673",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p",
+      "structural_index": 0
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_path": ".normshift/foundry-24h/materialized/split-old.html"
+}

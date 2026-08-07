@@ -1,4 +1,7 @@
 .normshift/
+# Local campaign materialization workspace
+.normshift/**
+
 *.db
 __pycache__/
 .venv/

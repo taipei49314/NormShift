@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Expand expedition: live/official imports, extract, pairs, discovery, observatory."""
+"""DEPRECATED thin wrapper.
+
+Prefer: `normshift campaign run config/campaigns/foundry-24h.json --mode acquire`
+
+This script remains for compatibility with the prior expedition; new work should
+use the declarative campaign engine.
+"""
 
 from __future__ import annotations
 

@@ -1,0 +1,15 @@
+{
+  "LICENSE_SCOPE.md": "91f43866beebcc6327a252b2e22ad6f6cff1e280a9924489b64251d255777ad1",
+  "LIMITATIONS.md": "054d1ca3211eeb313661ad6e354c6549f4388b2e6ac0c557f8a7c796568fbaea",
+  "extracted/new.requirements.json": "9f86479a4aac20597ba6debadf9413f3702b1319c6ca2aeb4be17742e74143e5",
+  "extracted/old.requirements.json": "6ba614e5e86d3cbe0059f7ff4a095d6aaf198e93bc779466ddfc5f21b3238e90",
+  "lineage/candidates.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "replay/commands.json": "012b53e205b133e021a64613b7a83dba05169f254ffb5dd63e7f70a15c37ac4c",
+  "report/report.json": "cff9a7d1be7aa02d7cc8abfad13d29adc89540ea9fa9e6b34e8acdb60c439f26",
+  "report/report.md": "b8b804bcc48b5c58c3e64a999cd7d51e87cd8be077f7bbe68bec933bb999b450",
+  "review/packets.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source/new.document": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+  "source/new.manifest.json": "0f5962233f8c50f35fb2ddd05a482fffe51d6faca4628ce790000a66327bf975",
+  "source/old.document": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+  "source/old.manifest.json": "942a581f04f4ea71602b56f6be1758a5128e5dae42f421bcdcdfe80bfe20f493"
+}

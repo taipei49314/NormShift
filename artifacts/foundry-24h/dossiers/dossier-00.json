@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_fixture-rfc_25b6e989f1da",
+  "change_id": "08b604dfaaf99bbd",
+  "confidence": 0.92,
+  "id": "fixture-rfc:08b604dfaaf9",
+  "kind": "STRENGTHENED",
+  "label_authority": "AUTO",
+  "pair_id": "fixture-rfc",
+  "review_status": "UNREVIEWED",
+  "summary": "A server MUST retry a handshake when the first attempt fails."
+}

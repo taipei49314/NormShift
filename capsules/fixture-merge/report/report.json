@@ -1,0 +1,190 @@
+{
+  "changes": [
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 0.9579,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 0.7308,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 0.95,
+          "text_similarity": 1.0,
+          "token_similarity": 0.7358
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 0.95,
+        "text_similarity": 1.0,
+        "token_similarity": 0.7358
+      },
+      "change_id": "d513768e4e053925",
+      "classification": "AMBIGUOUS",
+      "classification_reasons": [
+        "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
+      ],
+      "confidence": 0.55,
+      "evidence_hashes": [
+        "30b70ee8a8489431d38676cd57abe4b3aba7538134ff53685cd3d2dfdaf3b508",
+        "5cd7501a75ccc821d3a72744273b007c6440da648360630b29dba17044a45696",
+        "68633d84e334fd48899ddbd5082d232cf478b6826fe9505a19237c11c3746ced",
+        "accbf74a74d75d871df23178f086541a59a21f1f3c28b522fb60e072cc30b330",
+        "d940f8979b54a6a9c366fa041bd46964e9a8a5895507a5dfebdd6aef3728cd17"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "476187ffa2576aea",
+      "new_section_path": "(root)",
+      "new_source_locator": "xpath:/body/p",
+      "new_text": "Servers MUST log authentication failures and authorization denials.",
+      "old_requirement_id": "c15486f7c059c691",
+      "old_section_path": "(root)",
+      "old_source_locator": "xpath:/body/p[2]",
+      "old_text": "Servers MUST log authorization denials."
+    },
+    {
+      "alignment_score": null,
+      "change_id": "492bc2a90532fed7",
+      "classification": "REMOVED",
+      "classification_reasons": [
+        "No aligned successor requirement; treated as removal."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "9a65fff802bef2d9c7c40d48960194d30aa003d288c60c6f73eb1726ec511e37",
+        "b10f45473a35ad1407552ab2edf9df4280ca19b4d5a9042045844a44b058b528",
+        "e787ba8e250fcba81732435347ef19085613102fcc0f8f7c169e92befbd42606"
+      ],
+      "modality_transition": "MUST->∅",
+      "new_requirement_id": null,
+      "new_section_path": null,
+      "new_source_locator": null,
+      "new_text": null,
+      "old_requirement_id": "e704f04ca743ed8a",
+      "old_section_path": "(root)",
+      "old_source_locator": "xpath:/body/p[1]",
+      "old_text": "Servers MUST log authentication failures."
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "6f1ab51899ca64f9ce768559991e87a77a0623a6c982da343b4fdae670deecaf"
+  },
+  "new_document": {
+    "byte_length": 119,
+    "document_family": "generic_html",
+    "path": "merge-new.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.html",
+      "adapter_version": "1.0.0",
+      "byte_length": 119,
+      "canonical_source": null,
+      "content_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+      "content_type": "text/html",
+      "document_family": "generic_html",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "merge-new.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+    "source_ref_mode": "source_root_relative",
+    "version": "sha256:79fa6b92b261"
+  },
+  "new_requirements": [
+    {
+      "action": "log authentication failures and authorization denials",
+      "actor": "Servers",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "79fa6b92b26144ae0dddc2a525e330c74c23240b5454ec9b4801b5dab1b8b999",
+      "document_version": "sha256:79fa6b92b261",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "388ae775dbee6b8380b17d1e562cc589ba166d35284f045ca1ce6817b14afabe",
+      "modality": "MUST",
+      "normalized_text": "Servers MUST log authentication failures and authorization denials.",
+      "original_text": "Servers MUST log authentication failures and authorization denials.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "476187ffa2576aea",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p",
+      "structural_index": 0
+    }
+  ],
+  "old_document": {
+    "byte_length": 140,
+    "document_family": "generic_html",
+    "path": "merge-old.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.html",
+      "adapter_version": "1.0.0",
+      "byte_length": 140,
+      "canonical_source": null,
+      "content_sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+      "content_type": "text/html",
+      "document_family": "generic_html",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "merge-old.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+    "source_ref_mode": "source_root_relative",
+    "version": "sha256:9c0d2dbc6850"
+  },
+  "old_requirements": [
+    {
+      "action": "log authentication failures",
+      "actor": "Servers",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+      "document_version": "sha256:9c0d2dbc6850",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "122115442cc9e070151bc87151355d0065f7fb4ed2c1eef8e2aa6f6e5f5f73e6",
+      "modality": "MUST",
+      "normalized_text": "Servers MUST log authentication failures.",
+      "original_text": "Servers MUST log authentication failures.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "e704f04ca743ed8a",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[1]",
+      "structural_index": 0
+    },
+    {
+      "action": "log authorization denials",
+      "actor": "Servers",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9c0d2dbc6850f9b67f284e82222cc9e3bd52772f4fc06aba328b12c6a061ebc6",
+      "document_version": "sha256:9c0d2dbc6850",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "d70169da6b52d08b41a83be8b732b0408c46d6a02466e31ea156d8fb9c9d7e5d",
+      "modality": "MUST",
+      "normalized_text": "Servers MUST log authorization denials.",
+      "original_text": "Servers MUST log authorization denials.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "c15486f7c059c691",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[2]",
+      "structural_index": 1
+    }
+  ],
+  "profile": "rfc2119",
+  "schema_version": "1.0.0",
+  "summary": {
+    "change_count": 2,
+    "classification_counts": {
+      "AMBIGUOUS": 1,
+      "REMOVED": 1
+    },
+    "new_requirement_count": 1,
+    "old_requirement_count": 2
+  },
+  "tool_version": "0.3.1"
+}

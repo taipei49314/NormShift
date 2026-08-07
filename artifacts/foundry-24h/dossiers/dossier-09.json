@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_ietf-json-7159-8259_978a40e22efa",
+  "change_id": "8fb1093bca759620",
+  "confidence": 0.55,
+  "id": "ietf-json-7159-8259:8fb1093bca75",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "ietf-json-7159-8259",
+  "review_status": "UNREVIEWED",
+  "summary": "Implementations MUST NOT add a byte order mark (U+FEFF) to the beginning of a networked-transmitted JSON text. In the interests of interoperability, implementations that parse JSON texts MAY ignore th"
+}

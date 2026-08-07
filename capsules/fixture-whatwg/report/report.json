@@ -1,0 +1,393 @@
+{
+  "changes": [
+    {
+      "alignment_score": null,
+      "change_id": "9118f262517721ce",
+      "classification": "ADDED",
+      "classification_reasons": [
+        "No aligned prior requirement; treated as addition."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "01ab00650d28b99c92711b2ceae6d8e351675fa365bccb1fb44f904e0194d3a2",
+        "734373a3f32ffac0af9bf18d865c82aa24cbc0fb601f743bed62add9f23b8727",
+        "e7a607101a5084691c5f2db5852db1ff4f0a4b2b561917c12dcf201f2be52359"
+      ],
+      "modality_transition": "∅->MUST_NOT",
+      "new_requirement_id": "0fe981af55091790",
+      "new_section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "new_source_locator": "id:w4|xpath:/body/p[4]",
+      "new_text": "User agents must not submit forms with invalid required controls.",
+      "old_requirement_id": null,
+      "old_section_path": null,
+      "old_source_locator": null,
+      "old_text": null
+    },
+    {
+      "alignment_score": null,
+      "change_id": "44c69761e3ce58f8",
+      "classification": "ADDED",
+      "classification_reasons": [
+        "No aligned prior requirement; treated as addition."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "01ab00650d28b99c92711b2ceae6d8e351675fa365bccb1fb44f904e0194d3a2",
+        "734373a3f32ffac0af9bf18d865c82aa24cbc0fb601f743bed62add9f23b8727",
+        "e7a607101a5084691c5f2db5852db1ff4f0a4b2b561917c12dcf201f2be52359"
+      ],
+      "modality_transition": "∅->MUST",
+      "new_requirement_id": "b6390c428acb094d",
+      "new_section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "new_source_locator": "id:w4|xpath:/body/p[4]",
+      "new_text": "User agents must not submit forms with invalid required controls.",
+      "old_requirement_id": null,
+      "old_section_path": null,
+      "old_source_locator": null,
+      "old_text": null
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 0.8705,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 0.9184,
+          "modality_match": 0.4,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 0.9462,
+          "token_similarity": 0.88
+        },
+        "modality_match": 0.4,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 0.9462,
+        "token_similarity": 0.88
+      },
+      "change_id": "fb7a91b84bf9b75d",
+      "classification": "STRENGTHENED",
+      "classification_reasons": [
+        "Obligation strengthened: SHOULD -> MUST."
+      ],
+      "confidence": 0.92,
+      "evidence_hashes": [
+        "2125daa64e9e803d4d7a239ef523e5910741174c5871ec4c64b44edcd750e060",
+        "39152fa348751a5d130eeba4b5b43c08d336a201c15d65e50c8d28fc4571f65e",
+        "832ce89d4d066cc91de351a8b96a7eef60a08f65418e84ddff9a9524a2e63abc",
+        "866f6c0225ec8d0f5789cc41a0000c84f45b36965aafbdfb1a6ef6dcf9e19e7b",
+        "d79f24d6b9ae39572a347825489e2b9e76d9039375e1de84ecd615e28892c5eb"
+      ],
+      "modality_transition": "SHOULD->MUST",
+      "new_requirement_id": "ca34655c128469ec",
+      "new_section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "new_source_locator": "id:w2|xpath:/body/p[2]",
+      "new_text": "Authors must provide alternative text for images.",
+      "old_requirement_id": "9ad8f7df2ef44404",
+      "old_section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "old_source_locator": "id:w2|xpath:/body/p[2]",
+      "old_text": "Authors should provide alternative text for images."
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 1.0,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 1.0,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 1.0,
+          "token_similarity": 1.0
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 1.0,
+        "token_similarity": 1.0
+      },
+      "change_id": "427fc30e154ae86c",
+      "classification": "UNCHANGED",
+      "classification_reasons": [
+        "Identical normalized text, modality, and section → UNCHANGED."
+      ],
+      "confidence": 0.99,
+      "evidence_hashes": [
+        "194afbae0af3a8c9831e751964061892c157145e076f68d9da1505b73b44f610",
+        "56a30f07341620efa0edce89879d093f8a1e372fd17f4a858dc63aea46851177",
+        "8af5d2547abb43338afceda7780983dc78eeec723ba7693aeb4513e4e94db56a",
+        "9ae76ee7c218d13221a34a65de3f3298c36fa12c70455bdf5199583088fc5deb",
+        "bbceaf96d921df30dd52ffb9629b8ca163bc7d4cb4cb2b31473a5e1435d3f5ca"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "f3daf26fcd184114",
+      "new_section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "new_source_locator": "id:w1|xpath:/body/p[1]",
+      "new_text": "User agents must close idle sockets after 30 seconds.",
+      "old_requirement_id": "38fe560239e728a3",
+      "old_section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "old_source_locator": "id:w1|xpath:/body/p[1]",
+      "old_text": "User agents must close idle sockets after 30 seconds."
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 1.0,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 1.0,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 1.0,
+          "token_similarity": 1.0
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 1.0,
+        "token_similarity": 1.0
+      },
+      "change_id": "941b54974054ab4c",
+      "classification": "UNCHANGED",
+      "classification_reasons": [
+        "Identical normalized text, modality, and section → UNCHANGED."
+      ],
+      "confidence": 0.99,
+      "evidence_hashes": [
+        "117f5a8d328b66657c5a0318721b950f4b8d5a04786d947a5664b6ffabdfa529",
+        "194afbae0af3a8c9831e751964061892c157145e076f68d9da1505b73b44f610",
+        "7d4170a2052290310c3e0d45669c6222dd1a687b53515794e752d182d32b6eee",
+        "c1e5f37e48fe90ed36c9fcf52cbac102287886f9a7f2ec2d435e89ed8de249f8",
+        "f938f436cd4ff5ad9eef30842588743502784b3401b31c1c8604c9cd8b2fd4d3"
+      ],
+      "modality_transition": "MAY->MAY",
+      "new_requirement_id": "080dd3416c87ed58",
+      "new_section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "new_source_locator": "id:w3|xpath:/body/p[3]",
+      "new_text": "Implementations may cache form validation results.",
+      "old_requirement_id": "3959a6f1dbbc251a",
+      "old_section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "old_source_locator": "id:w3|xpath:/body/p[3]",
+      "old_text": "Implementations may cache form validation results."
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "44dcf03fefef0e9e5bfcfb9bd92580bb3c5c1f49dfadda6fb5e7931ee5d127f1"
+  },
+  "new_document": {
+    "byte_length": 970,
+    "document_family": "whatwg",
+    "path": "fixture-whatwg-v2.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "byte_length": 970,
+      "canonical_source": null,
+      "content_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "content_type": "text/html",
+      "document_family": "whatwg",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "fixture-whatwg-v2.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+    "source_ref_mode": "source_root_relative",
+    "version": "LS-excerpt-2"
+  },
+  "new_requirements": [
+    {
+      "action": "close idle sockets after 30 seconds",
+      "actor": "User agents",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "document_version": "LS-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "7426e1914a896d1694cd9e47515bd06d078f1c1d5a1d925b1ca27d853e16112c",
+      "modality": "MUST",
+      "normalized_text": "User agents must close idle sockets after 30 seconds.",
+      "original_text": "User agents must close idle sockets after 30 seconds.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "f3daf26fcd184114",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "source_locator": "id:w1|xpath:/body/p[1]",
+      "structural_index": 0
+    },
+    {
+      "action": "provide alternative text for images",
+      "actor": "Authors",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "document_version": "LS-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "43293ca5c1c96426a31ea7716efdbf12bcbd634ad71d5ebc2dfdfff649a98d1b",
+      "modality": "MUST",
+      "normalized_text": "Authors must provide alternative text for images.",
+      "original_text": "Authors must provide alternative text for images.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "ca34655c128469ec",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "source_locator": "id:w2|xpath:/body/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "cache form validation results",
+      "actor": "Implementations",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "document_version": "LS-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "9138ad487b3a071ac9d6cb40732f65141376c7485b10fdb6c78ac1d337098166",
+      "modality": "MAY",
+      "normalized_text": "Implementations may cache form validation results.",
+      "original_text": "Implementations may cache form validation results.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "080dd3416c87ed58",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "source_locator": "id:w3|xpath:/body/p[3]",
+      "structural_index": 3
+    },
+    {
+      "action": "submit forms with invalid required controls",
+      "actor": "User agents",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "document_version": "LS-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "c7a424a57e6e38206c1463f4aab4eefcfac6beb3586f93ee39eb665f9e281030",
+      "modality": "MUST_NOT",
+      "normalized_text": "User agents must not submit forms with invalid required controls.",
+      "original_text": "User agents must not submit forms with invalid required controls.",
+      "polarity": "NEGATIVE",
+      "requirement_id": "0fe981af55091790",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "source_locator": "id:w4|xpath:/body/p[4]",
+      "structural_index": 4
+    },
+    {
+      "action": "controls",
+      "actor": "User agents",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+      "document_version": "LS-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "787473d05d32c3929acee38b5e0609feac47c4d0adf5029ea4ef95b46973cd75",
+      "modality": "MUST",
+      "normalized_text": "User agents must not submit forms with invalid required controls.",
+      "original_text": "User agents must not submit forms with invalid required controls.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "b6390c428acb094d",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "source_locator": "id:w4|xpath:/body/p[4]",
+      "structural_index": 4
+    }
+  ],
+  "old_document": {
+    "byte_length": 889,
+    "document_family": "whatwg",
+    "path": "fixture-whatwg-v1.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "byte_length": 889,
+      "canonical_source": null,
+      "content_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+      "content_type": "text/html",
+      "document_family": "whatwg",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "fixture-whatwg-v1.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+    "source_ref_mode": "source_root_relative",
+    "version": "LS-excerpt-1"
+  },
+  "old_requirements": [
+    {
+      "action": "close idle sockets after 30 seconds",
+      "actor": "User agents",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+      "document_version": "LS-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "7426e1914a896d1694cd9e47515bd06d078f1c1d5a1d925b1ca27d853e16112c",
+      "modality": "MUST",
+      "normalized_text": "User agents must close idle sockets after 30 seconds.",
+      "original_text": "User agents must close idle sockets after 30 seconds.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "38fe560239e728a3",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "source_locator": "id:w1|xpath:/body/p[1]",
+      "structural_index": 0
+    },
+    {
+      "action": "provide alternative text for images",
+      "actor": "Authors",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+      "document_version": "LS-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "d19d4e7ca9528783625829a985fc2ed319e3d43e0be5b0e2d3fa9bdaf5ab4df7",
+      "modality": "SHOULD",
+      "normalized_text": "Authors should provide alternative text for images.",
+      "original_text": "Authors should provide alternative text for images.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "9ad8f7df2ef44404",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Networking",
+      "source_locator": "id:w2|xpath:/body/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "cache form validation results",
+      "actor": "Implementations",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+      "document_version": "LS-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "9138ad487b3a071ac9d6cb40732f65141376c7485b10fdb6c78ac1d337098166",
+      "modality": "MAY",
+      "normalized_text": "Implementations may cache form validation results.",
+      "original_text": "Implementations may cache form validation results.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "3959a6f1dbbc251a",
+      "section_path": "HTML (WHATWG-style corpus excerpt) > Forms",
+      "source_locator": "id:w3|xpath:/body/p[3]",
+      "structural_index": 3
+    }
+  ],
+  "profile": "whatwg",
+  "schema_version": "1.0.0",
+  "summary": {
+    "change_count": 5,
+    "classification_counts": {
+      "ADDED": 2,
+      "STRENGTHENED": 1,
+      "UNCHANGED": 2
+    },
+    "new_requirement_count": 5,
+    "old_requirement_count": 3
+  },
+  "tool_version": "0.3.1"
+}

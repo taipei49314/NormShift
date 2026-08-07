@@ -1,0 +1,190 @@
+{
+  "changes": [
+    {
+      "alignment_score": null,
+      "change_id": "b2bb3a7ff9f3920f",
+      "classification": "ADDED",
+      "classification_reasons": [
+        "No aligned prior requirement; treated as addition."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "734373a3f32ffac0af9bf18d865c82aa24cbc0fb601f743bed62add9f23b8727",
+        "bf49ac2f2d792de2157e9d50366646b7b99a429f4fc5f23206b63510929d7f2b",
+        "f24e53db9a2e3fa710db2b8bccc2688c2f554e7485841ec6d8f45ef722d9a8cc"
+      ],
+      "modality_transition": "∅->MUST",
+      "new_requirement_id": "4a5aea876c7aed61",
+      "new_section_path": "(root)",
+      "new_source_locator": "xpath:/body/p[2]",
+      "new_text": "Clients MUST refresh expired tokens before retrying.",
+      "old_requirement_id": null,
+      "old_section_path": null,
+      "old_source_locator": null,
+      "old_text": null
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 0.8675,
+        "combined": 0.8538,
+        "components": {
+          "actor_action_similarity": 0.8675,
+          "editorial_similarity": 0.5893,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 0.7895,
+          "token_similarity": 0.7193
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 0.7895,
+        "token_similarity": 0.7193
+      },
+      "change_id": "37946a6e6cf7e4b8",
+      "classification": "AMBIGUOUS",
+      "classification_reasons": [
+        "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
+      ],
+      "confidence": 0.55,
+      "evidence_hashes": [
+        "5cd7501a75ccc821d3a72744273b007c6440da648360630b29dba17044a45696",
+        "902ab284e009bf705dee955091aaae62568d1a8dcbf8fca802437c439e9c6121",
+        "c67a4f493c588a40736a33b01d44e53e44a72cd91d036ad7ea6dba47ddd8b9ff",
+        "da23192ee3d9af77a695a5776db83721d991c099ac3dffc7a050662090b1c4d7",
+        "e4a72738163301db329fd65b944ad9bae258bdf9c047c4579524c46a38342733"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "529b466bfbee5cb4",
+      "new_section_path": "(root)",
+      "new_source_locator": "xpath:/body/p[1]",
+      "new_text": "Clients MUST present a bearer token on every request.",
+      "old_requirement_id": "20d9c1b256208673",
+      "old_section_path": "(root)",
+      "old_source_locator": "xpath:/body/p",
+      "old_text": "Clients MUST authenticate every request using a bearer token."
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "d926f06e257b40b57ab609e0b22445a8a14c7fb9e403a74dee662cb63719c34c"
+  },
+  "new_document": {
+    "byte_length": 165,
+    "document_family": "generic_html",
+    "path": "split-new.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.html",
+      "adapter_version": "1.0.0",
+      "byte_length": 165,
+      "canonical_source": null,
+      "content_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "content_type": "text/html",
+      "document_family": "generic_html",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "split-new.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+    "source_ref_mode": "source_root_relative",
+    "version": "sha256:9a21cd2f0625"
+  },
+  "new_requirements": [
+    {
+      "action": "present a bearer token on every request",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "document_version": "sha256:9a21cd2f0625",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "75052af8639852378ba97d30b814a8c02f5e513c396dd037dc52d446d69a3ead",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST present a bearer token on every request.",
+      "original_text": "Clients MUST present a bearer token on every request.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "529b466bfbee5cb4",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[1]",
+      "structural_index": 0
+    },
+    {
+      "action": "refresh expired tokens before retrying",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "document_version": "sha256:9a21cd2f0625",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "fb459671ca3d6d682274fca06c8078a2581a6b0bb108ccbb5874bcba10ca9fa7",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST refresh expired tokens before retrying.",
+      "original_text": "Clients MUST refresh expired tokens before retrying.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "4a5aea876c7aed61",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[2]",
+      "structural_index": 1
+    }
+  ],
+  "old_document": {
+    "byte_length": 113,
+    "document_family": "generic_html",
+    "path": "split-old.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.html",
+      "adapter_version": "1.0.0",
+      "byte_length": 113,
+      "canonical_source": null,
+      "content_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+      "content_type": "text/html",
+      "document_family": "generic_html",
+      "etag": null,
+      "fetch_metadata": {},
+      "last_modified": null,
+      "local_path": "split-old.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+    "source_ref_mode": "source_root_relative",
+    "version": "sha256:d63972e3179c"
+  },
+  "old_requirements": [
+    {
+      "action": "authenticate every request using a bearer token",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "d63972e3179c1218a0ac59755e72d32facf5340f1f2815279159ed698244207b",
+      "document_version": "sha256:d63972e3179c",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "313e55fa05582e43534ae506e0626a309ace033e808dd52a1b17e12b37ce16dd",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST authenticate every request using a bearer token.",
+      "original_text": "Clients MUST authenticate every request using a bearer token.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "20d9c1b256208673",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p",
+      "structural_index": 0
+    }
+  ],
+  "profile": "rfc2119",
+  "schema_version": "1.0.0",
+  "summary": {
+    "change_count": 2,
+    "classification_counts": {
+      "ADDED": 1,
+      "AMBIGUOUS": 1
+    },
+    "new_requirement_count": 2,
+    "old_requirement_count": 1
+  },
+  "tool_version": "0.3.1"
+}

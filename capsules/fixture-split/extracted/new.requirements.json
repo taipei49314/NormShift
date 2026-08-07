@@ -1,0 +1,63 @@
+{
+  "document_family": "generic_html",
+  "document_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+  "document_version": "sha256:9a21cd2f0625",
+  "extractor_version": "0.3.1",
+  "profile": "rfc2119",
+  "provenance": {
+    "adapter_id": "normshift.adapters.html",
+    "adapter_version": "1.0.0",
+    "byte_length": 165,
+    "canonical_source": null,
+    "content_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+    "content_type": "text/html",
+    "document_family": "generic_html",
+    "etag": null,
+    "fetch_metadata": {},
+    "last_modified": null,
+    "local_path": ".normshift/foundry-24h/materialized/split-new.html",
+    "normalization_version": "1.0.0"
+  },
+  "requirements": [
+    {
+      "action": "present a bearer token on every request",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "document_version": "sha256:9a21cd2f0625",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "75052af8639852378ba97d30b814a8c02f5e513c396dd037dc52d446d69a3ead",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST present a bearer token on every request.",
+      "original_text": "Clients MUST present a bearer token on every request.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "529b466bfbee5cb4",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[1]",
+      "structural_index": 0
+    },
+    {
+      "action": "refresh expired tokens before retrying",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+      "document_version": "sha256:9a21cd2f0625",
+      "exception": null,
+      "extractor_version": "0.3.1",
+      "fingerprint": "fb459671ca3d6d682274fca06c8078a2581a6b0bb108ccbb5874bcba10ca9fa7",
+      "modality": "MUST",
+      "normalized_text": "Clients MUST refresh expired tokens before retrying.",
+      "original_text": "Clients MUST refresh expired tokens before retrying.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "4a5aea876c7aed61",
+      "section_path": "(root)",
+      "source_locator": "xpath:/body/p[2]",
+      "structural_index": 1
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_path": ".normshift/foundry-24h/materialized/split-new.html"
+}

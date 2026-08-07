@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_ietf-json-7159-8259_978a40e22efa",
+  "change_id": "a51e5377653ad221",
+  "confidence": 0.45,
+  "id": "ietf-json-7159-8259:a51e5377653a",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "ietf-json-7159-8259",
+  "review_status": "UNREVIEWED",
+  "summary": "JSON text exchanged between systems that are not part of a closed ecosystem MUST be encoded using UTF-8 [RFC3629]."
+}

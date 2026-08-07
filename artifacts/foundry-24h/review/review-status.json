@@ -1,0 +1,117 @@
+{
+  "decision_count": 0,
+  "detail_sample": [
+    {
+      "decisions": 0,
+      "packet_id": "pkt_5f610150a3fa12cf66fa",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_b121ad10d72045367e35",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_7da1a979dd6dac7fc30f",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_3204c9ed17cb5b051f1f",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_8bed849ef5f9499625a2",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_e131eb6aa60444d52c57",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_dfe421bf72ab3475f1b2",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_5bc47b18aa00eda628a2",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_158ea1729c15b186a86b",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_52b185f0710fa7ac305c",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_a4eefee851710211b5ab",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_cc12fd375a7982192e87",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_b6cd2c96d9124228d741",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_858c6765891f19777440",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_3f278bbb711a1c96246a",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_8a3032dbc49a2182c8f6",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_80c27e8e7a1e50d02505",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_f86ea3e6a1f5460d2f5c",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_3b12b5b7515d767b072f",
+      "state": "UNREVIEWED"
+    },
+    {
+      "decisions": 0,
+      "packet_id": "pkt_d9f5aed5d59ec27d14e3",
+      "state": "UNREVIEWED"
+    }
+  ],
+  "label_authority_note": "AUTO packets; decisions only TEST_FIXTURE or external import",
+  "packet_count": 183,
+  "reviewed_metrics_status": "NOT_AVAILABLE",
+  "schema_version": "1.0.0",
+  "states": {
+    "ABSTAINED": 0,
+    "AGREED": 0,
+    "DISAGREED": 0,
+    "INVALID": 0,
+    "NEEDS_CONTEXT": 0,
+    "UNREVIEWED": 183
+  }
+}

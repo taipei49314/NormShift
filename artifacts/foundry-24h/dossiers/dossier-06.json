@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_ietf-cbor-7049-8949_e5ef9ae243f8",
+  "change_id": "958f1b4330cc6989",
+  "confidence": 0.55,
+  "id": "ietf-cbor-7049-8949:958f1b4330cc",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "ietf-cbor-7049-8949",
+  "review_status": "UNREVIEWED",
+  "summary": "The syntax and semantics of fragment identifiers specified for +cbor SHOULD be as specified for \"application/cbor\". (At publication of RFC 8949, there is no fragment identification syntax defined for "
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="version" content="LS-excerpt-1"/>
+  <title>HTML Living Standard Excerpt</title>
+  <link rel="canonical" href="https://html.spec.whatwg.org/multipage/"/>
+</head>
+<body>
+  <header><p>WHATWG Living Standard — offline corpus excerpt</p></header>
+  <nav id="toc"><ul><li>Networking</li></ul></nav>
+  <h1>HTML (WHATWG-style corpus excerpt)</h1>
+  <h2 id="networking">Networking</h2>
+  <p id="w1">User agents must close idle sockets after 30 seconds.</p>
+  <p id="w2">Authors should provide alternative text for images.</p>
+  <div class="example">
+    <p>Example: the element must have a src attribute in this illustration.</p>
+  </div>
+  <pre><code>&lt;img src=x&gt; <!-- must ignore --></code></pre>
+  <h2 id="forms">Forms</h2>
+  <p id="w3">Implementations may cache form validation results.</p>
+</body>
+</html>

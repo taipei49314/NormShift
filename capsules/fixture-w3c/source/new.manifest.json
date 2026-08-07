@@ -1,0 +1,28 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "w3c",
+  "byte_length": 1307,
+  "content_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+  "content_type": "application/octet-stream",
+  "etag": null,
+  "family": "synthetic",
+  "filename": "fixture-w3c-v2",
+  "final_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+  "last_modified": null,
+  "license_note": "in-repo synthetic fixture Apache-2.0 project",
+  "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+  "logical_path": "materialized/fixture-w3c-v2.html",
+  "observations": {
+    "same_bytes_different_url_prior": [],
+    "same_url_different_bytes_prior": []
+  },
+  "redirects": [],
+  "redistribution_status": "redistributable",
+  "retrieved_at": "2026-08-07T08:55:36+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "snap_da83242c7bf6a625_653a01a7",
+  "snapshot_key": "fixture-w3c-v2",
+  "source_url": "https://www.w3.org/TR/fixture-w3c-v2/",
+  "status_code": 200,
+  "version_label": "fixture-w3c-v2"
+}

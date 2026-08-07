@@ -1,0 +1,28 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "html",
+  "byte_length": 165,
+  "content_sha256": "9a21cd2f0625f04ded1d6a79ce93bdfd5197ad95f38d83afe10d39d77aef5d55",
+  "content_type": "application/octet-stream",
+  "etag": null,
+  "family": "synthetic",
+  "filename": "foundry-split-new.html",
+  "final_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+  "last_modified": null,
+  "license_note": "in-repo foundry fixture",
+  "license_reference": "in-repo foundry fixture",
+  "logical_path": "materialized/split-new.html",
+  "observations": {
+    "same_bytes_different_url_prior": [],
+    "same_url_different_bytes_prior": []
+  },
+  "redirects": [],
+  "redistribution_status": "redistributable",
+  "retrieved_at": "2026-08-07T08:55:38+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "snap_9a21cd2f0625f04d_3b015427",
+  "snapshot_key": "split-new",
+  "source_url": "https://www.rfc-editor.org/rfc/foundry-split-new.html",
+  "status_code": 200,
+  "version_label": "split-new"
+}

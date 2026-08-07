@@ -1,0 +1,28 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "whatwg",
+  "byte_length": 970,
+  "content_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+  "content_type": "application/octet-stream",
+  "etag": null,
+  "family": "synthetic",
+  "filename": "fixture-v2",
+  "final_url": "https://html.spec.whatwg.org/fixture-v2",
+  "last_modified": null,
+  "license_note": "in-repo synthetic fixture Apache-2.0 project",
+  "license_reference": "in-repo synthetic fixture Apache-2.0 project",
+  "logical_path": "materialized/fixture-whatwg-v2.html",
+  "observations": {
+    "same_bytes_different_url_prior": [],
+    "same_url_different_bytes_prior": []
+  },
+  "redirects": [],
+  "redistribution_status": "redistributable",
+  "retrieved_at": "2026-08-07T08:55:36+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "snap_85b1dc30504d8676_302acd76",
+  "snapshot_key": "fixture-whatwg-v2",
+  "source_url": "https://html.spec.whatwg.org/fixture-v2",
+  "status_code": 200,
+  "version_label": "fixture-whatwg-v2"
+}

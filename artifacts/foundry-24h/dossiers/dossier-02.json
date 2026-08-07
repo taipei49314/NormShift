@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_fixture-whatwg_c2435dcc4c84",
+  "change_id": "fb7a91b84bf9b75d",
+  "confidence": 0.92,
+  "id": "fixture-whatwg:fb7a91b84bf9",
+  "kind": "STRENGTHENED",
+  "label_authority": "AUTO",
+  "pair_id": "fixture-whatwg",
+  "review_status": "UNREVIEWED",
+  "summary": "Authors must provide alternative text for images."
+}

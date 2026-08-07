@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+<html><body>
+<p>Clients MUST present a bearer token on every request.</p>
+<p>Clients MUST refresh expired tokens before retrying.</p>
+</body></html>

@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_ietf-cbor-7049-8949_e5ef9ae243f8",
+  "change_id": "9e9fea153a9d2075",
+  "confidence": 0.55,
+  "id": "ietf-cbor-7049-8949:9e9fea153a9d",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "ietf-cbor-7049-8949",
+  "review_status": "UNREVIEWED",
+  "summary": "A decimal fraction or a bigfloat is represented as a tagged array that contains exactly two integer numbers: an exponent e and a mantissa m. Decimal fractions (tag number 4) use base-10 exponents; the"
+}

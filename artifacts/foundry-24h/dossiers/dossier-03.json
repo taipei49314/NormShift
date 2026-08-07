@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_fixture-merge_5ad50a3bcb77",
+  "change_id": "d513768e4e053925",
+  "confidence": 0.55,
+  "id": "fixture-merge:d513768e4e05",
+  "kind": "AMBIGUOUS",
+  "label_authority": "AUTO",
+  "pair_id": "fixture-merge",
+  "review_status": "UNREVIEWED",
+  "summary": "Servers MUST log authentication failures and authorization denials."
+}

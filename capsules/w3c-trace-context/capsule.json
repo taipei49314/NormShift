@@ -1,0 +1,53 @@
+{
+  "adapter": "w3c",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.manifest.json",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": "SOURCE_BYTES_NOT_INCLUDED",
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_w3c-trace-context_adda99fd863c",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": false,
+    "new": "unknown_fail_closed",
+    "old": "unknown_fail_closed"
+  },
+  "new_snapshot": {
+    "content_sha256": "eb6c2546003639d6884e8357d90c5dfde95c70494e6e1339ba2219bebb29be11",
+    "source_url": "https://www.w3.org/TR/trace-context-2/",
+    "version_label": "trace-context-2"
+  },
+  "offline_replay": false,
+  "old_snapshot": {
+    "content_sha256": "9e7228d2a91c5aa4bef6e7f610366a2000274ee51699053e10c8ac3f0b8965be",
+    "source_url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/",
+    "version_label": "trace-context-1-rec-20211123"
+  },
+  "pair_id": "w3c-trace-context",
+  "profile": "rfc2119",
+  "report_sha256": "adda99fd863c5299b06dd012e68023cdd73d5870dff4b666445432fe6221da7c",
+  "requirements_sha256": {
+    "new": "7ccc9d2c6e659312d44549b3561c5dedf3c9ccfe697d64793e092f2a2f41232d",
+    "old": "50ef172fc1033cf697800330da4a8368d75afa5837ff6a2429f1c34331e7d17b"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

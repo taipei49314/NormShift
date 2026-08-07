@@ -1,0 +1,55 @@
+{
+  "adapter": "whatwg",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.document",
+    "source/new.manifest.json",
+    "source/old.document",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": null,
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_fixture-whatwg_c2435dcc4c84",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": true,
+    "new": "redistributable",
+    "old": "redistributable"
+  },
+  "new_snapshot": {
+    "content_sha256": "85b1dc30504d8676fd9455d4f747283e41c9a6c91c19f4544464bd5834aa0c7f",
+    "source_url": "https://html.spec.whatwg.org/fixture-v2",
+    "version_label": "fixture-whatwg-v2"
+  },
+  "offline_replay": true,
+  "old_snapshot": {
+    "content_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+    "source_url": "https://html.spec.whatwg.org/fixture-v1",
+    "version_label": "fixture-whatwg-v1"
+  },
+  "pair_id": "fixture-whatwg",
+  "profile": "whatwg",
+  "report_sha256": "c2435dcc4c844510172a521af0cc30097c66d13bb8f42a7afaea4a4a89c25fe6",
+  "requirements_sha256": {
+    "new": "ff2080ba3722b339a012ae23471aea0d6a09b1d2f2254a55005f3da7a4bb1c51",
+    "old": "96fc6d5692aa361b561755d5fad50643ddf42b3a69da5865b2a52afe645449ab"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

@@ -1,0 +1,1311 @@
+{
+  "campaign_id": "foundry-24h",
+  "discovery_count": 217,
+  "items": [
+    {
+      "href": "discovery.html",
+      "id": "fixture-rfc:f93f794491ed",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-rfc:08b604dfaaf9",
+      "kind": "STRENGTHENED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-rfc:78412bc6caa6",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-rfc:51cc0e8dda45",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-w3c:6781222b5832",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-w3c:f5e782249eba",
+      "kind": "STRENGTHENED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-w3c:b2218654bfb3",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-whatwg:9118f2625177",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-whatwg:44c69761e3ce",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-whatwg:fb7a91b84bf9",
+      "kind": "STRENGTHENED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-whatwg:427fc30e154a",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-whatwg:941b54974054",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:850c234f263f",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:3b81efe2ed9f",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c58a25a4629b",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:8b1451d6ef14",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:fd960ac0c9bf",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c5aff9cecf39",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:ee9ce9a8d726",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:00428807e2ae",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:5698274b6935",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e94f60edf055",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:bd194db79649",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:efc13c395caf",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:433e7ed6fa29",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:068cf9bcb51f",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c9400adf07dd",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:a994a809bcc0",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:81e6e72bc593",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:4f49d95ee119",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:f7837493244a",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:054298c0c6e2",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2028fc633389",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:fcc918a8b4f6",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:84f52fcf2b3f",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:9bb2dd1834c7",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:1d9179e4aa94",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:27744e2b3cd5",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:b486d9f4dd63",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e1c47ff3a104",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:36273069e92b",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:04cb0aa7d782",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:24fcc7fc3083",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:3425c79b836e",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:9efe499f8f6c",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:7287d9ffda3c",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:d5c45e0d2ac4",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:f981ccd9895d",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e0e8945b83e0",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2e1db91fbdc5",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:d30b0a556508",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:74396afacae5",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:10d65d8a1a17",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:40db84e74d76",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:78f72e34969c",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:d08caa4e17db",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:8bd11ffca154",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:918bfad8a59c",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2e2e05880536",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:ef6b8dd5b286",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:fb3fe25eb20c",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:0d6a3188eef4",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:173449baaf8e",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:cef6ef721526",
+      "kind": "CONDITION_REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:255466c2549a",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:a52931b97b87",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:da5702a4adaf",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:988599bca050",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2c0ef0a56b2f",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:ba0e6eede9d1",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:92fc27543880",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:87175aea4f0f",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:4fefcccec7cf",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:8a599cffc2a5",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:7a4619c9170e",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:dd7afa605565",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2a8540ed8312",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:80dca2a48e75",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:6a105328e34e",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:806488a5b28c",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:cca6ff959fc5",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:322a21e37dec",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:f79ea6cb3d1e",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:fc273e72288b",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:5f55668d1a55",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c28bbc87dfcf",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:cbfb68d7f3fd",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:64f4620dbfea",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:94a06967741f",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:0fd1b84d5df7",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:97176580efe2",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:ffe194155dff",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:def15ab0352c",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:3fae68d63794",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:13f19c173e8e",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:10fcda4df07d",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e1e9accde3b5",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:a56009e71c48",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:f907b70eac2a",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:5d50fdf30d66",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c645c3723310",
+      "kind": "MOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:15db2799d4f8",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:330d0b57bb6e",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:98a39ae9e702",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:30224a875afa",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:aafe8bc174e9",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:adc09ad6fe94",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:83db3bf9cef5",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:84d4a53f9308",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:da41da4e2002",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:baa441f451b7",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e5456d8218a0",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:2b8f848b1a8e",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:33c83305ff2a",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:e4905a199684",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:03cd2430fda1",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:7eb051a784b9",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:91e6c23e95e3",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:c44bda8f6259",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:52f8edb89cff",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:51a374780120",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:f109142dc4a2",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:1ce2bdfa129f",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:bf7dd916bd20",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:4c245fb1c955",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "w3c-trace-context:97135d1bf5fb",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:fcdd1ef67613",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:87aa98ce46f7",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:31f7ac64c1c6",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:a93c02069275",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:c518fb125f95",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:ea80fde18aaf",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:3a5ceed51989",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:fbd1c88e01df",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:a2bbc9056859",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:9142e00c2746",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:0011c3166e3c",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:41492b27befa",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:3f5bcbeda70e",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:a51e5377653a",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:8fb1093bca75",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:445c37fdd1de",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:13a9550ace76",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:55d08f76103e",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:1efd9072008c",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:8091b6fa727b",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:9a7f253924cc",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:a1351ff84955",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:97e116b78aa7",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:775028dad26c",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:8505e220aa2c",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:af3828a63d56",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:04efbc00b8e8",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:5b874a986c7f",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:3b61c4ff839d",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:1b29d5b159e1",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-json-7159-8259:368399f73654",
+      "kind": "UNCHANGED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:01f497cf500e",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:1da9f29743c8",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:6ad2411e1029",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:0497eb937dc6",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:585d904aa265",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:36943d15f73b",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:5ab61c9fd052",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:85d5e6f5bc02",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:2f047cac0ed4",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:b451d4c88c23",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:b9dc62d549ad",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:1135c107b0ee",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:4a8f65478d3c",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:132bed032cab",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:5190e24b6585",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:fd82f9b56f7c",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:f0d82341d099",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:5c9db0adc4db",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:012ebabf6c10",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:9cfc9401992a",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:4d97a5fa4103",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:8ef3e21ebed1",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:63e76f923ad6",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:73be315494f8",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:3598a02c2a2d",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:9bafa94154f9",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:dca86a0754cf",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:0a6458e74d7b",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:9bf5d58e08bb",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:bea66d5f6d5b",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:a190e97cebe3",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:c4b8f6082819",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:16aa4d36c139",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:87f4722bdfe1",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:719786d9dab0",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:545e16529763",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:50ae68e14e83",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:460d5389575f",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:0b7f251f1309",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:958f1b4330cc",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:9e9fea153a9d",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:3c026f9b0e31",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:5c5f4f8c81b0",
+      "kind": "CONDITION_ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:23f361e15b73",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:66752d4f0a33",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:34738c4bc393",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:6cd5f1c18b9f",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:3f4fbc3862b8",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:ac9264b953df",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:c257e82d8605",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:42e2ca10b8c2",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:c1527dbab8a3",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:3dd1632232cd",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:f6e9b9404927",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:78f4c94f9e4f",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "ietf-cbor-7049-8949:1ef945b7fdea",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-split:b2bb3a7ff9f3",
+      "kind": "ADDED",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-split:37946a6e6cf7",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-merge:d513768e4e05",
+      "kind": "AMBIGUOUS",
+      "label_authority": "AUTO"
+    },
+    {
+      "href": "discovery.html",
+      "id": "fixture-merge:492bc2a90532",
+      "kind": "REMOVED",
+      "label_authority": "AUTO"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_date_epoch": 1700000000,
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

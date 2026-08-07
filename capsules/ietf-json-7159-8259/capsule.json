@@ -1,0 +1,53 @@
+{
+  "adapter": "rfc",
+  "aligner_version": "0.3.1",
+  "artifact_inventory": [
+    "LICENSE_SCOPE.md",
+    "LIMITATIONS.md",
+    "extracted/new.requirements.json",
+    "extracted/old.requirements.json",
+    "hashes.json",
+    "lineage/candidates.jsonl",
+    "replay/commands.json",
+    "report/report.json",
+    "report/report.md",
+    "review/packets.jsonl",
+    "source/new.manifest.json",
+    "source/old.manifest.json"
+  ],
+  "blocking_reason": "SOURCE_BYTES_NOT_INCLUDED",
+  "campaign_id": "foundry-24h",
+  "capsule_id": "cap_ietf-json-7159-8259_978a40e22efa",
+  "classifier_version": "0.3.1",
+  "extractor_version": "0.3.1",
+  "known_limitations": [
+    "AUTO labels only",
+    "Not externally adjudicated"
+  ],
+  "label_authority": "AUTO",
+  "license_decision": {
+    "include_bytes": false,
+    "new": "unknown_fail_closed",
+    "old": "unknown_fail_closed"
+  },
+  "new_snapshot": {
+    "content_sha256": "5302d6ccb6cf221817bdd1f8cd7221661d4519372e0ac0b4cf641e11e8037de7",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+    "version_label": "RFC8259"
+  },
+  "offline_replay": false,
+  "old_snapshot": {
+    "content_sha256": "17dfda25ae6cd5715b08e2c96e257101a1d7f9eb27e1711e5b6544138bb35954",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc7159.html",
+    "version_label": "RFC7159"
+  },
+  "pair_id": "ietf-json-7159-8259",
+  "profile": "rfc2119",
+  "report_sha256": "978a40e22efab6ef80322ec4521496125d78d290317f1e37986c9f1aaf597006",
+  "requirements_sha256": {
+    "new": "2a2d8d226f9011b25d90f86882312c4089c0561dcb6f45cbe4b9d34b06bab49f",
+    "old": "02d54b969ce7784f8de0be95444aec61616e8f05a3d1d0f0f7c40d65aad2c642"
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

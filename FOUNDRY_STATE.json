@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "mission": "NORMSHIFT_24H_CORPUS_FOUNDRY",
+  "branch": "expedition/corpus-foundry-24h",
+  "start_commit": "f80b3f631a85c635903570fd63b494ec95c89571",
+  "frozen_m0_baseline": "878bfd3a6bb7b649652e81936216277fc8151d5e",
+  "status": "CORPUS_FOUNDRY_CANDIDATE_PENDING_EXTERNAL_AUDIT",
+  "current_phase": "package",
+  "current_objective": "Exact-subject foundry package for external audit",
+  "completed": [
+    "campaign-engine",
+    "pair-capsules-8",
+    "review-packets-183",
+    "lineage-candidates",
+    "layered-metrics",
+    "observatory-projection",
+    "real-pairs-3-families-2"
+  ],
+  "counts": {
+    "pairs": 8,
+    "real_official_pairs": 3,
+    "review_packets": 183,
+    "discovery_items": 217,
+    "unique_content_objects": 19,
+    "pytest": 163
+  },
+  "real_pairs": [
+    "w3c-trace-context",
+    "ietf-json-7159-8259",
+    "ietf-cbor-7049-8949"
+  ],
+  "full_offline_capsules": [
+    "fixture-rfc",
+    "fixture-w3c",
+    "fixture-whatwg",
+    "fixture-split",
+    "fixture-merge"
+  ],
+  "thin_capsules": [
+    "w3c-trace-context",
+    "ietf-json-7159-8259",
+    "ietf-cbor-7049-8949"
+  ],
+  "next_action": "External audit of foundry package; do not merge to master"
+}

@@ -1,0 +1,9 @@
+{
+  "source_date_epoch": 1700000000,
+  "verify": [
+    "normshift",
+    "capsule",
+    "verify",
+    "capsules/fixture-split"
+  ]
+}

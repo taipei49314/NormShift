@@ -1,0 +1,28 @@
+{
+  "acquisition_mode": "https",
+  "adapter_hint": "w3c",
+  "byte_length": 115810,
+  "content_sha256": "eb6c2546003639d6884e8357d90c5dfde95c70494e6e1339ba2219bebb29be11",
+  "content_type": "text/html; charset=utf-8",
+  "etag": null,
+  "family": "w3c",
+  "filename": "trace-context-2",
+  "final_url": "https://www.w3.org/TR/trace-context-2/",
+  "last_modified": "Thu, 28 Mar 2024 18:24:39 GMT",
+  "license_note": "W3C document license — bytes not redistributed in public archive",
+  "license_reference": "W3C document license — bytes not redistributed in public archive",
+  "logical_path": "materialized/w3c-trace-context-2.html",
+  "observations": {
+    "same_bytes_different_url_prior": [],
+    "same_url_different_bytes_prior": []
+  },
+  "redirects": [],
+  "redistribution_status": "unknown_fail_closed",
+  "retrieved_at": "2026-08-07T08:55:36+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "snap_eb6c2546003639d6_0bbcb33b",
+  "snapshot_key": "w3c-trace-context-2",
+  "source_url": "https://www.w3.org/TR/trace-context-2/",
+  "status_code": 200,
+  "version_label": "trace-context-2"
+}

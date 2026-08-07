@@ -1,0 +1,11 @@
+{
+  "capsule_id": "cap_fixture-w3c_cff9a7d1be7a",
+  "change_id": "f5e782249ebae371",
+  "confidence": 0.92,
+  "id": "fixture-w3c:f5e782249eba",
+  "kind": "STRENGTHENED",
+  "label_authority": "AUTO",
+  "pair_id": "fixture-w3c",
+  "review_status": "UNREVIEWED",
+  "summary": "User agents MUST display a warning when certificates are invalid."
+}
