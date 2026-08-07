@@ -1,0 +1,29 @@
+{
+  "current_objective": "M0 Normative HTML vertical slice",
+  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": "d6cfccb86c3c51e2d3bebdcd8d7818c502dd4429",
+  "commands_run": [
+    "uv sync --all-extras --dev",
+    "uv run ruff check .  # exit 0",
+    "uv run mypy src  # exit 0",
+    "uv run pytest -q  # exit 0, 32 passed",
+    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # exit 0, 17/17",
+    "uv run normshift diff fixtures/synthetic/spec-v1.html fixtures/synthetic/spec-v2.html --profile rfc2119 --json evidence/m0/report.json --markdown evidence/m0/report.md  # exit 0",
+    "uv run normshift verify evidence/m0/report.json  # exit 0",
+    "uv run normshift verify evidence/m0/report_tampered.json  # exit 1 (expected)"
+  ],
+  "verified_artifacts": [
+    "evidence/m0/report.json",
+    "evidence/m0/report.md",
+    "evidence/m0/report_run2.json",
+    "evidence/m0/report_tampered.json",
+    "evidence/m0/M0_EVIDENCE.md"
+  ],
+  "known_failures": [],
+  "unresolved_risks": [
+    "External audit of classification policy not performed",
+    "Heuristic role extraction incomplete for complex syntax",
+    "Greedy alignment may miss global optimum on large corpora"
+  ],
+  "next_action": "External audit; consider M1 adapter expansion without relaxing M0 determinism"
+}
