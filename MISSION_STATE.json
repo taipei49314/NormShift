@@ -1,23 +1,19 @@
 {
-  "current_objective": "M0 repair round 2 complete \u2014 external re-audit",
-  "current_hypothesis": "Source-bound replay verify and rollback-safe multi-file commit close re-audit P0s",
-  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "261ef50550ab4e8e7df54ce4de4517fdb11467b2",
-  "commands_run": [
-    "uv run ruff check . #0",
-    "uv run mypy src #0",
-    "uv run pytest -q #92 passed",
-    "uv run normshift benchmark #17/17",
-    "uv run normshift measure #15/15",
-    "uv run normshift verify --source-root . #0"
-  ],
+  "current_objective": "M0 repair round 3 complete — portable evidence + canonical replay",
+  "current_hypothesis": "Portable source_ref + full report model replay + entry-type path safety close R2 external gaps",
+  "status": "M0_PARTIAL",
+  "package_identity": "externally_attested",
+  "last_verified_commit": null,
+  "commands_run": [],
   "verified_artifacts": [
-    "docs/EXTERNAL_REAUDIT.md",
-    "docs/M0_REPAIR_ROUND2.md"
+    "docs/EXTERNAL_AUDIT_R2.md",
+    "docs/M0_REPAIR_ROUND3.md",
+    "evidence/m0-repair-round3/"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "Awaiting external re-audit after round 2 packaging"
+    "Awaiting external re-audit of round-3 package",
+    "M1/M2 experimental only"
   ],
-  "next_action": "STOP. External re-audit. No M1/M2 feature work."
+  "next_action": "Package R3 products; STOP for external re-audit"
 }

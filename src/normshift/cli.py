@@ -230,7 +230,10 @@ def verify_cmd(
         new_source=new_source,
     )
     if result.ok:
-        typer.echo(f"OK integrity={result.content_sha256}")
+        msg = f"OK integrity={result.content_sha256}"
+        if result.override_used:
+            msg += " (source path overrides applied; content-bound replay only)"
+        typer.echo(msg)
         raise typer.Exit(code=0)
     for err in result.errors:
         typer.echo(f"error: {err}", err=True)

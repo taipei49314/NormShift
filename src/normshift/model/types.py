@@ -266,12 +266,31 @@ class Change(BaseModel):
 class DocumentSnapshot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    path: str
+    path: str  # portable POSIX source_ref for external verification
     sha256: str
     version: str
     byte_length: int
     provenance: Provenance | None = None
     document_family: DocumentFamily | None = None
+    source_ref_mode: str = "source_root_relative"
+
+
+class ReportSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    old_requirement_count: int
+    new_requirement_count: int
+    change_count: int
+    classification_counts: dict[str, int] = Field(default_factory=dict)
+
+
+class IntegrityEnvelope(BaseModel):
+    """Unkeyed consistency digest over the report payload (not a signature)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    alg: str = "sha256"
+    content_sha256: str
 
 
 class Report(BaseModel):
@@ -285,5 +304,5 @@ class Report(BaseModel):
     old_requirements: list[Requirement]
     new_requirements: list[Requirement]
     changes: list[Change]
-    summary: dict[str, Any]
-    integrity: dict[str, str]
+    summary: ReportSummary
+    integrity: IntegrityEnvelope

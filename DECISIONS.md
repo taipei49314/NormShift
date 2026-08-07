@@ -1,5 +1,21 @@
 # Design Decisions
 
+## D016 — Portable source_ref for external verify (2026-08-07 r3)
+
+**Decision:** Reports store POSIX relative `source_ref` paths. Verify resolves under
+`--source-root`. Absolute generation-machine paths are not authoritative.
+
+## D017 — Complete canonical Report replay comparison
+
+**Decision:** Verify rebuilds a full live `Report` via production builder and
+compares exact model dumps (order + floats). Typed `ReportSummary` and
+`IntegrityEnvelope` use `extra="forbid"`.
+
+## D018 — Output entry-type and ancestry rejection
+
+**Decision:** Preflight rejects existing non-regular outputs, symlinks (including
+dangling), directories, and input/output ancestor relationships. No mutation on reject.
+
 ## D014 — Verify must deterministically replay extraction (2026-08-07 r2)
 
 **Decision:** `normshift verify` reloads sources once, re-extracts, re-aligns,

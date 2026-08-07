@@ -11,10 +11,15 @@ from normshift.evidence.hashing import canonical_json_bytes, integrity_payload_h
 from normshift.model.types import (
     Change,
     DocumentSnapshot,
+    IntegrityEnvelope,
     ProfileName,
     Report,
+    ReportSummary,
     Requirement,
 )
+
+SUPPORTED_SCHEMA_VERSIONS = frozenset({"1.0.0"})
+SUPPORTED_TOOL_VERSIONS = frozenset({__version__})
 
 
 def build_report(
@@ -27,15 +32,14 @@ def build_report(
     changes: list[Change],
 ) -> Report:
     counts = Counter(c.classification.value for c in changes)
-    summary: dict[str, Any] = {
-        "old_requirement_count": len(old_requirements),
-        "new_requirement_count": len(new_requirements),
-        "change_count": len(changes),
-        "classification_counts": dict(sorted(counts.items())),
-    }
-
-    # Placeholder integrity; filled after serialization round-trip fields fixed.
+    summary = ReportSummary(
+        old_requirement_count=len(old_requirements),
+        new_requirement_count=len(new_requirements),
+        change_count=len(changes),
+        classification_counts=dict(sorted(counts.items())),
+    )
     report = Report(
+        schema_version="1.0.0",
         tool_version=__version__,
         profile=profile,
         old_document=old_document,
@@ -44,11 +48,11 @@ def build_report(
         new_requirements=new_requirements,
         changes=changes,
         summary=summary,
-        integrity={"alg": "sha256", "content_sha256": ""},
+        integrity=IntegrityEnvelope(alg="sha256", content_sha256=""),
     )
     data = report.model_dump(mode="json")
     digest = integrity_payload_hash(data)
-    report.integrity = {"alg": "sha256", "content_sha256": digest}
+    report.integrity = IntegrityEnvelope(alg="sha256", content_sha256=digest)
     return report
 
 
@@ -81,8 +85,7 @@ def markdown_report_text(report: Report) -> str:
     lines.append(f"- Profile: `{report.profile.value}`")
     lines.append(f"- Schema version: `{report.schema_version}`")
     lines.append(
-        f"- Integrity: `{report.integrity.get('alg', 'sha256')}` "
-        f"`{report.integrity.get('content_sha256', '')}`"
+        f"- Integrity: `{report.integrity.alg}` `{report.integrity.content_sha256}`"
     )
     lines.append("")
     lines.append("## Documents")
@@ -110,17 +113,18 @@ def markdown_report_text(report: Report) -> str:
             lines.append(f"  - canonical: `{prov.canonical_source}`")
         if prov.etag:
             lines.append(f"  - etag: `{prov.etag}`")
+        lines.append(f"  - local_path (portable): `{prov.local_path}`")
 
     lines.append("")
     lines.append("## Summary")
     lines.append("")
-    lines.append(f"- Old requirements: **{report.summary.get('old_requirement_count', 0)}**")
-    lines.append(f"- New requirements: **{report.summary.get('new_requirement_count', 0)}**")
-    lines.append(f"- Changes: **{report.summary.get('change_count', 0)}**")
+    lines.append(f"- Old requirements: **{report.summary.old_requirement_count}**")
+    lines.append(f"- New requirements: **{report.summary.new_requirement_count}**")
+    lines.append(f"- Changes: **{report.summary.change_count}**")
     lines.append("")
     lines.append("### Classification counts")
     lines.append("")
-    counts = report.summary.get("classification_counts") or {}
+    counts = report.summary.classification_counts
     if counts:
         for k, v in counts.items():
             lines.append(f"- `{k}`: {v}")
@@ -158,8 +162,8 @@ def markdown_report_text(report: Report) -> str:
             s = ch.alignment_score
             lines.append("- Alignment score components:")
             lines.append(f"  - combined: `{s.combined}`")
-            for k, v in sorted(s.components.items()):
-                lines.append(f"  - {k}: `{v}`")
+            for key, val in sorted(s.components.items()):
+                lines.append(f"  - {key}: `{val}`")
         if ch.evidence_hashes:
             lines.append("- Evidence hashes:")
             for h in ch.evidence_hashes:

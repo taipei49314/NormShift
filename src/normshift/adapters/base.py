@@ -76,6 +76,8 @@ def build_provenance(
             "document_family",
         }
     }
+    # Portable POSIX reference for external verification (not generation-machine absolute).
+    portable = portable_source_ref(path)
     return Provenance(
         document_family=family,
         adapter_id=adapter_id,
@@ -84,12 +86,25 @@ def build_provenance(
         content_type=side.get("content_type", content_type),
         content_sha256=digest,
         byte_length=len(raw),
-        local_path=str(path.resolve().as_posix()),
+        local_path=portable,
         canonical_source=side.get("canonical_source"),
         etag=side.get("etag"),
         last_modified=side.get("last_modified"),
         fetch_metadata=dict(sorted(fetch_meta.items())),
     )
+
+
+def portable_source_ref(path: Path) -> str:
+    """Return a normalized POSIX path suitable for --source-root resolution."""
+    p = Path(path)
+    if not p.is_absolute():
+        return p.as_posix()
+    try:
+        return p.resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        # Outside cwd: keep name only is unsafe; keep posix absolute as last resort
+        # but prefer relative form when load is called with portable_ref override.
+        return p.as_posix()
 
 
 def adapter_name_to_id(name: AdapterName) -> str:

@@ -17,7 +17,7 @@
     "integrity"
   ],
   "properties": {
-    "schema_version": { "type": "string" },
+    "schema_version": { "type": "string", "const": "1.0.0" },
     "tool_version": { "type": "string" },
     "profile": { "type": "string", "enum": ["rfc2119", "whatwg"] },
     "old_document": { "type": "object" },
@@ -25,12 +25,31 @@
     "old_requirements": { "type": "array", "items": { "type": "object" } },
     "new_requirements": { "type": "array", "items": { "type": "object" } },
     "changes": { "type": "array", "items": { "type": "object" } },
-    "summary": { "type": "object" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "old_requirement_count",
+        "new_requirement_count",
+        "change_count",
+        "classification_counts"
+      ],
+      "properties": {
+        "old_requirement_count": { "type": "integer", "minimum": 0 },
+        "new_requirement_count": { "type": "integer", "minimum": 0 },
+        "change_count": { "type": "integer", "minimum": 0 },
+        "classification_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        }
+      }
+    },
     "integrity": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["alg", "content_sha256"],
       "properties": {
-        "alg": { "type": "string" },
+        "alg": { "type": "string", "const": "sha256" },
         "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
       }
     }

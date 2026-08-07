@@ -330,7 +330,11 @@ def run_measure(ground_truth: Path) -> MeasureReport:
     )
 
     data = report.to_dict()
-    report.integrity = {"alg": "sha256", "content_sha256": integrity_payload_hash(data)}
+    data["integrity"] = {
+        "alg": "sha256",
+        "content_sha256": integrity_payload_hash(data),
+    }
+    report.integrity = data["integrity"]
     return report
 
 

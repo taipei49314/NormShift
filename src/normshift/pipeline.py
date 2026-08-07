@@ -60,7 +60,9 @@ def run_diff(
         data = report_to_dict(report)
         digest = integrity_payload_hash(data)
         data["integrity"] = {"alg": "sha256", "content_sha256": digest}
-        report.integrity = {"alg": "sha256", "content_sha256": digest}
+        from normshift.model.types import IntegrityEnvelope
+
+        report.integrity = IntegrityEnvelope(alg="sha256", content_sha256=digest)
         artifacts[Path(json_out)] = canonical_json_bytes(data)
     if markdown_out is not None:
         artifacts[Path(markdown_out)] = markdown_report_text(report).encode("utf-8")

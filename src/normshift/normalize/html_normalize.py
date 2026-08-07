@@ -59,7 +59,9 @@ INFORMATIVE_SECTION_RE = re.compile(
 
 HISTORICAL_FRAMING_RE = re.compile(
     r"\b(previous\s+specification|old\s+version|formerly\s+required|"
-    r"old\s+text\s+was|historical(?:ly)?|earlier\s+draft|was\s+required)\b",
+    r"old\s+text\s+was|historical(?:ly)?|earlier\s+draft|"
+    r"were\s+formerly\s+required|was\s+formerly\s+required|"
+    r"was\s+required|said\s+clients|stated:)\b",
     re.IGNORECASE,
 )
 
@@ -253,12 +255,26 @@ def extract_block_text_with_spans(
 
     text = "".join(out_chars)
 
-    # Historical framing: protect quoted segments for keyword authority
+    # Historical framing: protect quoted spans and unquoted historical clauses
     if HISTORICAL_FRAMING_RE.search(text):
-        for m in re.finditer(r'"([^"]+)"|\'([^\']+)\'|"([^"]+)"|\'([^\']+)\'', text):
+        for m in re.finditer(r'"([^"]+)"|\'([^\']+)\'', text):
             s, e = m.start(0), m.end(0)
-            for i in range(s, e):
-                if 0 <= i < len(out_prot):
+            for i in range(s, min(e, len(out_prot))):
+                out_prot[i] = True
+        # Split on "; " / ". " and " and " — protect historical segments only
+        # so a trailing current obligation can still be extracted.
+        segments: list[tuple[int, int]] = []
+        start = 0
+        for m in re.finditer(r"\s+and\s+|(?<=[.!;])\s+", text):
+            segments.append((start, m.start()))
+            start = m.end()
+        segments.append((start, len(text)))
+        for s, e in segments:
+            seg = text[s:e]
+            if HISTORICAL_FRAMING_RE.search(seg) or re.search(
+                r"\bformerly\s+required\b", seg, re.I
+            ):
+                for i in range(s, min(e, len(out_prot))):
                     out_prot[i] = True
 
     # Collapse protected flags into spans

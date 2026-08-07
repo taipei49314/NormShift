@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "project": "NormShift",
+  "mission": "M0_REPAIR_ROUND2_EXTERNAL_AUDIT",
+  "audit_date": "2026-08-07",
+  "verdict": {
+    "m0": "M0_PARTIAL",
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "release": "BLOCKED"
+  },
+  "package_identity": {
+    "verified_commit": "bb1dbc88a2bb37436a7f1b966490daf3a1c23842",
+    "verified_tree": "7de5cc0845c22004f0eee1de7010b4361e278cc5",
+    "bundle_sha256": "b22053a5270a6375b3994d716df380b906f04fcea585986f478b18769c72d03a",
+    "source_archive_sha256": "5db9279de45f8fb9ed040345011eb63be17e5f63843969385084aaa35f44a36d",
+    "bundle_complete_history": true,
+    "bundle_head_tree_match_manifest": true
+  },
+  "independent_gates": {
+    "pytest_non_hypothesis_passed": 90,
+    "pytest_non_hypothesis_failed": 0,
+    "hypothesis_tests_not_executed": 2,
+    "supplemental_property_samples_passed": 100000,
+    "benchmark": "17/17",
+    "measure": "15/15",
+    "fresh_report_verify": 0,
+    "fresh_json_byte_deterministic": true,
+    "fresh_markdown_byte_deterministic": true,
+    "ruff_independently_rerun": false,
+    "mypy_independently_rerun": false,
+    "environment_note": "Python 3.13.5; no network; Hypothesis/Ruff/mypy unavailable"
+  },
+  "accepted_repairs": [
+    "fresh reports replay extraction, alignment, and classification",
+    "multi-output rollback restores ordinary pre-existing regular files on injected commit failure",
+    "backup-stage failure restores already moved ordinary regular-file outputs",
+    "unexpected classifications count as false positives",
+    "forbid affects pass flags without rewriting TP/FP/FN",
+    "measurement reuses one immutable source pair per case",
+    "non-normative class token and repeated inline-code token cases pass"
+  ],
+  "findings": [
+    {
+      "id": "P0-01",
+      "severity": "P0",
+      "title": "Submitted evidence is not portable or byte-exact across package forms",
+      "facts": [
+        "The exact bundle checkout cannot verify the packaged report because provenance.local_path is tied to the author machine absolute path.",
+        "The source archive converts 160 of 167 tracked files from LF to CRLF relative to Git blobs.",
+        "The packaged report cannot verify against the packaged source archive because source hashes, lengths, requirement IDs, and changes differ.",
+        "Manifest-addressed artifact hashes match bundle files but not the same paths extracted from Source.zip."
+      ]
+    },
+    {
+      "id": "P0-02",
+      "severity": "P0",
+      "title": "Verifier compares only a selected subset of the canonical report",
+      "accepted_modified_fields": [
+        "requirement confidence delta below four-decimal comparison",
+        "change confidence delta below four-decimal comparison",
+        "provenance adapter_version",
+        "provenance content_type",
+        "provenance last_modified",
+        "provenance fetch_metadata",
+        "provenance document_family",
+        "outer document_family set to null",
+        "tool_version",
+        "schema_version",
+        "extra summary status",
+        "requirement array order",
+        "change array order",
+        "document path when explicit overrides are used",
+        "extra integrity signature property"
+      ]
+    },
+    {
+      "id": "P0-03",
+      "severity": "P0",
+      "title": "Unsafe output path types and ancestry can replace directories or remove symlinks",
+      "facts": [
+        "A dangling symbolic-link destination is treated as absent and can be removed during rollback.",
+        "A successful write can replace a dangling symbolic link with a regular file instead of rejecting it.",
+        "An existing directory passed as an output is moved to a hidden backup, replaced by a regular file, and the CLI exits 0.",
+        "An input's parent directory can be used as an output; the visible directory is replaced by a file while input and sibling files are moved to a hidden backup.",
+        "Preflight checks equality but not path ancestry, and write_transaction does not reject non-regular existing destinations."
+      ]
+    },
+    {
+      "id": "P1-01",
+      "severity": "P1",
+      "title": "Revision identity is split across three commits",
+      "values": {
+        "evidence_markdown": "a4dd46a01ed8d7af577c456d1e209274868d0d4e",
+        "mission_state_and_claims": "261ef50550ab4e8e7df54ce4de4517fdb11467b2",
+        "external_manifest_and_package_tip": "bb1dbc88a2bb37436a7f1b966490daf3a1c23842"
+      }
+    },
+    {
+      "id": "P1-02",
+      "severity": "P1",
+      "title": "Unquoted historical framing still produces current requirements",
+      "examples": [
+        "The previous specification said clients MUST retry.",
+        "In the old version, clients MUST retry.",
+        "Clients were formerly required to retry and MUST reconnect."
+      ]
+    },
+    {
+      "id": "P1-03",
+      "severity": "P1",
+      "title": "Destination directories are not fsynced"
+    },
+    {
+      "id": "P1-04",
+      "severity": "P1",
+      "title": "Backup cleanup failures are silently discarded"
+    },
+    {
+      "id": "P1-05",
+      "severity": "P1",
+      "title": "Manifest omits exact commands/exit codes, uv version, source fixture hashes, relocation/archive verification, and archive-to-tree proof"
+    },
+    {
+      "id": "P2-01",
+      "severity": "P2",
+      "title": "README verification example still references round-1 evidence paths"
+    }
+  ],
+  "next_required_status": "M0_PARTIAL",
+  "next_mission": "GROK_M0_REPAIR_ROUND3.md"
+}
