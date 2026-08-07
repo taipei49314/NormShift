@@ -2,7 +2,7 @@
   "current_objective": "Measure-first instruments + definition/xref dependency on lineage",
   "current_hypothesis": "Separate extract/align/classify meters + dependency edges make further North Star progress gateable offline",
   "status": "M2_METERS_AND_DEPS_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": null,
+  "last_verified_commit": "3bec13c9d8b135028b05fc347ce4bc834b3994d6",
   "commands_run": [
     "uv run ruff check .  # 0",
     "uv run mypy src  # 0",
