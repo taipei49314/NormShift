@@ -1,128 +1,279 @@
 {
   "ambiguity_queue": [],
+  "definitions": [
+    {
+      "body": "session token is defined as a credential that authenticates a browser session.",
+      "definition_id": "de2c63b3c36fef57",
+      "document_sha256": "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
+      "document_version": "L1",
+      "normalized_body": "session token is defined as a credential that authenticates a browser session.",
+      "source_locator": "id:session-token",
+      "term": "session token"
+    },
+    {
+      "body": "session token is defined as a credential that authenticates a browser session for at most one origin.",
+      "definition_id": "85ca51f688098585",
+      "document_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
+      "document_version": "L2",
+      "normalized_body": "session token is defined as a credential that authenticates a browser session for at most one origin.",
+      "source_locator": "id:session-token",
+      "term": "session token"
+    },
+    {
+      "body": "active.",
+      "definition_id": "118810de453422ab",
+      "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
+      "document_version": "L3",
+      "normalized_body": "active.",
+      "source_locator": "id:r1",
+      "term": "hours unless private mode"
+    },
+    {
+      "body": "session token is defined as a credential that authenticates a browser session for at most one origin unless private mode is active.",
+      "definition_id": "e4cc44ec1596a65f",
+      "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
+      "document_version": "L3",
+      "normalized_body": "session token is defined as a credential that authenticates a browser session for at most one origin unless private mode is active.",
+      "source_locator": "id:session-token",
+      "term": "session token"
+    }
+  ],
+  "dependency_links": [
+    {
+      "definition_id": "de2c63b3c36fef57",
+      "document_version": "L1",
+      "evidence": "term 'session token' occurs in requirement text",
+      "link_id": "ce91ea09d3813ad7",
+      "requirement_id": "80b988085d687f3f",
+      "term": "session token"
+    },
+    {
+      "definition_id": "85ca51f688098585",
+      "document_version": "L2",
+      "evidence": "term 'session token' occurs in requirement text",
+      "link_id": "f3dbe555150b952a",
+      "requirement_id": "072eb1a3b6dbae90",
+      "term": "session token"
+    },
+    {
+      "definition_id": "e4cc44ec1596a65f",
+      "document_version": "L3",
+      "evidence": "term 'session token' occurs in requirement text",
+      "link_id": "6e67909ec0f5b4ee",
+      "requirement_id": "598d8a8b4bac70bf",
+      "term": "session token"
+    },
+    {
+      "definition_id": "118810de453422ab",
+      "document_version": "L3",
+      "evidence": "term 'hours unless private mode' occurs in requirement text",
+      "link_id": "30985c1378ff9e0d",
+      "requirement_id": "8150e7c4193b5613",
+      "term": "hours unless private mode"
+    },
+    {
+      "definition_id": "e4cc44ec1596a65f",
+      "document_version": "L3",
+      "evidence": "term 'session token' occurs in requirement text",
+      "link_id": "509b10a552ca8acd",
+      "requirement_id": "8150e7c4193b5613",
+      "term": "session token"
+    }
+  ],
   "document_sha256s": [
-    "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
-    "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
-    "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d"
+    "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
+    "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
+    "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf"
   ],
   "edges": [
+    {
+      "alignment_combined": 0.8471,
+      "change_classification": "SPLIT",
+      "confidence": 0.8471,
+      "edge_id": "07a652abc7ba7339",
+      "from_lineage_id": "L-87c7f90d6142",
+      "from_requirement_id": "63d8e14127a61590",
+      "from_version": "L1",
+      "reasons": [
+        "Split child 1/2 from parent 63d8e14127a61590."
+      ],
+      "relation": "SPLIT_INTO",
+      "to_lineage_id": "L-87c7f90d6142",
+      "to_requirement_id": "8be743f3807b0596",
+      "to_version": "L2"
+    },
     {
       "alignment_combined": 0.7947,
       "change_classification": "SPLIT",
       "confidence": 0.7947,
-      "edge_id": "2a0e59f68a1e1ae2",
+      "edge_id": "16d935c03e2bdca7",
       "from_lineage_id": "L-87c7f90d6142",
-      "from_requirement_id": "2be1fc34bab590a4",
+      "from_requirement_id": "63d8e14127a61590",
       "from_version": "L1",
       "reasons": [
-        "Split child 2/2 from parent 2be1fc34bab590a4."
+        "Split child 2/2 from parent 63d8e14127a61590."
       ],
       "relation": "SPLIT_INTO",
-      "to_lineage_id": "L-dd599feec634",
-      "to_requirement_id": "b76792625662eb10",
+      "to_lineage_id": "L-81bbf89c46c1",
+      "to_requirement_id": "f5337e73240e48c2",
       "to_version": "L2"
     },
     {
       "alignment_combined": 0.9958,
       "change_classification": "MOVED",
       "confidence": 0.93,
-      "edge_id": "31687fab2031ec0d",
+      "edge_id": "2cbacddf33a30775",
       "from_lineage_id": "L-e9d3300716ae",
-      "from_requirement_id": "639c8441d081e6a8",
+      "from_requirement_id": "cc72fd8729182d94",
       "from_version": "L1",
       "reasons": [
         "Semantically identical requirement relocated across sections → MOVED."
       ],
       "relation": "CONTINUES",
       "to_lineage_id": "L-e9d3300716ae",
-      "to_requirement_id": "c8bab8dcedb03fa0",
+      "to_requirement_id": "0a3debf9b9023147",
       "to_version": "L2"
     },
     {
-      "alignment_combined": 0.8471,
-      "change_classification": "SPLIT",
-      "confidence": 0.8471,
-      "edge_id": "3187ed3c1395cef2",
-      "from_lineage_id": "L-87c7f90d6142",
-      "from_requirement_id": "2be1fc34bab590a4",
-      "from_version": "L1",
-      "reasons": [
-        "Split child 1/2 from parent 2be1fc34bab590a4."
-      ],
-      "relation": "SPLIT_INTO",
-      "to_lineage_id": "L-87c7f90d6142",
-      "to_requirement_id": "b18f2296ef664219",
-      "to_version": "L2"
-    },
-    {
-      "alignment_combined": 0.9419,
+      "alignment_combined": 0.9408,
       "change_classification": "AMBIGUOUS",
       "confidence": 0.55,
-      "edge_id": "37e790e75eb46f92",
-      "from_lineage_id": "L-55a170b4305e",
-      "from_requirement_id": "6164f5b00daa02ad",
+      "edge_id": "547b071ddda7b0e8",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "80b988085d687f3f",
       "from_version": "L1",
       "reasons": [
         "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
       ],
       "relation": "CONTINUES",
-      "to_lineage_id": "L-55a170b4305e",
-      "to_requirement_id": "5410b1d0db6e1133",
+      "to_lineage_id": "L-107d7acc0e6f",
+      "to_requirement_id": "072eb1a3b6dbae90",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": "DEFINITION_CHANGED",
+      "confidence": 0.9,
+      "edge_id": "aa6a9c37191bc278",
+      "from_lineage_id": null,
+      "from_requirement_id": null,
+      "from_version": "L1",
+      "reasons": [
+        "Definition of 'session token' changed.",
+        "old: session token is defined as a credential that authenticates a browser session.",
+        "new: session token is defined as a credential that authenticates a browser session for at most one origin."
+      ],
+      "relation": "DEFINITION_CHANGED",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": "DEFINITION_CHANGED",
+      "confidence": 0.85,
+      "edge_id": "f70d7bf7b473f97c",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "072eb1a3b6dbae90",
+      "from_version": "L1",
+      "reasons": [
+        "Requirement depends on definition term 'session token'.",
+        "term 'session token' occurs in requirement text"
+      ],
+      "relation": "DEPENDS_ON",
+      "to_lineage_id": "L-107d7acc0e6f",
+      "to_requirement_id": "072eb1a3b6dbae90",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": null,
+      "confidence": 0.9,
+      "edge_id": "feea40aef7424ef2",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "072eb1a3b6dbae90",
+      "from_version": "L2",
+      "reasons": [
+        "term 'session token' occurs in requirement text",
+        "definition_id=85ca51f688098585"
+      ],
+      "relation": "REFERENCES_DEFINITION",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
       "to_version": "L2"
     },
     {
       "alignment_combined": 0.9958,
       "change_classification": "MOVED",
       "confidence": 0.93,
-      "edge_id": "109c6c1b6a40fda0",
+      "edge_id": "05dac9dc3981f453",
       "from_lineage_id": "L-87c7f90d6142",
-      "from_requirement_id": "b18f2296ef664219",
+      "from_requirement_id": "8be743f3807b0596",
       "from_version": "L2",
       "reasons": [
         "Semantically identical requirement relocated across sections → MOVED."
       ],
       "relation": "CONTINUES",
       "to_lineage_id": "L-87c7f90d6142",
-      "to_requirement_id": "db586e881a7abc40",
+      "to_requirement_id": "b6a13bc1129dd291",
       "to_version": "L3"
     },
     {
-      "alignment_combined": 0.9958,
-      "change_classification": "MOVED",
-      "confidence": 0.93,
-      "edge_id": "3c3a2af9b177b23b",
-      "from_lineage_id": "L-dd599feec634",
-      "from_requirement_id": "b76792625662eb10",
+      "alignment_combined": null,
+      "change_classification": "DEFINITION_CHANGED",
+      "confidence": 0.9,
+      "edge_id": "12765443389e50eb",
+      "from_lineage_id": null,
+      "from_requirement_id": null,
       "from_version": "L2",
       "reasons": [
-        "Semantically identical requirement relocated across sections → MOVED."
+        "Definition of 'session token' changed.",
+        "old: session token is defined as a credential that authenticates a browser session for at most one origin.",
+        "new: session token is defined as a credential that authenticates a browser session for at most one origin unless private mode"
       ],
-      "relation": "CONTINUES",
-      "to_lineage_id": "L-dd599feec634",
-      "to_requirement_id": "4ba79bdfd2cf3e16",
+      "relation": "DEFINITION_CHANGED",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
       "to_version": "L3"
     },
     {
-      "alignment_combined": 0.9438,
+      "alignment_combined": null,
+      "change_classification": "DEFINITION_CHANGED",
+      "confidence": 0.85,
+      "edge_id": "2e09a315a069ecb5",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "8150e7c4193b5613",
+      "from_version": "L2",
+      "reasons": [
+        "Requirement depends on definition term 'session token'.",
+        "term 'session token' occurs in requirement text"
+      ],
+      "relation": "DEPENDS_ON",
+      "to_lineage_id": "L-107d7acc0e6f",
+      "to_requirement_id": "8150e7c4193b5613",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": 0.9431,
       "change_classification": "EXCEPTION_ADDED",
       "confidence": 0.88,
-      "edge_id": "5a58361c3697ff19",
-      "from_lineage_id": "L-55a170b4305e",
-      "from_requirement_id": "5410b1d0db6e1133",
+      "edge_id": "60e64a3b43cb0a15",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "072eb1a3b6dbae90",
       "from_version": "L2",
       "reasons": [
         "Exception introduced: 'unless private mode is active'."
       ],
       "relation": "CONTINUES",
-      "to_lineage_id": "L-55a170b4305e",
-      "to_requirement_id": "d714e1c0f789be4d",
+      "to_lineage_id": "L-107d7acc0e6f",
+      "to_requirement_id": "8150e7c4193b5613",
       "to_version": "L3"
     },
     {
       "alignment_combined": null,
       "change_classification": "ADDED",
       "confidence": 0.95,
-      "edge_id": "89399d9b7884c1d2",
+      "edge_id": "93e2617544ab487d",
       "from_lineage_id": null,
       "from_requirement_id": null,
       "from_version": "L2",
@@ -130,86 +281,209 @@
         "No prior instance in previous version."
       ],
       "relation": "ADDED",
-      "to_lineage_id": "L-c0a2111010c6",
-      "to_requirement_id": "0b005e5e05ed60da",
+      "to_lineage_id": "L-dc330ab26802",
+      "to_requirement_id": "598d8a8b4bac70bf",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": 0.9958,
+      "change_classification": "MOVED",
+      "confidence": 0.93,
+      "edge_id": "c9e37fe36de95e85",
+      "from_lineage_id": "L-81bbf89c46c1",
+      "from_requirement_id": "f5337e73240e48c2",
+      "from_version": "L2",
+      "reasons": [
+        "Semantically identical requirement relocated across sections → MOVED."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-81bbf89c46c1",
+      "to_requirement_id": "14ae478e8c48fbbc",
       "to_version": "L3"
     },
     {
       "alignment_combined": 0.9732,
       "change_classification": "AMBIGUOUS",
       "confidence": 0.55,
-      "edge_id": "c9187d99bca0e4d8",
+      "edge_id": "f1dd68591ca4a7ea",
       "from_lineage_id": "L-e9d3300716ae",
-      "from_requirement_id": "c8bab8dcedb03fa0",
+      "from_requirement_id": "0a3debf9b9023147",
       "from_version": "L2",
       "reasons": [
         "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
       ],
       "relation": "CONTINUES",
       "to_lineage_id": "L-e9d3300716ae",
-      "to_requirement_id": "a93f8196fcb28cb2",
+      "to_requirement_id": "3635bf77b2bcace0",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": "DEFINITION_CHANGED",
+      "confidence": 0.85,
+      "edge_id": "fb43a720e00a31b3",
+      "from_lineage_id": "L-dc330ab26802",
+      "from_requirement_id": "598d8a8b4bac70bf",
+      "from_version": "L2",
+      "reasons": [
+        "Requirement depends on definition term 'session token'.",
+        "term 'session token' occurs in requirement text"
+      ],
+      "relation": "DEPENDS_ON",
+      "to_lineage_id": "L-dc330ab26802",
+      "to_requirement_id": "598d8a8b4bac70bf",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": null,
+      "confidence": 0.9,
+      "edge_id": "70bf59c2fb055a89",
+      "from_lineage_id": "L-dc330ab26802",
+      "from_requirement_id": "598d8a8b4bac70bf",
+      "from_version": "L3",
+      "reasons": [
+        "term 'session token' occurs in requirement text",
+        "definition_id=e4cc44ec1596a65f"
+      ],
+      "relation": "REFERENCES_DEFINITION",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": null,
+      "confidence": 0.9,
+      "edge_id": "9e00a95416335ae3",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "8150e7c4193b5613",
+      "from_version": "L3",
+      "reasons": [
+        "term 'session token' occurs in requirement text",
+        "definition_id=e4cc44ec1596a65f"
+      ],
+      "relation": "REFERENCES_DEFINITION",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": null,
+      "confidence": 0.9,
+      "edge_id": "b98591a9a70ed0fc",
+      "from_lineage_id": "L-107d7acc0e6f",
+      "from_requirement_id": "8150e7c4193b5613",
+      "from_version": "L3",
+      "reasons": [
+        "term 'hours unless private mode' occurs in requirement text",
+        "definition_id=118810de453422ab"
+      ],
+      "relation": "REFERENCES_DEFINITION",
+      "to_lineage_id": null,
+      "to_requirement_id": null,
       "to_version": "L3"
     }
   ],
   "integrity": {
     "alg": "sha256",
-    "content_sha256": "b321c146611bd2f3d369515fa38d866459470179ad5ae5619fe6952187041e7b"
+    "content_sha256": "e286588dcdfd9b36164b345de5c9ec632d636eb18b9ca9c3840ce0791cecd3df"
   },
   "nodes": [
     {
       "first_version": "L1",
       "instances": [
         {
-          "action": "retain session tokens for 24 hours",
+          "action": "retain session token for 24 hours",
           "actor": "User agents",
           "condition": null,
-          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_sha256": "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
           "document_version": "L1",
           "exception": null,
-          "fingerprint": "c1b5420e3d4a8732c2701c40200a81e935dafc97a1f6be67acfeffab0e7b9c18",
-          "lineage_id": "L-55a170b4305e",
+          "fingerprint": "66e212e082562b33e2ef75d6673e970f831e0dac3bf0ee59843d5d995cc28bfd",
+          "lineage_id": "L-107d7acc0e6f",
           "modality": "MUST",
-          "normalized_text": "User agents MUST retain session tokens for 24 hours.",
-          "original_text": "User agents MUST retain session tokens for 24 hours.",
-          "requirement_id": "6164f5b00daa02ad",
+          "normalized_text": "User agents MUST retain session token for 24 hours.",
+          "original_text": "User agents MUST retain session token for 24 hours.",
+          "requirement_id": "80b988085d687f3f",
           "section_path": "Lineage Demo 1 > Session",
-          "source_locator": "id:r1|xpath:/body/p[1]"
+          "source_locator": "id:r1|xpath:/body/p[2]"
         },
         {
-          "action": "retain session tokens for 24 hours",
+          "action": "retain session token for 24 hours",
           "actor": "user agents",
           "condition": null,
-          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
           "document_version": "L2",
           "exception": null,
-          "fingerprint": "6b3c3c20bda0aff712e3274e3011b9dae536996c54da8db96f7e88a48e3e31a2",
-          "lineage_id": "L-55a170b4305e",
+          "fingerprint": "e0a080f6f6e9bfadcc931b2f8fa8695a92fd4b7d05535f8622d75c6ab9bb97a8",
+          "lineage_id": "L-107d7acc0e6f",
           "modality": "MUST",
-          "normalized_text": "Authenticated user agents MUST retain session tokens for 24 hours.",
-          "original_text": "Authenticated user agents MUST retain session tokens for 24 hours.",
-          "requirement_id": "5410b1d0db6e1133",
+          "normalized_text": "Authenticated user agents MUST retain session token for 24 hours.",
+          "original_text": "Authenticated user agents MUST retain session token for 24 hours.",
+          "requirement_id": "072eb1a3b6dbae90",
           "section_path": "Lineage Demo 2 > Session",
-          "source_locator": "id:r1|xpath:/body/p[1]"
+          "source_locator": "id:r1|xpath:/body/p[2]"
         },
         {
-          "action": "retain session tokens for 24 hours",
+          "action": "retain session token for 24 hours",
           "actor": "user agents",
           "condition": null,
-          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
           "document_version": "L3",
           "exception": "unless private mode is active",
-          "fingerprint": "7e0347a0b3f4b7435d10f4af1b68c0c6a1303440c7a13d6f3140fc028cec20ee",
-          "lineage_id": "L-55a170b4305e",
+          "fingerprint": "766adab978d0b01dd5d8bb631d1ea7cd38896fb3fc1406bda7638382aa522166",
+          "lineage_id": "L-107d7acc0e6f",
           "modality": "MUST",
-          "normalized_text": "Authenticated user agents MUST retain session tokens for 24 hours unless private mode is active.",
-          "original_text": "Authenticated user agents MUST retain session tokens for 24 hours unless private mode is active.",
-          "requirement_id": "d714e1c0f789be4d",
+          "normalized_text": "Authenticated user agents MUST retain session token for 24 hours unless private mode is active.",
+          "original_text": "Authenticated user agents MUST retain session token for 24 hours unless private mode is active.",
+          "requirement_id": "8150e7c4193b5613",
           "section_path": "Lineage Demo 3 > Session",
-          "source_locator": "id:r1|xpath:/body/p[1]"
+          "source_locator": "id:r1|xpath:/body/p[2]"
         }
       ],
       "last_version": "L3",
-      "lineage_id": "L-55a170b4305e"
+      "lineage_id": "L-107d7acc0e6f"
+    },
+    {
+      "first_version": "L2",
+      "instances": [
+        {
+          "action": "refresh refresh-tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
+          "document_version": "L2",
+          "exception": null,
+          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
+          "lineage_id": "L-81bbf89c46c1",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "requirement_id": "f5337e73240e48c2",
+          "section_path": "Lineage Demo 2 > Session",
+          "source_locator": "id:r3b|xpath:/body/p[5]"
+        },
+        {
+          "action": "refresh refresh-tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
+          "document_version": "L3",
+          "exception": null,
+          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
+          "lineage_id": "L-81bbf89c46c1",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "requirement_id": "14ae478e8c48fbbc",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r3b|xpath:/body/p[5]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-81bbf89c46c1"
     },
     {
       "first_version": "L1",
@@ -218,7 +492,7 @@
           "action": "refresh tokens before expiry",
           "actor": "Clients",
           "condition": null,
-          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_sha256": "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
           "document_version": "L1",
           "exception": null,
           "fingerprint": "a22fa776d1b161e11066dd20bd0e4c12bcca1425c529aedacd76617d82a28705",
@@ -226,15 +500,15 @@
           "modality": "SHOULD",
           "normalized_text": "Clients SHOULD refresh tokens before expiry.",
           "original_text": "Clients SHOULD refresh tokens before expiry.",
-          "requirement_id": "2be1fc34bab590a4",
+          "requirement_id": "63d8e14127a61590",
           "section_path": "Lineage Demo 1 > Session",
-          "source_locator": "id:r3|xpath:/body/p[3]"
+          "source_locator": "id:r3|xpath:/body/p[4]"
         },
         {
           "action": "refresh access tokens before expiry",
           "actor": "Clients",
           "condition": null,
-          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
           "document_version": "L2",
           "exception": null,
           "fingerprint": "27a3981718cf0204a7810349e8ea331ff5d6ad423a7f0fd9a9be07515e49bd30",
@@ -242,15 +516,15 @@
           "modality": "MUST",
           "normalized_text": "Clients MUST refresh access tokens before expiry.",
           "original_text": "Clients MUST refresh access tokens before expiry.",
-          "requirement_id": "b18f2296ef664219",
+          "requirement_id": "8be743f3807b0596",
           "section_path": "Lineage Demo 2 > Session",
-          "source_locator": "id:r3a|xpath:/body/p[3]"
+          "source_locator": "id:r3a|xpath:/body/p[4]"
         },
         {
           "action": "refresh access tokens before expiry",
           "actor": "Clients",
           "condition": null,
-          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
           "document_version": "L3",
           "exception": null,
           "fingerprint": "27a3981718cf0204a7810349e8ea331ff5d6ad423a7f0fd9a9be07515e49bd30",
@@ -258,9 +532,9 @@
           "modality": "MUST",
           "normalized_text": "Clients MUST refresh access tokens before expiry.",
           "original_text": "Clients MUST refresh access tokens before expiry.",
-          "requirement_id": "db586e881a7abc40",
+          "requirement_id": "b6a13bc1129dd291",
           "section_path": "Lineage Demo 3 > Session",
-          "source_locator": "id:r3a|xpath:/body/p[3]"
+          "source_locator": "id:r3a|xpath:/body/p[4]"
         }
       ],
       "last_version": "L3",
@@ -270,63 +544,24 @@
       "first_version": "L3",
       "instances": [
         {
-          "action": "log raw session tokens",
+          "action": "log raw session token values",
           "actor": "Clients",
           "condition": null,
-          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
           "document_version": "L3",
           "exception": null,
-          "fingerprint": "9587df44903fe217203d31d032b464b26ca6431c40f053b91a98ad0a180591a4",
-          "lineage_id": "L-c0a2111010c6",
+          "fingerprint": "1d8ac1c6b33206af4815f5282bb7e06686a4a12dc7bab7451bb44b627a627068",
+          "lineage_id": "L-dc330ab26802",
           "modality": "MUST_NOT",
-          "normalized_text": "Clients MUST NOT log raw session tokens.",
-          "original_text": "Clients MUST NOT log raw session tokens.",
-          "requirement_id": "0b005e5e05ed60da",
+          "normalized_text": "Clients MUST NOT log raw session token values.",
+          "original_text": "Clients MUST NOT log raw session token values.",
+          "requirement_id": "598d8a8b4bac70bf",
           "section_path": "Lineage Demo 3 > Session",
-          "source_locator": "id:r4|xpath:/body/p[5]"
+          "source_locator": "id:r4|xpath:/body/p[6]"
         }
       ],
       "last_version": "L3",
-      "lineage_id": "L-c0a2111010c6"
-    },
-    {
-      "first_version": "L2",
-      "instances": [
-        {
-          "action": "refresh refresh-tokens before expiry",
-          "actor": "Clients",
-          "condition": null,
-          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
-          "document_version": "L2",
-          "exception": null,
-          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
-          "lineage_id": "L-dd599feec634",
-          "modality": "MUST",
-          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
-          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
-          "requirement_id": "b76792625662eb10",
-          "section_path": "Lineage Demo 2 > Session",
-          "source_locator": "id:r3b|xpath:/body/p[4]"
-        },
-        {
-          "action": "refresh refresh-tokens before expiry",
-          "actor": "Clients",
-          "condition": null,
-          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
-          "document_version": "L3",
-          "exception": null,
-          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
-          "lineage_id": "L-dd599feec634",
-          "modality": "MUST",
-          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
-          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
-          "requirement_id": "4ba79bdfd2cf3e16",
-          "section_path": "Lineage Demo 3 > Session",
-          "source_locator": "id:r3b|xpath:/body/p[4]"
-        }
-      ],
-      "last_version": "L3",
-      "lineage_id": "L-dd599feec634"
+      "lineage_id": "L-dc330ab26802"
     },
     {
       "first_version": "L1",
@@ -335,7 +570,7 @@
           "action": "validate client certificates on every request",
           "actor": "Servers",
           "condition": null,
-          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_sha256": "8e744ead195471b96c0d884e39861af203fd09b90a64045b3c92f9ad986cd39f",
           "document_version": "L1",
           "exception": null,
           "fingerprint": "69aa4fbd77ef582ac4fc2b39d553b2b822c4272d8af3242c88dac4715d5d921e",
@@ -343,15 +578,15 @@
           "modality": "MUST",
           "normalized_text": "Servers MUST validate client certificates on every request.",
           "original_text": "Servers MUST validate client certificates on every request.",
-          "requirement_id": "639c8441d081e6a8",
+          "requirement_id": "cc72fd8729182d94",
           "section_path": "Lineage Demo 1 > Session",
-          "source_locator": "id:r2|xpath:/body/p[2]"
+          "source_locator": "id:r2|xpath:/body/p[3]"
         },
         {
           "action": "validate client certificates on every request",
           "actor": "Servers",
           "condition": null,
-          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_sha256": "e62a2e3f78355d756e5fce3ad0de943534967ee1ca225ff46ecc67eb242be6f4",
           "document_version": "L2",
           "exception": null,
           "fingerprint": "69aa4fbd77ef582ac4fc2b39d553b2b822c4272d8af3242c88dac4715d5d921e",
@@ -359,15 +594,15 @@
           "modality": "MUST",
           "normalized_text": "Servers MUST validate client certificates on every request.",
           "original_text": "Servers MUST validate client certificates on every request.",
-          "requirement_id": "c8bab8dcedb03fa0",
+          "requirement_id": "0a3debf9b9023147",
           "section_path": "Lineage Demo 2 > Session",
-          "source_locator": "id:r2|xpath:/body/p[2]"
+          "source_locator": "id:r2|xpath:/body/p[3]"
         },
         {
           "action": "validate client certificates and channel bindings on every request",
           "actor": "Servers",
           "condition": null,
-          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_sha256": "d29a973e7c4de29fcfdf76b24f92eaf8ea8b69a1bfff71f45b9ddf08ff05c7cf",
           "document_version": "L3",
           "exception": null,
           "fingerprint": "007e7ddf6c850130b3909fc54f322b3c7f96136ea3a4e6684a0ec597544c7b1c",
@@ -375,9 +610,9 @@
           "modality": "MUST",
           "normalized_text": "Servers MUST validate client certificates and channel bindings on every request.",
           "original_text": "Servers MUST validate client certificates and channel bindings on every request.",
-          "requirement_id": "a93f8196fcb28cb2",
+          "requirement_id": "3635bf77b2bcace0",
           "section_path": "Lineage Demo 3 > Session",
-          "source_locator": "id:r2m|xpath:/body/p[2]"
+          "source_locator": "id:r2m|xpath:/body/p[3]"
         }
       ],
       "last_version": "L3",
@@ -388,11 +623,16 @@
   "schema_version": "1.0.0",
   "summary": {
     "ambiguity_count": 0,
-    "edge_count": 9,
+    "definition_count": 4,
+    "dependency_link_count": 5,
+    "edge_count": 18,
     "lineage_count": 5,
     "relation_counts": {
       "ADDED": 1,
       "CONTINUES": 6,
+      "DEFINITION_CHANGED": 2,
+      "DEPENDS_ON": 3,
+      "REFERENCES_DEFINITION": 4,
       "SPLIT_INTO": 2
     },
     "version_count": 3
