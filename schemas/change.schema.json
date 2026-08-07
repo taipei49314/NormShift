@@ -32,6 +32,8 @@
         "CONDITION_REMOVED",
         "EXCEPTION_ADDED",
         "EXCEPTION_REMOVED",
+        "SPLIT",
+        "MERGED",
         "AMBIGUOUS"
       ]
     },

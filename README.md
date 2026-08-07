@@ -72,9 +72,10 @@ uv run normshift verify evidence/m0/report.json
 **Current implementer status:**  
 - M0 — `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
 - M1 — `M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
+- M2 — `M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` (core lineage; def/xref still limited)
 
 Adapters: `--adapter auto|html|rfc|w3c|whatwg`. Offline corpus: `fixtures/corpus/`.  
-`normshift ingest` writes provenance JSON. No live crawler (M3).
+`normshift ingest` / `normshift lineage` available. No live crawler (M3).
 
 ## License
 

@@ -56,7 +56,91 @@ class ChangeClassification(StrEnum):
     CONDITION_REMOVED = "CONDITION_REMOVED"
     EXCEPTION_ADDED = "EXCEPTION_ADDED"
     EXCEPTION_REMOVED = "EXCEPTION_REMOVED"
+    SPLIT = "SPLIT"
+    MERGED = "MERGED"
     AMBIGUOUS = "AMBIGUOUS"
+
+
+class LineageRelation(StrEnum):
+    CONTINUES = "CONTINUES"
+    SPLIT_INTO = "SPLIT_INTO"
+    MERGED_FROM = "MERGED_FROM"
+    SUPERSEDES = "SUPERSEDES"
+    ADDED = "ADDED"
+    REMOVED = "REMOVED"
+    AMBIGUOUS = "AMBIGUOUS"
+
+
+class RequirementInstanceRef(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    lineage_id: str
+    requirement_id: str
+    document_version: str
+    document_sha256: str
+    section_path: str
+    source_locator: str
+    modality: Modality
+    original_text: str
+    normalized_text: str
+    actor: str | None = None
+    action: str | None = None
+    condition: str | None = None
+    exception: str | None = None
+    fingerprint: str
+
+
+class LineageNode(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    lineage_id: str
+    instances: list[RequirementInstanceRef]
+    first_version: str
+    last_version: str
+
+
+class LineageEdge(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    edge_id: str
+    relation: LineageRelation
+    from_lineage_id: str | None
+    to_lineage_id: str | None
+    from_requirement_id: str | None
+    to_requirement_id: str | None
+    from_version: str
+    to_version: str
+    change_classification: str | None = None
+    confidence: float = 0.0
+    reasons: list[str] = Field(default_factory=list)
+    alignment_combined: float | None = None
+
+
+class AmbiguityItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    item_id: str
+    version_pair: str
+    kind: str
+    old_requirement_ids: list[str] = Field(default_factory=list)
+    new_requirement_ids: list[str] = Field(default_factory=list)
+    detail: str
+    scores: list[float] = Field(default_factory=list)
+
+
+class LineageGraph(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: str = "1.0.0"
+    tool_version: str
+    profile: ProfileName
+    versions: list[str]
+    document_sha256s: list[str]
+    nodes: list[LineageNode]
+    edges: list[LineageEdge]
+    ambiguity_queue: list[AmbiguityItem]
+    summary: dict[str, Any]
+    integrity: dict[str, str]
 
 
 class Provenance(BaseModel):

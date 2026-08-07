@@ -157,6 +157,43 @@ def ingest_cmd(
     typer.echo(f"ingested {adapted.family.value} → {out}")
 
 
+@app.command("lineage")
+def lineage_cmd(
+    documents: list[Path] = typer.Argument(..., help="Ordered document versions (2+)"),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+    json_out: Path = typer.Option(..., "--json", help="Lineage graph JSON path"),
+) -> None:
+    """Build a requirement lineage graph across ordered document versions."""
+    if len(documents) < 2:
+        typer.echo("error: lineage requires at least two documents", err=True)
+        raise typer.Exit(code=2)
+    for p in documents:
+        if not p.is_file():
+            typer.echo(f"error: document not found: {p}", err=True)
+            raise typer.Exit(code=2)
+    try:
+        from normshift.lineage.builder import build_lineage_graph, write_lineage_graph
+
+        graph = build_lineage_graph(
+            documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+        write_lineage_graph(graph, json_out)
+    except AdapterError as exc:
+        typer.echo(f"error: adapter failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"error: lineage failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(
+        f"lineage: {len(graph.versions)} versions, {len(graph.nodes)} lineages, "
+        f"{len(graph.edges)} edges, {len(graph.ambiguity_queue)} ambiguities → {json_out}"
+    )
+
+
 @app.command("verify")
 def verify_cmd(
     report_path: Path = typer.Argument(..., help="JSON report to verify"),

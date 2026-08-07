@@ -1,0 +1,435 @@
+"""Build requirement lineage graphs across multiple document versions."""
+
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
+from typing import Any
+
+from normshift import __version__
+from normshift.align.aligner import score_pair
+from normshift.align.multi import align_with_multiplicity
+from normshift.classify.classifier import classify_pair
+from normshift.evidence.hashing import canonical_json_bytes, integrity_payload_hash
+from normshift.extract.extractor import extract_requirements
+from normshift.model.types import (
+    AdapterName,
+    AmbiguityItem,
+    LineageEdge,
+    LineageGraph,
+    LineageNode,
+    LineageRelation,
+    ProfileName,
+    Requirement,
+    RequirementInstanceRef,
+    RequirementsDocument,
+)
+
+
+def _edge_id(*parts: str) -> str:
+    return hashlib.sha256("\x1f".join(parts).encode("utf-8")).hexdigest()[:16]
+
+
+def _new_lineage_id(seed: str) -> str:
+    return "L-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12]
+
+
+def _to_instance(req: Requirement, lineage_id: str) -> RequirementInstanceRef:
+    return RequirementInstanceRef(
+        lineage_id=lineage_id,
+        requirement_id=req.requirement_id,
+        document_version=req.document_version,
+        document_sha256=req.document_sha256,
+        section_path=req.section_path,
+        source_locator=req.source_locator,
+        modality=req.modality,
+        original_text=req.original_text,
+        normalized_text=req.normalized_text,
+        actor=req.actor,
+        action=req.action,
+        condition=req.condition,
+        exception=req.exception,
+        fingerprint=req.fingerprint,
+    )
+
+
+def _append_instance(
+    nodes: dict[str, LineageNode],
+    lid: str,
+    req: Requirement,
+    version: str,
+) -> None:
+    if lid not in nodes:
+        nodes[lid] = LineageNode(
+            lineage_id=lid,
+            instances=[],
+            first_version=version,
+            last_version=version,
+        )
+    node = nodes[lid]
+    inst = _to_instance(req, lid)
+    if any(i.requirement_id == inst.requirement_id for i in node.instances):
+        return
+    node.instances.append(inst)
+    node.last_version = version
+
+
+def build_lineage_graph(
+    paths: list[Path],
+    *,
+    profile: ProfileName,
+    adapter: AdapterName = AdapterName.AUTO,
+) -> LineageGraph:
+    if len(paths) < 2:
+        raise ValueError("lineage requires at least two document versions")
+
+    docs = [extract_requirements(p, profile, adapter=adapter) for p in paths]
+    versions = [d.document_version for d in docs]
+    sha256s = [d.document_sha256 for d in docs]
+
+    nodes: dict[str, LineageNode] = {}
+    edges: list[LineageEdge] = []
+
+    prev_lineage: dict[str, str] = {}
+
+    for req in docs[0].requirements:
+        lid = _new_lineage_id(f"{req.fingerprint}|{req.normalized_text}|{req.modality.value}")
+        prev_lineage[req.requirement_id] = lid
+        nodes[lid] = LineageNode(
+            lineage_id=lid,
+            instances=[_to_instance(req, lid)],
+            first_version=req.document_version,
+            last_version=req.document_version,
+        )
+
+    for i in range(len(docs) - 1):
+        old_doc, new_doc = docs[i], docs[i + 1]
+        multi = align_with_multiplicity(old_doc.requirements, new_doc.requirements)
+        v_old, v_new = old_doc.document_version, new_doc.document_version
+
+        claimed_new: set[str] = set()
+        claimed_old: set[str] = set()
+        next_lineage: dict[str, str] = {}
+
+        split_old_ids = set(multi.splits.keys())
+        merge_new_ids = set(multi.merges.keys())
+
+        # 1) SPLITS first (consume old + children)
+        for oid, children in multi.splits.items():
+            if len(children) < 2:
+                continue
+            parent_lid = prev_lineage.get(oid) or _new_lineage_id(oid)
+            claimed_old.add(oid)
+            for idx, (nreq, sc) in enumerate(children):
+                if nreq.requirement_id in claimed_new:
+                    continue
+                if idx == 0:
+                    child_lid = parent_lid
+                else:
+                    child_lid = _new_lineage_id(f"split|{oid}|{nreq.requirement_id}")
+                    nodes.setdefault(
+                        child_lid,
+                        LineageNode(
+                            lineage_id=child_lid,
+                            instances=[],
+                            first_version=v_new,
+                            last_version=v_new,
+                        ),
+                    )
+                _append_instance(nodes, child_lid, nreq, v_new)
+                next_lineage[nreq.requirement_id] = child_lid
+                claimed_new.add(nreq.requirement_id)
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("split", oid, nreq.requirement_id, v_old, v_new),
+                        relation=LineageRelation.SPLIT_INTO,
+                        from_lineage_id=parent_lid,
+                        to_lineage_id=child_lid,
+                        from_requirement_id=oid,
+                        to_requirement_id=nreq.requirement_id,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="SPLIT",
+                        confidence=round(sc, 4),
+                        reasons=[
+                            f"Split child {idx + 1}/{len(children)} from parent {oid}."
+                        ],
+                        alignment_combined=round(sc, 4),
+                    )
+                )
+
+        # 2) MERGES
+        for nid, parents in multi.merges.items():
+            if len(parents) < 2 or nid in claimed_new:
+                continue
+            nreq = next(r for r in new_doc.requirements if r.requirement_id == nid)
+            parents_sorted = sorted(parents, key=lambda t: (-t[1], t[0].requirement_id))
+            primary_old, primary_sc = parents_sorted[0]
+            primary_lid = prev_lineage.get(primary_old.requirement_id) or _new_lineage_id(
+                primary_old.requirement_id
+            )
+            _append_instance(nodes, primary_lid, nreq, v_new)
+            next_lineage[nid] = primary_lid
+            claimed_new.add(nid)
+            for oreq, sc in parents_sorted:
+                claimed_old.add(oreq.requirement_id)
+                olid = prev_lineage.get(oreq.requirement_id) or _new_lineage_id(
+                    oreq.requirement_id
+                )
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("merge", oreq.requirement_id, nid, v_old, v_new),
+                        relation=LineageRelation.MERGED_FROM,
+                        from_lineage_id=olid,
+                        to_lineage_id=primary_lid,
+                        from_requirement_id=oreq.requirement_id,
+                        to_requirement_id=nid,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="MERGED",
+                        confidence=round(sc, 4),
+                        reasons=[f"Merged into {nid} (primary score {primary_sc:.4f})."],
+                        alignment_combined=round(sc, 4),
+                    )
+                )
+
+        # 3) Primary continues / add / remove
+        for pair in multi.primary:
+            if pair.old and pair.new:
+                oid, nid = pair.old.requirement_id, pair.new.requirement_id
+                if oid in split_old_ids or nid in merge_new_ids:
+                    continue
+                if oid in claimed_old or nid in claimed_new:
+                    continue
+                lid = prev_lineage.get(oid) or _new_lineage_id(oid)
+                ch = classify_pair(pair)
+                _append_instance(nodes, lid, pair.new, v_new)
+                next_lineage[nid] = lid
+                claimed_old.add(oid)
+                claimed_new.add(nid)
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("cont", oid, nid, v_old, v_new),
+                        relation=LineageRelation.CONTINUES,
+                        from_lineage_id=lid,
+                        to_lineage_id=lid,
+                        from_requirement_id=oid,
+                        to_requirement_id=nid,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification=ch.classification.value,
+                        confidence=ch.confidence,
+                        reasons=list(ch.classification_reasons),
+                        alignment_combined=pair.score.combined if pair.score else None,
+                    )
+                )
+            elif pair.old and not pair.new:
+                oid = pair.old.requirement_id
+                if oid in claimed_old or oid in split_old_ids:
+                    continue
+                from_lid: str | None = prev_lineage.get(oid)
+                claimed_old.add(oid)
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("rem", oid, v_old, v_new),
+                        relation=LineageRelation.REMOVED,
+                        from_lineage_id=from_lid,
+                        to_lineage_id=None,
+                        from_requirement_id=oid,
+                        to_requirement_id=None,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="REMOVED",
+                        confidence=0.95,
+                        reasons=["No successor instance in next version."],
+                    )
+                )
+            elif pair.new and not pair.old:
+                nid = pair.new.requirement_id
+                if nid in claimed_new or nid in merge_new_ids:
+                    continue
+                nreq = pair.new
+                lid = _new_lineage_id(f"add|{nreq.fingerprint}|{nid}")
+                nodes[lid] = LineageNode(
+                    lineage_id=lid,
+                    instances=[_to_instance(nreq, lid)],
+                    first_version=v_new,
+                    last_version=v_new,
+                )
+                next_lineage[nid] = lid
+                claimed_new.add(nid)
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("add", nid, v_old, v_new),
+                        relation=LineageRelation.ADDED,
+                        from_lineage_id=None,
+                        to_lineage_id=lid,
+                        from_requirement_id=None,
+                        to_requirement_id=nid,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="ADDED",
+                        confidence=0.95,
+                        reasons=["No prior instance in previous version."],
+                    )
+                )
+
+        # Leftover olds
+        for oreq in old_doc.requirements:
+            if oreq.requirement_id in claimed_old:
+                continue
+            from_lid2: str | None = prev_lineage.get(oreq.requirement_id)
+            edges.append(
+                LineageEdge(
+                    edge_id=_edge_id("rem2", oreq.requirement_id, v_old, v_new),
+                    relation=LineageRelation.REMOVED,
+                    from_lineage_id=from_lid2,
+                    to_lineage_id=None,
+                    from_requirement_id=oreq.requirement_id,
+                    to_requirement_id=None,
+                    from_version=v_old,
+                    to_version=v_new,
+                    change_classification="REMOVED",
+                    confidence=0.7,
+                    reasons=["Unlinked old requirement after multi-align."],
+                )
+            )
+
+        # Leftover news
+        for nreq in new_doc.requirements:
+            if nreq.requirement_id in claimed_new:
+                continue
+            best: tuple[float, Requirement] | None = None
+            for oreq in old_doc.requirements:
+                sc = score_pair(oreq, nreq).combined
+                if best is None or sc > best[0]:
+                    best = (sc, oreq)
+            if best and best[0] >= 0.62 and best[1].requirement_id in prev_lineage:
+                lid = prev_lineage[best[1].requirement_id]
+                _append_instance(nodes, lid, nreq, v_new)
+                next_lineage[nreq.requirement_id] = lid
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("soft", best[1].requirement_id, nreq.requirement_id),
+                        relation=LineageRelation.CONTINUES,
+                        from_lineage_id=lid,
+                        to_lineage_id=lid,
+                        from_requirement_id=best[1].requirement_id,
+                        to_requirement_id=nreq.requirement_id,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="AMBIGUOUS",
+                        confidence=round(best[0], 4),
+                        reasons=["Soft-linked unmatched new to best old."],
+                        alignment_combined=round(best[0], 4),
+                    )
+                )
+            else:
+                lid = _new_lineage_id(f"add2|{nreq.fingerprint}|{nreq.requirement_id}")
+                nodes[lid] = LineageNode(
+                    lineage_id=lid,
+                    instances=[_to_instance(nreq, lid)],
+                    first_version=v_new,
+                    last_version=v_new,
+                )
+                next_lineage[nreq.requirement_id] = lid
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("add2", nreq.requirement_id, v_old, v_new),
+                        relation=LineageRelation.ADDED,
+                        from_lineage_id=None,
+                        to_lineage_id=lid,
+                        from_requirement_id=None,
+                        to_requirement_id=nreq.requirement_id,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="ADDED",
+                        confidence=0.85,
+                        reasons=["Unlinked new requirement after multi-align."],
+                    )
+                )
+
+        prev_lineage = next_lineage
+
+    ambiguity = _collect_ambiguity(docs)
+    node_list = sorted(nodes.values(), key=lambda n: n.lineage_id)
+    edge_list = sorted(edges, key=lambda e: (e.from_version, e.to_version, e.edge_id))
+    summary: dict[str, Any] = {
+        "version_count": len(versions),
+        "lineage_count": len(node_list),
+        "edge_count": len(edge_list),
+        "ambiguity_count": len(ambiguity),
+        "relation_counts": _count_relations(edge_list),
+    }
+
+    graph = LineageGraph(
+        tool_version=__version__,
+        profile=profile,
+        versions=versions,
+        document_sha256s=sha256s,
+        nodes=node_list,
+        edges=edge_list,
+        ambiguity_queue=ambiguity,
+        summary=summary,
+        integrity={"alg": "sha256", "content_sha256": ""},
+    )
+    data = graph.model_dump(mode="json")
+    graph.integrity = {"alg": "sha256", "content_sha256": integrity_payload_hash(data)}
+    return graph
+
+
+def _count_relations(edges: list[LineageEdge]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for e in edges:
+        counts[e.relation.value] = counts.get(e.relation.value, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _collect_ambiguity(docs: list[RequirementsDocument]) -> list[AmbiguityItem]:
+    items: list[AmbiguityItem] = []
+    for i in range(len(docs) - 1):
+        multi = align_with_multiplicity(docs[i].requirements, docs[i + 1].requirements)
+        pair_key = f"{docs[i].document_version}->{docs[i + 1].document_version}"
+        for a in multi.ambiguity:
+            kind = str(a.get("kind"))
+            olds = a.get("olds")
+            news = a.get("news")
+            if isinstance(olds, list):
+                old_ids = [str(x) for x in olds]
+            elif "old" in a:
+                old_ids = [str(a["old"])]
+            else:
+                old_ids = []
+            if isinstance(news, list):
+                new_ids = [str(x) for x in news]
+            elif "new" in a:
+                new_ids = [str(a["new"])]
+            else:
+                new_ids = []
+            raw_scores = a.get("scores")
+            score_list: list[float] = []
+            if isinstance(raw_scores, list):
+                score_list = [float(x) for x in raw_scores]
+            items.append(
+                AmbiguityItem(
+                    item_id=_edge_id(pair_key, kind, ",".join(old_ids), ",".join(new_ids)),
+                    version_pair=pair_key,
+                    kind=kind,
+                    old_requirement_ids=old_ids,
+                    new_requirement_ids=new_ids,
+                    detail=str(a),
+                    scores=score_list,
+                )
+            )
+    items.sort(key=lambda x: x.item_id)
+    return items
+
+
+def write_lineage_graph(graph: LineageGraph, path: Path) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = graph.model_dump(mode="json")
+    digest = integrity_payload_hash(data)
+    data["integrity"] = {"alg": "sha256", "content_sha256": digest}
+    raw = canonical_json_bytes(data)
+    path.write_bytes(raw)
+    return hashlib.sha256(raw).hexdigest()

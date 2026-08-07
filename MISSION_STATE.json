@@ -1,31 +1,26 @@
 {
-  "current_objective": "M1 Real Standards Adapters & Provenance",
-  "current_hypothesis": "Offline multi-family adapters with sidecar provenance and fail-closed loads satisfy North Star M1 exit criteria without network or LLM",
-  "status": "M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "5fbc9c5a368bc94feba3adb35a6d44e8989ac0cc",
+  "current_objective": "M2 Requirement Lineage Graph (core) + hold for definition/xref follow-up",
+  "current_hypothesis": "Strict multi-version alignment with persistent lineage IDs prevents mass false add/remove while exposing split/continue edges",
+  "status": "M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": null,
   "commands_run": [
-    "uv run ruff check .  # exit 0",
-    "uv run mypy src  # exit 0",
-    "uv run pytest -q  # exit 0, 42 passed",
-    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # 17/17",
-    "uv run normshift ingest ... evidence/m1/*.prov.json",
-    "uv run normshift diff ... evidence/m1/{rfc,w3c,whatwg}.diff.json",
-    "uv run normshift verify evidence/m1/*.diff.json  # exit 0"
+    "uv run ruff check .  # 0",
+    "uv run mypy src  # 0",
+    "uv run pytest -q  # 44 passed",
+    "uv run normshift lineage fixtures/lineage/v1.html v2.html v3.html --json evidence/m2/lineage.json  # 0"
   ],
   "verified_artifacts": [
-    "evidence/m1/M1_EVIDENCE.md",
-    "evidence/m1/rfc.prov.json",
-    "evidence/m1/w3c.prov.json",
-    "evidence/m1/whatwg.prov.json",
-    "evidence/m1/rfc.diff.json",
-    "evidence/m1/w3c.diff.json",
-    "evidence/m1/whatwg.diff.json"
+    "evidence/m0/",
+    "evidence/m1/",
+    "evidence/m2/lineage.json",
+    "evidence/m2/M2_EVIDENCE.md"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "External audit not performed",
-    "Corpus is structural excerpt not full live standards dump",
-    "Auto-detect family is heuristic"
+    "Definition and cross-reference dependency graph not implemented",
+    "Merge detection may under-fire on real standards",
+    "External audit pending for M0–M2",
+    "No remote push (operator hold)"
   ],
-  "next_action": "M2 Requirement Lineage Graph (local only, no push until instructed)"
+  "next_action": "Add definition/xref dependency analysis toward fuller M2 exit; no push unless instructed"
 }

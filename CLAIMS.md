@@ -36,7 +36,7 @@ unsupported boundary, last verified commit, and reviewer status.
 |-----------|--------|
 | M0 Normative HTML Vertical Slice | `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
 | M1 Real Standards Adapters | `M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
-| M2 Requirement Lineage Graph | in progress next |
+| M2 Requirement Lineage Graph | `M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` (core; def/xref partial) |
 | M3 Observatory | not started |
 | M4 Public Benchmark | not started |
 | M5 Implementation Impact Mapping | not started |

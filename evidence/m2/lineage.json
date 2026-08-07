@@ -1,0 +1,406 @@
+{
+  "ambiguity_queue": [],
+  "document_sha256s": [
+    "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+    "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+    "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d"
+  ],
+  "edges": [
+    {
+      "alignment_combined": 0.7947,
+      "change_classification": "SPLIT",
+      "confidence": 0.7947,
+      "edge_id": "2a0e59f68a1e1ae2",
+      "from_lineage_id": "L-87c7f90d6142",
+      "from_requirement_id": "2be1fc34bab590a4",
+      "from_version": "L1",
+      "reasons": [
+        "Split child 2/2 from parent 2be1fc34bab590a4."
+      ],
+      "relation": "SPLIT_INTO",
+      "to_lineage_id": "L-dd599feec634",
+      "to_requirement_id": "b76792625662eb10",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": 0.9958,
+      "change_classification": "MOVED",
+      "confidence": 0.93,
+      "edge_id": "31687fab2031ec0d",
+      "from_lineage_id": "L-e9d3300716ae",
+      "from_requirement_id": "639c8441d081e6a8",
+      "from_version": "L1",
+      "reasons": [
+        "Semantically identical requirement relocated across sections → MOVED."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-e9d3300716ae",
+      "to_requirement_id": "c8bab8dcedb03fa0",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": 0.8471,
+      "change_classification": "SPLIT",
+      "confidence": 0.8471,
+      "edge_id": "3187ed3c1395cef2",
+      "from_lineage_id": "L-87c7f90d6142",
+      "from_requirement_id": "2be1fc34bab590a4",
+      "from_version": "L1",
+      "reasons": [
+        "Split child 1/2 from parent 2be1fc34bab590a4."
+      ],
+      "relation": "SPLIT_INTO",
+      "to_lineage_id": "L-87c7f90d6142",
+      "to_requirement_id": "b18f2296ef664219",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": 0.9419,
+      "change_classification": "AMBIGUOUS",
+      "confidence": 0.55,
+      "edge_id": "37e790e75eb46f92",
+      "from_lineage_id": "L-55a170b4305e",
+      "from_requirement_id": "6164f5b00daa02ad",
+      "from_version": "L1",
+      "reasons": [
+        "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-55a170b4305e",
+      "to_requirement_id": "5410b1d0db6e1133",
+      "to_version": "L2"
+    },
+    {
+      "alignment_combined": 0.9958,
+      "change_classification": "MOVED",
+      "confidence": 0.93,
+      "edge_id": "109c6c1b6a40fda0",
+      "from_lineage_id": "L-87c7f90d6142",
+      "from_requirement_id": "b18f2296ef664219",
+      "from_version": "L2",
+      "reasons": [
+        "Semantically identical requirement relocated across sections → MOVED."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-87c7f90d6142",
+      "to_requirement_id": "db586e881a7abc40",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": 0.9958,
+      "change_classification": "MOVED",
+      "confidence": 0.93,
+      "edge_id": "3c3a2af9b177b23b",
+      "from_lineage_id": "L-dd599feec634",
+      "from_requirement_id": "b76792625662eb10",
+      "from_version": "L2",
+      "reasons": [
+        "Semantically identical requirement relocated across sections → MOVED."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-dd599feec634",
+      "to_requirement_id": "4ba79bdfd2cf3e16",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": 0.9438,
+      "change_classification": "EXCEPTION_ADDED",
+      "confidence": 0.88,
+      "edge_id": "5a58361c3697ff19",
+      "from_lineage_id": "L-55a170b4305e",
+      "from_requirement_id": "5410b1d0db6e1133",
+      "from_version": "L2",
+      "reasons": [
+        "Exception introduced: 'unless private mode is active'."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-55a170b4305e",
+      "to_requirement_id": "d714e1c0f789be4d",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": null,
+      "change_classification": "ADDED",
+      "confidence": 0.95,
+      "edge_id": "89399d9b7884c1d2",
+      "from_lineage_id": null,
+      "from_requirement_id": null,
+      "from_version": "L2",
+      "reasons": [
+        "No prior instance in previous version."
+      ],
+      "relation": "ADDED",
+      "to_lineage_id": "L-c0a2111010c6",
+      "to_requirement_id": "0b005e5e05ed60da",
+      "to_version": "L3"
+    },
+    {
+      "alignment_combined": 0.9732,
+      "change_classification": "AMBIGUOUS",
+      "confidence": 0.55,
+      "edge_id": "c9187d99bca0e4d8",
+      "from_lineage_id": "L-e9d3300716ae",
+      "from_requirement_id": "c8bab8dcedb03fa0",
+      "from_version": "L2",
+      "reasons": [
+        "Aligned with residual non-editorial text differences; insufficient evidence for a substantive class → AMBIGUOUS."
+      ],
+      "relation": "CONTINUES",
+      "to_lineage_id": "L-e9d3300716ae",
+      "to_requirement_id": "a93f8196fcb28cb2",
+      "to_version": "L3"
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "b321c146611bd2f3d369515fa38d866459470179ad5ae5619fe6952187041e7b"
+  },
+  "nodes": [
+    {
+      "first_version": "L1",
+      "instances": [
+        {
+          "action": "retain session tokens for 24 hours",
+          "actor": "User agents",
+          "condition": null,
+          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_version": "L1",
+          "exception": null,
+          "fingerprint": "c1b5420e3d4a8732c2701c40200a81e935dafc97a1f6be67acfeffab0e7b9c18",
+          "lineage_id": "L-55a170b4305e",
+          "modality": "MUST",
+          "normalized_text": "User agents MUST retain session tokens for 24 hours.",
+          "original_text": "User agents MUST retain session tokens for 24 hours.",
+          "requirement_id": "6164f5b00daa02ad",
+          "section_path": "Lineage Demo 1 > Session",
+          "source_locator": "id:r1|xpath:/body/p[1]"
+        },
+        {
+          "action": "retain session tokens for 24 hours",
+          "actor": "user agents",
+          "condition": null,
+          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_version": "L2",
+          "exception": null,
+          "fingerprint": "6b3c3c20bda0aff712e3274e3011b9dae536996c54da8db96f7e88a48e3e31a2",
+          "lineage_id": "L-55a170b4305e",
+          "modality": "MUST",
+          "normalized_text": "Authenticated user agents MUST retain session tokens for 24 hours.",
+          "original_text": "Authenticated user agents MUST retain session tokens for 24 hours.",
+          "requirement_id": "5410b1d0db6e1133",
+          "section_path": "Lineage Demo 2 > Session",
+          "source_locator": "id:r1|xpath:/body/p[1]"
+        },
+        {
+          "action": "retain session tokens for 24 hours",
+          "actor": "user agents",
+          "condition": null,
+          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_version": "L3",
+          "exception": "unless private mode is active",
+          "fingerprint": "7e0347a0b3f4b7435d10f4af1b68c0c6a1303440c7a13d6f3140fc028cec20ee",
+          "lineage_id": "L-55a170b4305e",
+          "modality": "MUST",
+          "normalized_text": "Authenticated user agents MUST retain session tokens for 24 hours unless private mode is active.",
+          "original_text": "Authenticated user agents MUST retain session tokens for 24 hours unless private mode is active.",
+          "requirement_id": "d714e1c0f789be4d",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r1|xpath:/body/p[1]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-55a170b4305e"
+    },
+    {
+      "first_version": "L1",
+      "instances": [
+        {
+          "action": "refresh tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_version": "L1",
+          "exception": null,
+          "fingerprint": "a22fa776d1b161e11066dd20bd0e4c12bcca1425c529aedacd76617d82a28705",
+          "lineage_id": "L-87c7f90d6142",
+          "modality": "SHOULD",
+          "normalized_text": "Clients SHOULD refresh tokens before expiry.",
+          "original_text": "Clients SHOULD refresh tokens before expiry.",
+          "requirement_id": "2be1fc34bab590a4",
+          "section_path": "Lineage Demo 1 > Session",
+          "source_locator": "id:r3|xpath:/body/p[3]"
+        },
+        {
+          "action": "refresh access tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_version": "L2",
+          "exception": null,
+          "fingerprint": "27a3981718cf0204a7810349e8ea331ff5d6ad423a7f0fd9a9be07515e49bd30",
+          "lineage_id": "L-87c7f90d6142",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh access tokens before expiry.",
+          "original_text": "Clients MUST refresh access tokens before expiry.",
+          "requirement_id": "b18f2296ef664219",
+          "section_path": "Lineage Demo 2 > Session",
+          "source_locator": "id:r3a|xpath:/body/p[3]"
+        },
+        {
+          "action": "refresh access tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_version": "L3",
+          "exception": null,
+          "fingerprint": "27a3981718cf0204a7810349e8ea331ff5d6ad423a7f0fd9a9be07515e49bd30",
+          "lineage_id": "L-87c7f90d6142",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh access tokens before expiry.",
+          "original_text": "Clients MUST refresh access tokens before expiry.",
+          "requirement_id": "db586e881a7abc40",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r3a|xpath:/body/p[3]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-87c7f90d6142"
+    },
+    {
+      "first_version": "L3",
+      "instances": [
+        {
+          "action": "log raw session tokens",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_version": "L3",
+          "exception": null,
+          "fingerprint": "9587df44903fe217203d31d032b464b26ca6431c40f053b91a98ad0a180591a4",
+          "lineage_id": "L-c0a2111010c6",
+          "modality": "MUST_NOT",
+          "normalized_text": "Clients MUST NOT log raw session tokens.",
+          "original_text": "Clients MUST NOT log raw session tokens.",
+          "requirement_id": "0b005e5e05ed60da",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r4|xpath:/body/p[5]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-c0a2111010c6"
+    },
+    {
+      "first_version": "L2",
+      "instances": [
+        {
+          "action": "refresh refresh-tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_version": "L2",
+          "exception": null,
+          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
+          "lineage_id": "L-dd599feec634",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "requirement_id": "b76792625662eb10",
+          "section_path": "Lineage Demo 2 > Session",
+          "source_locator": "id:r3b|xpath:/body/p[4]"
+        },
+        {
+          "action": "refresh refresh-tokens before expiry",
+          "actor": "Clients",
+          "condition": null,
+          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_version": "L3",
+          "exception": null,
+          "fingerprint": "42df70930929341f1f80cebdd668f6f36d4a63b5020bba72a5c5d8e950bc9899",
+          "lineage_id": "L-dd599feec634",
+          "modality": "MUST",
+          "normalized_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "original_text": "Clients MUST refresh refresh-tokens before expiry.",
+          "requirement_id": "4ba79bdfd2cf3e16",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r3b|xpath:/body/p[4]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-dd599feec634"
+    },
+    {
+      "first_version": "L1",
+      "instances": [
+        {
+          "action": "validate client certificates on every request",
+          "actor": "Servers",
+          "condition": null,
+          "document_sha256": "9df1019aa7270854552cfaae9503e3c4e2d9f71dc49f5019ed4ae16e591e0204",
+          "document_version": "L1",
+          "exception": null,
+          "fingerprint": "69aa4fbd77ef582ac4fc2b39d553b2b822c4272d8af3242c88dac4715d5d921e",
+          "lineage_id": "L-e9d3300716ae",
+          "modality": "MUST",
+          "normalized_text": "Servers MUST validate client certificates on every request.",
+          "original_text": "Servers MUST validate client certificates on every request.",
+          "requirement_id": "639c8441d081e6a8",
+          "section_path": "Lineage Demo 1 > Session",
+          "source_locator": "id:r2|xpath:/body/p[2]"
+        },
+        {
+          "action": "validate client certificates on every request",
+          "actor": "Servers",
+          "condition": null,
+          "document_sha256": "c3d299997039de6ec1ccfcb62ad460b1f06eba7a1a2b93e2aeefe021cce51e82",
+          "document_version": "L2",
+          "exception": null,
+          "fingerprint": "69aa4fbd77ef582ac4fc2b39d553b2b822c4272d8af3242c88dac4715d5d921e",
+          "lineage_id": "L-e9d3300716ae",
+          "modality": "MUST",
+          "normalized_text": "Servers MUST validate client certificates on every request.",
+          "original_text": "Servers MUST validate client certificates on every request.",
+          "requirement_id": "c8bab8dcedb03fa0",
+          "section_path": "Lineage Demo 2 > Session",
+          "source_locator": "id:r2|xpath:/body/p[2]"
+        },
+        {
+          "action": "validate client certificates and channel bindings on every request",
+          "actor": "Servers",
+          "condition": null,
+          "document_sha256": "d88a07d1e2576191e9489be8517a1159f0e4432488e07773262b6510c85f437d",
+          "document_version": "L3",
+          "exception": null,
+          "fingerprint": "007e7ddf6c850130b3909fc54f322b3c7f96136ea3a4e6684a0ec597544c7b1c",
+          "lineage_id": "L-e9d3300716ae",
+          "modality": "MUST",
+          "normalized_text": "Servers MUST validate client certificates and channel bindings on every request.",
+          "original_text": "Servers MUST validate client certificates and channel bindings on every request.",
+          "requirement_id": "a93f8196fcb28cb2",
+          "section_path": "Lineage Demo 3 > Session",
+          "source_locator": "id:r2m|xpath:/body/p[2]"
+        }
+      ],
+      "last_version": "L3",
+      "lineage_id": "L-e9d3300716ae"
+    }
+  ],
+  "profile": "rfc2119",
+  "schema_version": "1.0.0",
+  "summary": {
+    "ambiguity_count": 0,
+    "edge_count": 9,
+    "lineage_count": 5,
+    "relation_counts": {
+      "ADDED": 1,
+      "CONTINUES": 6,
+      "SPLIT_INTO": 2
+    },
+    "version_count": 3
+  },
+  "tool_version": "0.3.0",
+  "versions": [
+    "L1",
+    "L2",
+    "L3"
+  ]
+}
