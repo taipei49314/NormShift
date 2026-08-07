@@ -69,6 +69,9 @@ class LineageRelation(StrEnum):
     ADDED = "ADDED"
     REMOVED = "REMOVED"
     AMBIGUOUS = "AMBIGUOUS"
+    DEPENDS_ON = "DEPENDS_ON"
+    REFERENCES_DEFINITION = "REFERENCES_DEFINITION"
+    DEFINITION_CHANGED = "DEFINITION_CHANGED"
 
 
 class RequirementInstanceRef(BaseModel):
@@ -128,6 +131,33 @@ class AmbiguityItem(BaseModel):
     scores: list[float] = Field(default_factory=list)
 
 
+class DefinitionRecord(BaseModel):
+    """A definition extracted from a document snapshot."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    definition_id: str
+    term: str
+    body: str
+    document_version: str
+    document_sha256: str
+    source_locator: str
+    normalized_body: str
+
+
+class DependencyLink(BaseModel):
+    """Requirement → definition/xref dependency within a version."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    link_id: str
+    requirement_id: str
+    definition_id: str
+    document_version: str
+    term: str
+    evidence: str
+
+
 class LineageGraph(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -138,6 +168,8 @@ class LineageGraph(BaseModel):
     document_sha256s: list[str]
     nodes: list[LineageNode]
     edges: list[LineageEdge]
+    definitions: list[DefinitionRecord] = Field(default_factory=list)
+    dependency_links: list[DependencyLink] = Field(default_factory=list)
     ambiguity_queue: list[AmbiguityItem]
     summary: dict[str, Any]
     integrity: dict[str, str]

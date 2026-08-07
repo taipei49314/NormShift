@@ -12,6 +12,7 @@ from normshift.adapters.errors import AdapterError
 from normshift.adapters.registry import load_document
 from normshift.benchmark.runner import run_benchmark
 from normshift.extract.extractor import extract_requirements
+from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
 from normshift.pipeline import run_diff
 from normshift.verify.verifier import verify_report_file
@@ -234,6 +235,41 @@ def benchmark_cmd(
 
     typer.echo(f"benchmark: {report.passed}/{report.total} passed, {report.failed} failed")
     if not report.ok:
+        raise typer.Exit(code=1)
+    raise typer.Exit(code=0)
+
+
+@app.command("measure")
+def measure_cmd(
+    ground_truth: Path = typer.Option(
+        ...,
+        "--ground-truth",
+        help="Path to measure suite JSONL (frozen labels)",
+    ),
+    out: Path = typer.Option(..., "--out", help="Metrics JSON output path"),
+) -> None:
+    """Score extraction, alignment, and classification against frozen labels."""
+    # Fail closed: do not write pass metrics on invalid/missing suite.
+    try:
+        report = run_measure(ground_truth)
+    except MeasureError as exc:
+        typer.echo(f"error: measure failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"error: measure failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    write_metrics(report, out)
+    typer.echo(
+        f"measure: {report.cases_passed}/{report.case_count} cases, "
+        f"extract_f1={report.extraction.get('f1')} "
+        f"align_f1={report.alignment.get('f1')} "
+        f"class_f1={report.classification.get('f1')} → {out}"
+    )
+    if not report.ok:
+        for c in report.case_results:
+            if not c.passed:
+                typer.echo(f"  FAIL {c.case_id}: {c.detail}", err=True)
         raise typer.Exit(code=1)
     raise typer.Exit(code=0)
 

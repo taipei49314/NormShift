@@ -11,10 +11,17 @@ from normshift.align.aligner import score_pair
 from normshift.align.multi import align_with_multiplicity
 from normshift.classify.classifier import classify_pair
 from normshift.evidence.hashing import canonical_json_bytes, integrity_payload_hash
+from normshift.extract.definitions import (
+    definition_change_edges,
+    extract_definitions_from_html,
+    link_requirements_to_definitions,
+)
 from normshift.extract.extractor import extract_requirements
 from normshift.model.types import (
     AdapterName,
     AmbiguityItem,
+    DefinitionRecord,
+    DependencyLink,
     LineageEdge,
     LineageGraph,
     LineageNode,
@@ -24,6 +31,7 @@ from normshift.model.types import (
     RequirementInstanceRef,
     RequirementsDocument,
 )
+from normshift.snapshot import snapshot_document
 
 
 def _edge_id(*parts: str) -> str:
@@ -86,6 +94,22 @@ def build_lineage_graph(
     docs = [extract_requirements(p, profile, adapter=adapter) for p in paths]
     versions = [d.document_version for d in docs]
     sha256s = [d.document_sha256 for d in docs]
+
+    # Definitions + dependency links per version (working HTML after adapter)
+    all_definitions: list[DefinitionRecord] = []
+    all_dep_links: list[DependencyLink] = []
+    defs_by_version: list[list[DefinitionRecord]] = []
+    for p, doc in zip(paths, docs, strict=True):
+        _snap, working_html, _adapted = snapshot_document(p, adapter=adapter)
+        defs = extract_definitions_from_html(
+            working_html,
+            document_version=doc.document_version,
+            document_sha256=doc.document_sha256,
+        )
+        links = link_requirements_to_definitions(doc.requirements, defs)
+        all_definitions.extend(defs)
+        all_dep_links.extend(links)
+        defs_by_version.append(defs)
 
     nodes: dict[str, LineageNode] = {}
     edges: list[LineageEdge] = []
@@ -351,6 +375,82 @@ def build_lineage_graph(
 
         prev_lineage = next_lineage
 
+        # Definition change edges between consecutive versions
+        if i < len(defs_by_version) - 1:
+            for term, old_body, new_body, _note in definition_change_edges(
+                defs_by_version[i],
+                defs_by_version[i + 1],
+                from_version=v_old,
+                to_version=v_new,
+            ):
+                edges.append(
+                    LineageEdge(
+                        edge_id=_edge_id("defchg", term, v_old, v_new),
+                        relation=LineageRelation.DEFINITION_CHANGED,
+                        from_lineage_id=None,
+                        to_lineage_id=None,
+                        from_requirement_id=None,
+                        to_requirement_id=None,
+                        from_version=v_old,
+                        to_version=v_new,
+                        change_classification="DEFINITION_CHANGED",
+                        confidence=0.9,
+                        reasons=[
+                            f"Definition of '{term}' changed.",
+                            f"old: {old_body[:120]}",
+                            f"new: {new_body[:120]}",
+                        ],
+                    )
+                )
+                # DEPENDS_ON edges for requirements linked to this term in new version
+                for link in all_dep_links:
+                    if link.document_version != v_new:
+                        continue
+                    if link.term.lower() != term.lower():
+                        continue
+                    dep_lid: str | None = next_lineage.get(link.requirement_id)
+                    edges.append(
+                        LineageEdge(
+                            edge_id=_edge_id(
+                                "depends", link.requirement_id, term, v_old, v_new
+                            ),
+                            relation=LineageRelation.DEPENDS_ON,
+                            from_lineage_id=dep_lid,
+                            to_lineage_id=dep_lid,
+                            from_requirement_id=link.requirement_id,
+                            to_requirement_id=link.requirement_id,
+                            from_version=v_old,
+                            to_version=v_new,
+                            change_classification="DEFINITION_CHANGED",
+                            confidence=0.85,
+                            reasons=[
+                                f"Requirement depends on definition term '{term}'.",
+                                link.evidence,
+                            ],
+                        )
+                    )
+
+        # Per-version REFERENCES_DEFINITION edges (within new version)
+        for link in all_dep_links:
+            if link.document_version != v_new:
+                continue
+            ref_lid: str | None = next_lineage.get(link.requirement_id)
+            edges.append(
+                LineageEdge(
+                    edge_id=_edge_id("refdef", link.link_id, v_new),
+                    relation=LineageRelation.REFERENCES_DEFINITION,
+                    from_lineage_id=ref_lid,
+                    to_lineage_id=None,
+                    from_requirement_id=link.requirement_id,
+                    to_requirement_id=None,
+                    from_version=v_new,
+                    to_version=v_new,
+                    change_classification=None,
+                    confidence=0.9,
+                    reasons=[link.evidence, f"definition_id={link.definition_id}"],
+                )
+            )
+
     ambiguity = _collect_ambiguity(docs)
     node_list = sorted(nodes.values(), key=lambda n: n.lineage_id)
     edge_list = sorted(edges, key=lambda e: (e.from_version, e.to_version, e.edge_id))
@@ -359,6 +459,8 @@ def build_lineage_graph(
         "lineage_count": len(node_list),
         "edge_count": len(edge_list),
         "ambiguity_count": len(ambiguity),
+        "definition_count": len(all_definitions),
+        "dependency_link_count": len(all_dep_links),
         "relation_counts": _count_relations(edge_list),
     }
 
@@ -369,6 +471,10 @@ def build_lineage_graph(
         document_sha256s=sha256s,
         nodes=node_list,
         edges=edge_list,
+        definitions=sorted(all_definitions, key=lambda d: (d.document_version, d.term)),
+        dependency_links=sorted(
+            all_dep_links, key=lambda d: (d.document_version, d.requirement_id, d.term)
+        ),
         ambiguity_queue=ambiguity,
         summary=summary,
         integrity={"alg": "sha256", "content_sha256": ""},

@@ -43,3 +43,5 @@ def test_lineage_not_only_add_remove() -> None:
     continues = rel_counts.get("CONTINUES", 0) + rel_counts.get("SPLIT_INTO", 0)
     # Must not degrade entirely to add/remove
     assert continues >= 1
+    assert graph.summary.get("definition_count", 0) >= 1
+    assert graph.summary.get("dependency_link_count", 0) >= 1

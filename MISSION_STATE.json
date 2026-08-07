@@ -1,26 +1,27 @@
 {
-  "current_objective": "M2 Requirement Lineage Graph (core) + hold for definition/xref follow-up",
-  "current_hypothesis": "Strict multi-version alignment with persistent lineage IDs prevents mass false add/remove while exposing split/continue edges",
-  "status": "M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "8747a1bbc62740f9da6a38264ec09c3d3680bd6a",
+  "current_objective": "Measure-first instruments + definition/xref dependency on lineage",
+  "current_hypothesis": "Separate extract/align/classify meters + dependency edges make further North Star progress gateable offline",
+  "status": "M2_METERS_AND_DEPS_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check .  # 0",
     "uv run mypy src  # 0",
-    "uv run pytest -q  # 44 passed",
+    "uv run pytest -q  # 53 passed",
+    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # 17/17",
+    "uv run normshift measure --ground-truth benchmark/measure_suite.jsonl --out evidence/m2/metrics.json  # 15/15, f1=1.0 all layers",
     "uv run normshift lineage fixtures/lineage/v1.html v2.html v3.html --json evidence/m2/lineage.json  # 0"
   ],
   "verified_artifacts": [
-    "evidence/m0/",
-    "evidence/m1/",
+    "benchmark/measure_suite.jsonl",
+    "evidence/m2/metrics.json",
     "evidence/m2/lineage.json",
-    "evidence/m2/M2_EVIDENCE.md"
+    "evidence/m2/MEASURE_EVIDENCE.md"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "Definition and cross-reference dependency graph not implemented",
-    "Merge detection may under-fire on real standards",
-    "External audit pending for M0\u2013M2",
-    "No remote push (operator hold)"
+    "External audit pending",
+    "Definition extraction heuristic may miss complex prose",
+    "Not production/release ready"
   ],
-  "next_action": "Add definition/xref dependency analysis toward fuller M2 exit; no push unless instructed"
+  "next_action": "Keep meters green while expanding corpus; external audit before M3 Observatory"
 }
