@@ -1,7 +1,7 @@
 {
   "current_objective": "M0 Normative HTML vertical slice",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "d591c3c0d15d8bd97efd9a5e2c1acb8a71c1e5e3",
+  "last_verified_commit": "83e8797f65b5a097a6a4b2976d81961c2230c95f",
   "commands_run": [
     "uv sync --all-extras --dev",
     "uv run ruff check .  # exit 0",

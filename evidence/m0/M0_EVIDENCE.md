@@ -8,7 +8,7 @@
 
 ## Final commit SHA
 
-23eb4f2cc01efbb96ff21aafad081b0e062b429d
+`83e8797f65b5a097a6a4b2976d81961c2230c95f` (repo tip at evidence closeout; gates re-run green on this history)
 
 ## Environment
 
