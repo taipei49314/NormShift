@@ -1,0 +1,16 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "w3c-html",
+  "byte_length": 1202,
+  "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+  "document_version": "WD-excerpt-1",
+  "family": "w3c",
+  "final_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+  "label_authority": "AUTO",
+  "license_note": "in-repo redistributable fixture",
+  "requirement_count": 2,
+  "retrieved_at": "2026-08-07T08:21:19+00:00",
+  "snapshot_id": "snap_7ddf62a67fa7086e_79b0dda9",
+  "source_url": "https://www.w3.org/TR/fixture-w3c-v1/",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

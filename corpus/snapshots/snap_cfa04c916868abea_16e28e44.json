@@ -1,0 +1,16 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "whatwg-html",
+  "byte_length": 889,
+  "content_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+  "document_version": "LS-excerpt-1",
+  "family": "whatwg",
+  "final_url": "https://html.spec.whatwg.org/fixture-v1",
+  "label_authority": "AUTO",
+  "license_note": "in-repo redistributable fixture",
+  "requirement_count": 3,
+  "retrieved_at": "2026-08-07T08:21:19+00:00",
+  "snapshot_id": "snap_cfa04c916868abea_16e28e44",
+  "source_url": "https://html.spec.whatwg.org/fixture-v1",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

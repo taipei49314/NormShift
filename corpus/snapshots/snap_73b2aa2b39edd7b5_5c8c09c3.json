@@ -1,0 +1,16 @@
+{
+  "acquisition_mode": "offline_import",
+  "adapter_hint": "ietf-rfc-html",
+  "byte_length": 1236,
+  "content_sha256": "73b2aa2b39edd7b509823a90c161efbc961b8493328294ca223ab2f9ba906db9",
+  "document_version": "RFC9000-excerpt-2",
+  "family": "rfc",
+  "final_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+  "label_authority": "AUTO",
+  "license_note": "See official source; redistribution may be restricted.",
+  "requirement_count": 4,
+  "retrieved_at": "2026-08-07T08:15:18+00:00",
+  "snapshot_id": "snap_73b2aa2b39edd7b5_5c8c09c3",
+  "source_url": "https://www.rfc-editor.org/rfc/fixture-rfc-v2.html",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

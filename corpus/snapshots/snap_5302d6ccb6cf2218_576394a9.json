@@ -1,0 +1,16 @@
+{
+  "acquisition_mode": "https",
+  "adapter_hint": "ietf-rfc-html",
+  "byte_length": 37946,
+  "content_sha256": "5302d6ccb6cf221817bdd1f8cd7221661d4519372e0ac0b4cf641e11e8037de7",
+  "document_version": "sha256:5302d6ccb6cf",
+  "family": "rfc",
+  "final_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+  "label_authority": "AUTO",
+  "license_note": "See official source; redistribution may be restricted.",
+  "requirement_count": 0,
+  "retrieved_at": "2026-08-07T08:19:09+00:00",
+  "snapshot_id": "snap_5302d6ccb6cf2218_576394a9",
+  "source_url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

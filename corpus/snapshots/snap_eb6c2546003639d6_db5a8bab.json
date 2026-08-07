@@ -1,0 +1,16 @@
+{
+  "acquisition_mode": "https",
+  "adapter_hint": "w3c-html",
+  "byte_length": 115810,
+  "content_sha256": "eb6c2546003639d6884e8357d90c5dfde95c70494e6e1339ba2219bebb29be11",
+  "document_version": "sha256:eb6c25460036",
+  "family": "w3c",
+  "final_url": "https://www.w3.org/TR/trace-context-2/",
+  "label_authority": "AUTO",
+  "license_note": "See official source; redistribution may be restricted.",
+  "requirement_count": 89,
+  "retrieved_at": "2026-08-07T08:21:19+00:00",
+  "snapshot_id": "snap_eb6c2546003639d6_db5a8bab",
+  "source_url": "https://www.w3.org/TR/trace-context-2/",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED"
+}

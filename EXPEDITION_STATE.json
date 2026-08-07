@@ -2,8 +2,8 @@
   "schema_version": "1.0.0",
   "baseline_commit": "878bfd3a6bb7b649652e81936216277fc8151d5e",
   "expedition_branch": "expedition/real-standards-observatory",
-  "current_phase": "CP7-CP8",
-  "current_objective": "Expedition candidate package for external audit handoff",
+  "current_phase": "EXPAND-1",
+  "current_objective": "Live official acquisition + real W3C pair + dense extraction + discovery observatory",
   "status": "EXPEDITION_CANDIDATE_PENDING_EXTERNAL_AUDIT",
   "last_verified_commit": null,
   "completed_vertical_slices": [
@@ -14,33 +14,33 @@
     "CP4-corpus-catalog",
     "CP5-lineage-sqlite-jsonl",
     "CP6-observatory-static",
-    "CP7-cross-family-demo"
+    "CP7-cross-family-demo",
+    "EXPAND-live-rfc-w3c-acquire",
+    "EXPAND-trace-context-pair-114-changes",
+    "EXPAND-discovery-queue-83",
+    "EXPAND-benchmark-real-7-7"
   ],
   "commands_run": [
-    "uv run pytest -q #153 passed",
-    "uv run normshift acquire --import-file (x6)",
-    "uv run normshift diff (rfc/w3c/whatwg pairs)",
-    "uv run normshift verify rfc-pair #0 FULL",
-    "uv run normshift lineage build/export/verify",
-    "uv run normshift observatory build/verify"
+    "uv run python scripts/expedition_expand.py",
+    "uv run normshift benchmark-real #7/7",
+    "uv run pytest -q #154 passed"
   ],
-  "tests_passed": 153,
+  "tests_passed": 154,
   "tests_failed": 0,
   "corpus_counts": {
     "families": 3,
-    "snapshots_catalog": 9,
-    "pairs": 5,
-    "store_snapshots": 6,
-    "requirement_instances": "see pair reports",
-    "alignments_proposed": "pair changes",
-    "change_events_proposed": 9,
-    "ambiguous_cases": 2,
-    "split_merge_candidates": 0
+    "store_snapshots": 20,
+    "live_official_docs": 6,
+    "total_requirement_instances": 727,
+    "pairs_with_reports": 4,
+    "discovery_items": 83,
+    "rfc9110_requirements": 437,
+    "trace_context_changes": 114
   },
   "unresolved_risks": [
-    "Live official multi-version corpus not fully expanded offline",
-    "Deferred M0 audit debt open",
-    "Redistribution limits on official bytes"
+    "RFC HTML variants with 0 extraction (8259/3986)",
+    "Deferred M0 audit debt",
+    "AUTO labels only"
   ],
   "deferred_items": [
     "canonical representation edge cases",
@@ -48,5 +48,5 @@
     "clause-level historical authority",
     "single authoritative attestation manifest"
   ],
-  "next_action": "External audit of expedition package; do not merge to main"
+  "next_action": "Optional: RFC HTML structure adapter improvements; keep offline replay; no merge to main"
 }

@@ -1,0 +1,66 @@
+{
+  "discovery_items": 83,
+  "live_acquired": 6,
+  "observatory_files": 11,
+  "pairs": [
+    {
+      "changes": 4,
+      "classification_counts": {
+        "ADDED": 1,
+        "STRENGTHENED": 1,
+        "UNCHANGED": 2
+      },
+      "new_reqs": 4,
+      "old_reqs": 3,
+      "pair_id": "rfc-fixture",
+      "report": "artifacts\\expedition\\rfc-fixture-report.json"
+    },
+    {
+      "changes": 3,
+      "classification_counts": {
+        "ADDED": 1,
+        "STRENGTHENED": 1,
+        "UNCHANGED": 1
+      },
+      "new_reqs": 3,
+      "old_reqs": 2,
+      "pair_id": "w3c-fixture",
+      "report": "artifacts\\expedition\\w3c-fixture-report.json"
+    },
+    {
+      "changes": 5,
+      "classification_counts": {
+        "ADDED": 2,
+        "STRENGTHENED": 1,
+        "UNCHANGED": 2
+      },
+      "new_reqs": 5,
+      "old_reqs": 3,
+      "pair_id": "whatwg-fixture",
+      "report": "artifacts\\expedition\\whatwg-fixture-report.json"
+    },
+    {
+      "changes": 114,
+      "classification_counts": {
+        "ADDED": 39,
+        "AMBIGUOUS": 12,
+        "CONDITION_REMOVED": 1,
+        "MOVED": 37,
+        "REMOVED": 25
+      },
+      "new_reqs": 89,
+      "old_reqs": 75,
+      "pair_id": "w3c-trace-context",
+      "report": "artifacts\\expedition\\w3c-trace-context-report.json"
+    }
+  ],
+  "requirements_by_family": {
+    "rfc": 537,
+    "w3c": 174,
+    "whatwg": 16
+  },
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+  "store_snapshots": 20,
+  "total_requirement_instances": 727
+}

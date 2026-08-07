@@ -578,6 +578,76 @@ def corpus_verify_cmd(
     typer.echo(json.dumps({"ok": True, "catalog": str(catalog)}))
 
 
+@app.command("benchmark-real")
+def benchmark_real_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="Repository root"),
+    out: Path | None = typer.Option(None, "--out", help="Write metrics JSON"),
+) -> None:
+    """Provisional real-fixture benchmark (AUTO labels — not gold)."""
+    from normshift.benchmark.real_runner import run_real_benchmark
+    from normshift.evidence.hashing import canonical_json_bytes
+
+    report = run_real_benchmark(root)
+    payload = report.to_dict()
+    text = canonical_json_bytes(payload).decode("utf-8")
+    if out is not None:
+        atomic_write_text(out, text)
+        typer.echo(f"wrote provisional metrics → {out}")
+    for c in report.cases:
+        flag = "PASS" if c.passed else "FAIL"
+        typer.echo(f"[{flag}] {c.case_id}: {c.detail}")
+    typer.echo(
+        f"benchmark-real: {report.passed}/{report.total} "
+        f"(EXPERIMENTAL_NOT_ADJUDICATED, AUTO labels)"
+    )
+    if report.passed < report.total:
+        raise typer.Exit(code=1)
+
+
+@observatory_app.command("poll")
+def observatory_poll_cmd(
+    watchlist: Path = typer.Option(Path("config/watchlist.yaml"), "--watchlist"),
+    store: Path = typer.Option(Path(".normshift/store"), "--store"),
+    policy: Path = typer.Option(Path("config/source-policy.json"), "--policy"),
+    offline_only: bool = typer.Option(
+        False, "--offline-only", help="Skip network; only report watchlist status"
+    ),
+) -> None:
+    """Poll watchlist sources into snapshot store (network allowed)."""
+    from normshift.acquire.fetcher import AcquisitionError, acquire_url
+    from normshift.acquire.store import SnapshotStore
+
+    if not watchlist.is_file():
+        typer.echo(f"error: watchlist not found: {watchlist}", err=True)
+        raise typer.Exit(code=2)
+    text = watchlist.read_text(encoding="utf-8")
+    # Minimal parse: lines with official_source:
+    urls: list[str] = []
+    for line in text.splitlines():
+        if "official_source:" in line:
+            urls.append(line.split("official_source:", 1)[1].strip())
+    st = SnapshotStore(store)
+    results: list[dict[str, object]] = []
+    for url in urls:
+        if offline_only:
+            results.append({"url": url, "status": "skipped_offline_only"})
+            continue
+        try:
+            man = acquire_url(url, store=st, policy_path=policy)
+            results.append(
+                {
+                    "url": url,
+                    "status": "ok",
+                    "snapshot_id": man["snapshot_id"],
+                    "sha256": man["content_sha256"],
+                    "bytes": man["byte_length"],
+                }
+            )
+        except AcquisitionError as exc:
+            results.append({"url": url, "status": "error", "error": str(exc)})
+    typer.echo(json.dumps({"results": results, "experimental": True}, indent=2))
+
+
 def main() -> None:
     app()
 

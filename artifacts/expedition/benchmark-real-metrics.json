@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "case_id": "rfc-extract",
+      "detail": "3 requirements",
+      "kind": "extraction",
+      "metrics": {
+        "locator_stability": true,
+        "requirement_count": 3,
+        "unique_locators": 3
+      },
+      "passed": true
+    },
+    {
+      "case_id": "w3c-extract",
+      "detail": "2 requirements",
+      "kind": "extraction",
+      "metrics": {
+        "locator_stability": true,
+        "requirement_count": 2,
+        "unique_locators": 2
+      },
+      "passed": true
+    },
+    {
+      "case_id": "whatwg-extract",
+      "detail": "3 requirements",
+      "kind": "extraction",
+      "metrics": {
+        "locator_stability": true,
+        "requirement_count": 3,
+        "unique_locators": 3
+      },
+      "passed": true
+    },
+    {
+      "case_id": "rfc-pair",
+      "detail": "4 changes, 0 ambiguous",
+      "kind": "alignment_classification",
+      "metrics": {
+        "ambiguity_rate": 0.0,
+        "ambiguous": 0,
+        "changes": 4,
+        "new_requirements": 4,
+        "old_requirements": 3
+      },
+      "passed": true
+    },
+    {
+      "case_id": "w3c-pair",
+      "detail": "3 changes, 0 ambiguous",
+      "kind": "alignment_classification",
+      "metrics": {
+        "ambiguity_rate": 0.0,
+        "ambiguous": 0,
+        "changes": 3,
+        "new_requirements": 3,
+        "old_requirements": 2
+      },
+      "passed": true
+    },
+    {
+      "case_id": "whatwg-pair",
+      "detail": "5 changes, 0 ambiguous",
+      "kind": "alignment_classification",
+      "metrics": {
+        "ambiguity_rate": 0.0,
+        "ambiguous": 0,
+        "changes": 5,
+        "new_requirements": 5,
+        "old_requirements": 3
+      },
+      "passed": true
+    },
+    {
+      "case_id": "offline-replay-determinism",
+      "detail": "classification multiset identity",
+      "kind": "offline_replay",
+      "metrics": {
+        "classifications": [
+          "ADDED",
+          "STRENGTHENED",
+          "UNCHANGED",
+          "UNCHANGED"
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "label_authority": "AUTO",
+  "note": "Provisional metrics over AUTO labels — not adjudicated gold.",
+  "passed": 7,
+  "schema_version": "1.0.0",
+  "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+  "total": 7
+}

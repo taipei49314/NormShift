@@ -5,3 +5,10 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+# Local materialization of official bytes (hashes stay in corpus/snapshots/)
+artifacts/expedition/real/
+artifacts/expedition/*-report.json
+artifacts/expedition/*-report.md
+artifacts/expedition/w3c-trace-context-report.*
+# Keep small fixture pair reports if present; ignore large generated
+artifacts/expedition/site/

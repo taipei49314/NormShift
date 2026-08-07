@@ -50,6 +50,10 @@ td,th{{border:1px solid #ccc;padding:.4rem;text-align:left}}
 <ul>
 <li><a href="snapshots.html">Source snapshot inventory</a></li>
 <li><a href="discovery.html">Discovery queue</a></li>
+<li><a href="pairs.html">Version pairs</a> (if generated)</li>
+<li><a href="family-ietf.html">IETF family</a> ·
+    <a href="family-w3c.html">W3C</a> ·
+    <a href="family-whatwg.html">WHATWG</a></li>
 <li><a href="limitations.html">Known limitations</a></li>
 <li><a href="provenance.html">Provenance and licenses</a></li>
 <li><a href="feed.json">Machine-readable feed (JSON)</a></li>
@@ -58,6 +62,7 @@ td,th{{border:1px solid #ccc;padding:.4rem;text-align:left}}
 </ul>
 <h2>Corpus overview</h2>
 <p>Snapshots in store: <strong>{len(snaps)}</strong></p>
+<p>Discovery items: <strong>{len(discovery)}</strong> (AUTO/PROVISIONAL)</p>
 </body></html>
 """
     pages["index.html"] = index
