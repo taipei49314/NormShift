@@ -1,10 +1,18 @@
 {
-  "current_objective": "M0 repair round 3 complete — portable evidence + canonical replay",
+  "current_objective": "M0 repair round 3 complete \u2014 portable evidence + canonical replay",
   "current_hypothesis": "Portable source_ref + full report model replay + entry-type path safety close R2 external gaps",
-  "status": "M0_PARTIAL",
+  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
   "package_identity": "externally_attested",
   "last_verified_commit": null,
-  "commands_run": [],
+  "commands_run": [
+    "uv run ruff check . #0",
+    "uv run mypy src #0",
+    "uv run pytest -q #108 passed",
+    "uv run normshift benchmark #17/17",
+    "uv run normshift measure #15/15",
+    "uv run normshift verify --source-root . #0",
+    "relocation verify #0"
+  ],
   "verified_artifacts": [
     "docs/EXTERNAL_AUDIT_R2.md",
     "docs/M0_REPAIR_ROUND3.md",
@@ -15,5 +23,5 @@
     "Awaiting external re-audit of round-3 package",
     "M1/M2 experimental only"
   ],
-  "next_action": "Package R3 products; STOP for external re-audit"
+  "next_action": "STOP. External re-audit of R3 package only."
 }
