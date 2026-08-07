@@ -52,7 +52,7 @@ def build_packets_for_pairs(
             c.change_id,
         ),
     )
-    selected: list = []
+    selected: list[Any] = []
     # always take high priority classes
     for c in ranked:
         if c.classification in {
