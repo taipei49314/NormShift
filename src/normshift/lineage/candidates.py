@@ -87,8 +87,7 @@ def build_chain_candidates(
 
         # Split: one old → multiple high-confidence new
         for oid, news in old_to_news.items():
-            strong = [n for n in news if n[1] >= 0.55 and n[2] != "AMBIGUOUS"]
-            # also consider near neighbors: multiple news with conf >= 0.4
+            # near neighbors: multiple news with conf >= 0.4
             near = [n for n in news if n[1] >= 0.4]
             if len(near) >= 2:
                 out.append(

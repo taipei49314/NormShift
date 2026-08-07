@@ -339,13 +339,11 @@ def _family_page(title: str, key: str, index: list[dict]) -> str:
     for m in index:
         url = str(m.get("final_url") or m.get("source_url") or "")
         fam = str(m.get("family") or "")
-        match = False
-        if key == "ietf" and ("rfc-editor" in url or fam == "rfc"):
-            match = True
-        elif key == "w3c" and ("w3.org" in url or fam == "w3c"):
-            match = True
-        elif key == "whatwg" and ("whatwg" in url or fam == "whatwg"):
-            match = True
+        match = (
+            (key == "ietf" and ("rfc-editor" in url or fam == "rfc"))
+            or (key == "w3c" and ("w3.org" in url or fam == "w3c"))
+            or (key == "whatwg" and ("whatwg" in url or fam == "whatwg"))
+        )
         if not match:
             continue
         rows.append(

@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from normshift.capsule.builder import build_pair_capsule
 from normshift.capsule.verifier import verify_capsule
 from normshift.model.types import AdapterName, ProfileName

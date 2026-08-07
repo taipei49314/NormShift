@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from normshift.acquire.fetcher import AcquisitionError, import_local_bytes
+from normshift.acquire.fetcher import import_local_bytes
 from normshift.acquire.policy import PolicyError, assert_url_allowed, load_policy
 from normshift.acquire.store import SnapshotStore
 

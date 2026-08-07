@@ -131,7 +131,8 @@ def project_observatory(
     pages["review/instructions.html"] = """<!DOCTYPE html><html><head><meta charset="utf-8">
 <title>Instructions</title></head><body>
 <h1>Review instructions</h1>
-<p>External reviewers append ReviewDecision records. Implementer must not mint EXTERNAL_* authority.</p>
+<p>External reviewers append ReviewDecision records.</p>
+<p>Implementer must not mint EXTERNAL_* authority.</p>
 </body></html>
 """
     pages["lineage.html"] = """<!DOCTYPE html><html><head><meta charset="utf-8">

@@ -47,11 +47,13 @@ def validate_ledger(
         seen.add(dec.decision_id)
         if known_packet_ids is not None and dec.packet_id not in known_packet_ids:
             errors.append(f"unknown packet_id {dec.packet_id}")
-        if dec.label_authority in {"EXTERNAL_REVIEW", "EXTERNAL_ADJUDICATION"}:
-            if not allow_external:
-                errors.append(
-                    f"external authority not allowed without import: {dec.decision_id}"
-                )
+        if (
+            dec.label_authority in {"EXTERNAL_REVIEW", "EXTERNAL_ADJUDICATION"}
+            and not allow_external
+        ):
+            errors.append(
+                f"external authority not allowed without import: {dec.decision_id}"
+            )
     return {"ok": len(errors) == 0, "errors": errors, "count": len(rows)}
 
 

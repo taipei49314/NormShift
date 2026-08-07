@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import os
 import uuid
 from pathlib import Path
@@ -15,14 +14,12 @@ from normshift.acquire.store import SnapshotStore
 from normshift.campaign.model import CampaignPlan, CampaignRunManifest
 from normshift.capsule.builder import build_pair_capsule
 from normshift.evidence.hashing import canonical_json_bytes
-from normshift.extract.extractor import extract_from_source
 from normshift.io_safety import atomic_write_text
 from normshift.lineage.candidates import build_chain_candidates, export_candidates_jsonl
 from normshift.model.types import AdapterName, ProfileName
 from normshift.observatory.projection import project_observatory
 from normshift.pipeline import run_diff
 from normshift.review.packets import build_packets_for_pairs, write_packets_jsonl
-from normshift.source import load_immutable_source
 from normshift.strict_json import strict_loads
 
 
