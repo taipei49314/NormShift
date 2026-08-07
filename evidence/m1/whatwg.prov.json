@@ -1,0 +1,21 @@
+{
+  "document_version": "LS-excerpt-1",
+  "family": "whatwg",
+  "provenance": {
+    "adapter_id": "normshift.adapters.whatwg",
+    "adapter_version": "1.0.0",
+    "byte_length": 889,
+    "canonical_source": "https://html.spec.whatwg.org/multipage/",
+    "content_sha256": "cfa04c916868abea8ffc72d7b17cb8f843928b1fb4e8e938d35847a724979297",
+    "content_type": "text/html",
+    "document_family": "whatwg",
+    "etag": "W/\"whatwg-html-excerpt-v1\"",
+    "fetch_metadata": {
+      "corpus_note": "Synthetic WHATWG-style HTML for offline regression; not a Living Standard snapshot dump."
+    },
+    "last_modified": "2026-01-20T00:00:00Z",
+    "local_path": "fixtures/corpus/whatwg/sample-v1.html",
+    "normalization_version": "1.0.0"
+  },
+  "working_html_sha256": "a1dc84d309ba06e44d0a50b42607bde143f0e0d205ca23a877f6cea9dffe1c57"
+}

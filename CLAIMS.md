@@ -27,13 +27,16 @@ unsupported boundary, last verified commit, and reviewer status.
 - Does **not** claim Requirement Lineage Graph (M2), Observatory (M3), or public benchmark standard (M4) are implemented.
 - Maximum milestone status allowed for implementer: `M*_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`.
 
+| C8 | Three offline document families (RFC/W3C/WHATWG) replay via adapters with provenance | M1 local corpus | `fixtures/corpus/`, `evidence/m1/`, adapter tests | Live network fetch / full TR dumps | pending pin | unreviewed |
+| C9 | Adapter failure does not write success artifacts | M1 pipeline | `test_adapter_failure_no_artifact` | Partial mid-write OS crashes | pending pin | unreviewed |
+
 ## Milestone status
 
 | Milestone | Status |
 |-----------|--------|
 | M0 Normative HTML Vertical Slice | `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
-| M1 Real Standards Adapters | not started |
-| M2 Requirement Lineage Graph | not started |
+| M1 Real Standards Adapters | `M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
+| M2 Requirement Lineage Graph | in progress next |
 | M3 Observatory | not started |
 | M4 Public Benchmark | not started |
 | M5 Implementation Impact Mapping | not started |

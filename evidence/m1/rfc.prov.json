@@ -1,0 +1,21 @@
+{
+  "document_version": "RFC9000-excerpt-1",
+  "family": "rfc",
+  "provenance": {
+    "adapter_id": "normshift.adapters.rfc",
+    "adapter_version": "1.0.0",
+    "byte_length": 1163,
+    "canonical_source": "https://www.rfc-editor.org/rfc/rfc9000.html",
+    "content_sha256": "ce963be51d85848e4b405d887ebbd35828251766c20807082f534eb052307f0f",
+    "content_type": "text/html",
+    "document_family": "rfc",
+    "etag": "W/\"rfc9000-excerpt-v1\"",
+    "fetch_metadata": {
+      "corpus_note": "Synthetic offline excerpt modeled on RFC HTML structure; not a full RFC download."
+    },
+    "last_modified": "2026-01-01T00:00:00Z",
+    "local_path": "fixtures/corpus/rfc/sample-v1.html",
+    "normalization_version": "1.0.0"
+  },
+  "working_html_sha256": "b433dc06cb76a091a395ef74cf8e096883fb7ca0f06126fb2540d148112663b5"
+}

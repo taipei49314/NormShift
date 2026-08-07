@@ -1,0 +1,273 @@
+{
+  "changes": [
+    {
+      "alignment_score": null,
+      "change_id": "6781222b58325f58",
+      "classification": "ADDED",
+      "classification_reasons": [
+        "No aligned prior requirement; treated as addition."
+      ],
+      "confidence": 0.95,
+      "evidence_hashes": [
+        "734373a3f32ffac0af9bf18d865c82aa24cbc0fb601f743bed62add9f23b8727",
+        "827b456108330e6f0852a09a09442618b6215886931b2815c2a4d74414b6c632",
+        "acaf4649bc69965e56c492868b21229d5d690758de2b8f531faaba1c98368d06"
+      ],
+      "modality_transition": "∅->MUST_NOT",
+      "new_requirement_id": "9379f3e96f842acf",
+      "new_section_path": "Sample API (W3C-style corpus) > 4. Networking",
+      "new_source_locator": "id:c3|xpath:/body/main/p[5]",
+      "new_text": "Clients MUST NOT send credentials on cross-origin redirects.",
+      "old_requirement_id": null,
+      "old_section_path": null,
+      "old_source_locator": null,
+      "old_text": null
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 0.8849,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 0.9385,
+          "modality_match": 0.4,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 0.96,
+          "token_similarity": 0.9394
+        },
+        "modality_match": 0.4,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 0.96,
+        "token_similarity": 0.9394
+      },
+      "change_id": "f5e782249ebae371",
+      "classification": "STRENGTHENED",
+      "classification_reasons": [
+        "Obligation strengthened: SHOULD -> MUST."
+      ],
+      "confidence": 0.92,
+      "evidence_hashes": [
+        "1c11863b6b774f0b8bb7c30ce9d6c035e656a8288e2e12a89331aaa549e9f42e",
+        "2ef8c469dff12e49d89b997f5353f5a08fad9441a76f91cd15762d211be243f4",
+        "832ce89d4d066cc91de351a8b96a7eef60a08f65418e84ddff9a9524a2e63abc",
+        "8fa01b2aee8f690d1b32add7c24acb4f534f202a5b75c45c3af3890e9aeef22f",
+        "a8ea75a9ca1c340ef9b2b0ed62442f1caaee76ff09a92a88cac3bfe011cb72fa"
+      ],
+      "modality_transition": "SHOULD->MUST",
+      "new_requirement_id": "f5ab399284b861ee",
+      "new_section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "new_source_locator": "id:c2|xpath:/body/main/p[3]",
+      "new_text": "User agents MUST display a warning when certificates are invalid.",
+      "old_requirement_id": "1963d29573c5481e",
+      "old_section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "old_source_locator": "id:c2|xpath:/body/main/p[3]",
+      "old_text": "User agents SHOULD display a warning when certificates are invalid."
+    },
+    {
+      "alignment_score": {
+        "actor_action_similarity": 1.0,
+        "combined": 1.0,
+        "components": {
+          "actor_action_similarity": 1.0,
+          "editorial_similarity": 1.0,
+          "modality_match": 1.0,
+          "section_similarity": 1.0,
+          "structural_proximity": 1.0,
+          "text_similarity": 1.0,
+          "token_similarity": 1.0
+        },
+        "modality_match": 1.0,
+        "section_similarity": 1.0,
+        "structural_proximity": 1.0,
+        "text_similarity": 1.0,
+        "token_similarity": 1.0
+      },
+      "change_id": "b2218654bfb38bac",
+      "classification": "UNCHANGED",
+      "classification_reasons": [
+        "Identical normalized text, modality, and section → UNCHANGED."
+      ],
+      "confidence": 0.99,
+      "evidence_hashes": [
+        "194afbae0af3a8c9831e751964061892c157145e076f68d9da1505b73b44f610",
+        "b44ea53990dd0e340a7c32b81f66768638cabc66364d275a480145f542dfcfaa",
+        "dde31389c645d07ce071a535194e9b8691ccbed9838cb43cee4a35c02e77243f",
+        "e250f73404a71be5d0bb3d9db68fac3fc888edcbec3de091081010f3bc898eda",
+        "e86970d7961980e3c55735dc254d961f08c297d8372db5bb4813e1cb3b337056"
+      ],
+      "modality_transition": "MUST->MUST",
+      "new_requirement_id": "6981672b1f125c4a",
+      "new_section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "new_source_locator": "id:c1|xpath:/body/main/p[2]",
+      "new_text": "Implementations MUST support the open() method.",
+      "old_requirement_id": "8093ff9f005d0c87",
+      "old_section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "old_source_locator": "id:c1|xpath:/body/main/p[2]",
+      "old_text": "Implementations MUST support the open() method."
+    }
+  ],
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "baf443cadddeb15d82f8bf2b425dc15b4222c774cc4738c20f3627c32a3501f3"
+  },
+  "new_document": {
+    "byte_length": 1307,
+    "document_family": "w3c",
+    "path": "fixtures/corpus/w3c/sample-v2.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.w3c",
+      "adapter_version": "1.0.0",
+      "byte_length": 1307,
+      "canonical_source": "https://www.w3.org/TR/sample-api/",
+      "content_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+      "content_type": "text/html",
+      "document_family": "w3c",
+      "etag": "W/\"w3c-sample-v2\"",
+      "fetch_metadata": {
+        "corpus_note": "Synthetic W3C-style TR HTML for offline regression; not an official TR snapshot."
+      },
+      "last_modified": "2026-03-01T00:00:00Z",
+      "local_path": "fixtures/corpus/w3c/sample-v2.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+    "version": "WD-excerpt-2"
+  },
+  "new_requirements": [
+    {
+      "action": "support the open() method",
+      "actor": "Implementations",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+      "document_version": "WD-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.2.0",
+      "fingerprint": "d77d269fd388245badfe2ea2f30b1d89aedfe93f3104a18bb9e6c5632446fa22",
+      "modality": "MUST",
+      "normalized_text": "Implementations MUST support the open() method.",
+      "original_text": "Implementations MUST support the open() method.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "6981672b1f125c4a",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c1|xpath:/body/main/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "display a warning",
+      "actor": "User agents",
+      "condition": "when certificates are invalid",
+      "confidence": 0.95,
+      "document_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+      "document_version": "WD-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.2.0",
+      "fingerprint": "46d8f9c90560256064936bc6a63affd9e3d17e61262ad789d0ee42a2574dc680",
+      "modality": "MUST",
+      "normalized_text": "User agents MUST display a warning when certificates are invalid.",
+      "original_text": "User agents MUST display a warning when certificates are invalid.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "f5ab399284b861ee",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c2|xpath:/body/main/p[3]",
+      "structural_index": 2
+    },
+    {
+      "action": "send credentials on cross-origin redirects",
+      "actor": "Clients",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "da83242c7bf6a6258c8160755e207b0420feb85526d18c3a8693e25cf3c945db",
+      "document_version": "WD-excerpt-2",
+      "exception": null,
+      "extractor_version": "0.2.0",
+      "fingerprint": "1070aec9f91879e1f52932ad252720e0a7f0f9d64aad614bf11c1367dc3db295",
+      "modality": "MUST_NOT",
+      "normalized_text": "Clients MUST NOT send credentials on cross-origin redirects.",
+      "original_text": "Clients MUST NOT send credentials on cross-origin redirects.",
+      "polarity": "NEGATIVE",
+      "requirement_id": "9379f3e96f842acf",
+      "section_path": "Sample API (W3C-style corpus) > 4. Networking",
+      "source_locator": "id:c3|xpath:/body/main/p[5]",
+      "structural_index": 6
+    }
+  ],
+  "old_document": {
+    "byte_length": 1202,
+    "document_family": "w3c",
+    "path": "fixtures/corpus/w3c/sample-v1.html",
+    "provenance": {
+      "adapter_id": "normshift.adapters.w3c",
+      "adapter_version": "1.0.0",
+      "byte_length": 1202,
+      "canonical_source": "https://www.w3.org/TR/sample-api/",
+      "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "content_type": "text/html",
+      "document_family": "w3c",
+      "etag": "W/\"w3c-sample-v1\"",
+      "fetch_metadata": {
+        "corpus_note": "Synthetic W3C-style TR HTML for offline regression; not an official TR snapshot."
+      },
+      "last_modified": "2026-01-15T00:00:00Z",
+      "local_path": "fixtures/corpus/w3c/sample-v1.html",
+      "normalization_version": "1.0.0"
+    },
+    "sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+    "version": "WD-excerpt-1"
+  },
+  "old_requirements": [
+    {
+      "action": "support the open() method",
+      "actor": "Implementations",
+      "condition": null,
+      "confidence": 0.9,
+      "document_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "document_version": "WD-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.2.0",
+      "fingerprint": "d77d269fd388245badfe2ea2f30b1d89aedfe93f3104a18bb9e6c5632446fa22",
+      "modality": "MUST",
+      "normalized_text": "Implementations MUST support the open() method.",
+      "original_text": "Implementations MUST support the open() method.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "8093ff9f005d0c87",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c1|xpath:/body/main/p[2]",
+      "structural_index": 1
+    },
+    {
+      "action": "display a warning",
+      "actor": "User agents",
+      "condition": "when certificates are invalid",
+      "confidence": 0.95,
+      "document_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+      "document_version": "WD-excerpt-1",
+      "exception": null,
+      "extractor_version": "0.2.0",
+      "fingerprint": "eeaa142e9cd7fa2026573bad73b31cd8d740740a6a0336cdd8516b718eceddde",
+      "modality": "SHOULD",
+      "normalized_text": "User agents SHOULD display a warning when certificates are invalid.",
+      "original_text": "User agents SHOULD display a warning when certificates are invalid.",
+      "polarity": "AFFIRMATIVE",
+      "requirement_id": "1963d29573c5481e",
+      "section_path": "Sample API (W3C-style corpus) > 2. Conformance",
+      "source_locator": "id:c2|xpath:/body/main/p[3]",
+      "structural_index": 2
+    }
+  ],
+  "profile": "rfc2119",
+  "schema_version": "1.0.0",
+  "summary": {
+    "change_count": 3,
+    "classification_counts": {
+      "ADDED": 1,
+      "STRENGTHENED": 1,
+      "UNCHANGED": 1
+    },
+    "new_requirement_count": 3,
+    "old_requirement_count": 2
+  },
+  "tool_version": "0.2.0"
+}

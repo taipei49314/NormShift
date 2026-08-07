@@ -1,32 +1,31 @@
 {
-  "current_objective": "Adopt official North Star charter; hold M0 pending external audit",
-  "current_hypothesis": "Full NORMSHIFT_NORTH_STAR charter is the governance source of truth; M0 work already satisfies North Star \u00a710 M0 exit items and must not expand into M1 until external audit",
-  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "7447b97b63e5c40266c9530e211ce68a213531c5",
+  "current_objective": "M1 Real Standards Adapters & Provenance",
+  "current_hypothesis": "Offline multi-family adapters with sidecar provenance and fail-closed loads satisfy North Star M1 exit criteria without network or LLM",
+  "status": "M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": null,
   "commands_run": [
-    "uv sync --all-extras --dev",
     "uv run ruff check .  # exit 0",
     "uv run mypy src  # exit 0",
-    "uv run pytest -q  # exit 0, 32 passed",
-    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # exit 0, 17/17",
-    "uv run normshift diff fixtures/synthetic/spec-v1.html fixtures/synthetic/spec-v2.html --profile rfc2119 --json evidence/m0/report.json --markdown evidence/m0/report.md  # exit 0",
-    "uv run normshift verify evidence/m0/report.json  # exit 0",
-    "uv run normshift verify evidence/m0/report_tampered.json  # exit 1 (expected)"
+    "uv run pytest -q  # exit 0, 42 passed",
+    "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # 17/17",
+    "uv run normshift ingest ... evidence/m1/*.prov.json",
+    "uv run normshift diff ... evidence/m1/{rfc,w3c,whatwg}.diff.json",
+    "uv run normshift verify evidence/m1/*.diff.json  # exit 0"
   ],
   "verified_artifacts": [
-    "evidence/m0/report.json",
-    "evidence/m0/report.md",
-    "evidence/m0/report_run2.json",
-    "evidence/m0/report_tampered.json",
-    "evidence/m0/M0_EVIDENCE.md",
-    "docs/NORTH_STAR.md"
+    "evidence/m1/M1_EVIDENCE.md",
+    "evidence/m1/rfc.prov.json",
+    "evidence/m1/w3c.prov.json",
+    "evidence/m1/whatwg.prov.json",
+    "evidence/m1/rfc.diff.json",
+    "evidence/m1/w3c.diff.json",
+    "evidence/m1/whatwg.diff.json"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "External audit of classification policy not performed",
-    "Heuristic role extraction incomplete for complex syntax",
-    "Greedy alignment may miss global optimum on large corpora",
-    "M0 does not yet implement full North Star change taxonomy (SPLIT/MERGED/DEFINITION_CHANGED/etc.)"
+    "External audit not performed",
+    "Corpus is structural excerpt not full live standards dump",
+    "Auto-detect family is heuristic"
   ],
-  "next_action": "Stop M0 expansion; external audit. After audit pass, begin M1 adapters only (no dashboard/LLM/DB)."
+  "next_action": "M2 Requirement Lineage Graph (local only, no push until instructed)"
 }

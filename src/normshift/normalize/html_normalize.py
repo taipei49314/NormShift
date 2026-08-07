@@ -24,7 +24,17 @@ IGNORE_TAGS = frozenset(
 )
 
 INFORMATIVE_CLASS_RE = re.compile(
-    r"\b(example|note|informative|non-normative|illustration|sample)\b",
+    r"\b(example|note|informative|non-normative|nonnormative|illustration|"
+    r"sample|issue|warning|advisement|annotation|ednote|editor-note|"
+    r"impl|implementation-note|prac|practice|xxx|todo)\b",
+    re.IGNORECASE,
+)
+
+# Section titles that are typically informative / non-implementer normative.
+INFORMATIVE_SECTION_RE = re.compile(
+    r"^(appendix\b|acknowledg|security considerations$|iana considerations$|"
+    r"references$|normative references$|informative references$|"
+    r"change log$|changelog$|revision history$)",
     re.IGNORECASE,
 )
 
@@ -116,8 +126,14 @@ def _is_informative_region(el: etree._Element) -> bool:
             return True
         if (anc.get("data-normative") or "").lower() in {"false", "0", "no"}:
             return True
+        # W3C/ReSpec often uses class="informative" on section
+        classes = _class_attr(anc)
+        if re.search(r"\binformative\b", classes, re.I) and not re.search(
+            r"\bnormative\b", classes, re.I
+        ):
+            return True
         role = (anc.get("role") or "").lower()
-        if role in {"note", "doc-example", "doc-note"}:
+        if role in {"note", "doc-example", "doc-note", "doc-tip"}:
             return True
         anc = anc.getparent()
     return False
@@ -180,6 +196,11 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
             while section_stack and section_stack[-1][0] >= level:
                 section_stack.pop()
             section_stack.append((level, title))
+            continue
+
+        # Skip blocks under informative-titled leaf sections.
+        leaf_section = section_stack[-1][1] if section_stack else ""
+        if leaf_section and INFORMATIVE_SECTION_RE.search(leaf_section.strip()):
             continue
 
         if name not in {"p", "li", "dd", "td", "th", "div"}:

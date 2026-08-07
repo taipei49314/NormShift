@@ -1,7 +1,7 @@
 [project]
 name = "normshift"
-version = "0.1.0"
-description = "Evidence-backed semantic diff engine for technical standards (M0: local HTML vertical slice)"
+version = "0.2.0"
+description = "Evidence-backed semantic diff engine for technical standards (M0/M1: HTML adapters + provenance)"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [

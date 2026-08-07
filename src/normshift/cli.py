@@ -8,15 +8,17 @@ from pathlib import Path
 
 import typer
 
+from normshift.adapters.errors import AdapterError
+from normshift.adapters.registry import load_document
 from normshift.benchmark.runner import run_benchmark
 from normshift.extract.extractor import extract_requirements
-from normshift.model.types import ProfileName
+from normshift.model.types import AdapterName, ProfileName
 from normshift.pipeline import run_diff
 from normshift.verify.verifier import verify_report_file
 
 app = typer.Typer(
     name="normshift",
-    help="Evidence-backed semantic diff for technical standards (local HTML M0).",
+    help="Evidence-backed semantic diff for technical standards.",
     add_completion=False,
     no_args_is_help=True,
 )
@@ -27,23 +29,42 @@ class ProfileOpt(StrEnum):
     whatwg = "whatwg"
 
 
+class AdapterOpt(StrEnum):
+    auto = "auto"
+    html = "html"
+    rfc = "rfc"
+    w3c = "w3c"
+    whatwg = "whatwg"
+
+
 def _to_profile(p: ProfileOpt) -> ProfileName:
     return ProfileName(p.value)
 
 
+def _to_adapter(a: AdapterOpt) -> AdapterName:
+    return AdapterName(a.value)
+
+
 @app.command("extract")
 def extract_cmd(
-    html_path: Path = typer.Argument(..., exists=False, readable=False, help="Local HTML file"),
+    html_path: Path = typer.Argument(..., help="Local HTML/XML file"),
     profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile", help="Keyword profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter", help="Source adapter"),
     out: Path = typer.Option(..., "--out", help="Output requirements JSON path"),
 ) -> None:
-    """Extract normative requirements from a local HTML file."""
+    """Extract normative requirements from a local document."""
     if not html_path.is_file():
-        typer.echo(f"error: HTML file not found: {html_path}", err=True)
+        typer.echo(f"error: source file not found: {html_path}", err=True)
         raise typer.Exit(code=2)
     try:
-        prof = _to_profile(profile)
-        doc = extract_requirements(html_path, prof)
+        doc = extract_requirements(
+            html_path,
+            _to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+    except AdapterError as exc:
+        typer.echo(f"error: adapter failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     except ValueError as exc:
         typer.echo(f"error: {exc}", err=True)
         raise typer.Exit(code=2) from exc
@@ -55,23 +76,25 @@ def extract_cmd(
     payload = doc.model_dump(mode="json")
     raw = json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
     out.write_text(raw, encoding="utf-8")
-    typer.echo(f"wrote {len(doc.requirements)} requirements → {out}")
+    family = doc.document_family.value if doc.document_family else "unknown"
+    typer.echo(f"wrote {len(doc.requirements)} requirements ({family}) → {out}")
 
 
 @app.command("diff")
 def diff_cmd(
-    old_html: Path = typer.Argument(..., help="Old HTML file"),
-    new_html: Path = typer.Argument(..., help="New HTML file"),
+    old_html: Path = typer.Argument(..., help="Old document"),
+    new_html: Path = typer.Argument(..., help="New document"),
     profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
     json_out: Path | None = typer.Option(None, "--json", help="JSON report path"),
     markdown_out: Path | None = typer.Option(None, "--markdown", help="Markdown report path"),
 ) -> None:
-    """Diff two HTML versions and emit evidence-linked reports."""
+    """Diff two document versions and emit evidence-linked reports."""
     if not old_html.is_file():
-        typer.echo(f"error: old HTML not found: {old_html}", err=True)
+        typer.echo(f"error: old document not found: {old_html}", err=True)
         raise typer.Exit(code=2)
     if not new_html.is_file():
-        typer.echo(f"error: new HTML not found: {new_html}", err=True)
+        typer.echo(f"error: new document not found: {new_html}", err=True)
         raise typer.Exit(code=2)
     if json_out is None and markdown_out is None:
         typer.echo("error: provide --json and/or --markdown output path", err=True)
@@ -82,9 +105,13 @@ def diff_cmd(
             old_html,
             new_html,
             profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
             json_out=json_out,
             markdown_out=markdown_out,
         )
+    except AdapterError as exc:
+        typer.echo(f"error: adapter failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     except ValueError as exc:
         typer.echo(f"error: {exc}", err=True)
         raise typer.Exit(code=2) from exc
@@ -96,6 +123,38 @@ def diff_cmd(
         f"diff complete: {len(report.old_requirements)}→{len(report.new_requirements)} "
         f"requirements, {len(report.changes)} changes"
     )
+
+
+@app.command("ingest")
+def ingest_cmd(
+    source: Path = typer.Argument(..., help="Local source file"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+    out: Path = typer.Option(..., "--out", help="Provenance JSON path"),
+) -> None:
+    """Load a document through an adapter and write immutable provenance."""
+    if not source.is_file():
+        typer.echo(f"error: source file not found: {source}", err=True)
+        raise typer.Exit(code=2)
+    try:
+        adapted = load_document(source, adapter=_to_adapter(adapter))
+    except AdapterError as exc:
+        typer.echo(f"error: adapter failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "document_version": adapted.document_version,
+        "family": adapted.family.value,
+        "provenance": adapted.provenance.model_dump(mode="json"),
+        "working_html_sha256": __import__("hashlib")
+        .sha256(adapted.working_html)
+        .hexdigest(),
+    }
+    out.write_text(
+        json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    typer.echo(f"ingested {adapted.family.value} → {out}")
 
 
 @app.command("verify")

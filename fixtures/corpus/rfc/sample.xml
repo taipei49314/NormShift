@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rfc docName="rfc-excerpt-xml-1" number="9000">
+  <front>
+    <title>QUIC Excerpt XML</title>
+  </front>
+  <middle>
+    <section title="Connections">
+      <t>Endpoints MUST establish a connection before exchanging application data.</t>
+      <t>A server SHOULD retry a handshake when the first attempt fails.</t>
+      <aside type="note">
+        <t>Note: implementations MUST NOT treat this note as normative.</t>
+      </aside>
+      <sourcecode>
+// MUST ignore
+      </sourcecode>
+    </section>
+    <section title="Frames">
+      <t>Senders MUST include a frame type on every frame.</t>
+    </section>
+  </middle>
+</rfc>

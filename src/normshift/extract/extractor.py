@@ -10,6 +10,7 @@ from normshift import EXTRACTOR_VERSION
 from normshift.extract.profiles import find_keyword_matches
 from normshift.extract.roles import extract_roles
 from normshift.model.types import (
+    AdapterName,
     ProfileName,
     Requirement,
     RequirementsDocument,
@@ -57,7 +58,6 @@ def requirements_from_blocks(
         matches = find_keyword_matches(block.text, profile)
         if not matches:
             continue
-        # One requirement per keyword hit in the block (stable order).
         for km in matches:
             actor, action, condition, exception = extract_roles(block.text, km)
             norm_text = normalize_whitespace(block.text)
@@ -76,7 +76,6 @@ def requirements_from_blocks(
                 str(km.start),
                 norm_text,
             )
-            # Confidence: high for clear keyword + non-empty action.
             confidence = 0.9 if action else 0.75
             if condition or exception:
                 confidence = min(1.0, confidence + 0.05)
@@ -103,7 +102,6 @@ def requirements_from_blocks(
                 )
             )
 
-    # Deterministic order: structural index, then locator, then id.
     reqs.sort(key=lambda r: (r.structural_index, r.source_locator, r.requirement_id))
     return reqs
 
@@ -111,9 +109,10 @@ def requirements_from_blocks(
 def extract_requirements(
     path: Path,
     profile: ProfileName,
+    adapter: AdapterName = AdapterName.AUTO,
 ) -> RequirementsDocument:
-    snap, raw = snapshot_document(path)
-    blocks = normalize_html(raw)
+    snap, working_html, adapted = snapshot_document(path, adapter=adapter)
+    blocks = normalize_html(working_html)
     reqs = requirements_from_blocks(
         blocks,
         document_sha256=snap.sha256,
@@ -127,4 +126,6 @@ def extract_requirements(
         source_path=snap.path,
         extractor_version=EXTRACTOR_VERSION,
         requirements=reqs,
+        provenance=adapted.provenance,
+        document_family=adapted.family,
     )

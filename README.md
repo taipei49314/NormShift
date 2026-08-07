@@ -69,8 +69,12 @@ uv run normshift verify evidence/m0/report.json
 - [Decisions](DECISIONS.md)
 - [Claims](CLAIMS.md)
 
-**Current milestone:** M0 — `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
-Do not start M1 (real adapters / crawlers / LLM) until external audit of M0.
+**Current implementer status:**  
+- M0 — `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
+- M1 — `M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
+
+Adapters: `--adapter auto|html|rfc|w3c|whatwg`. Offline corpus: `fixtures/corpus/`.  
+`normshift ingest` writes provenance JSON. No live crawler (M3).
 
 ## License
 

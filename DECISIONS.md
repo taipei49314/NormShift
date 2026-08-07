@@ -1,5 +1,16 @@
 # Design Decisions (M0)
 
+## D009 — M1 adapters are offline-first with provenance sidecars
+
+**Decision:** Real-standard families are supported via local adapters + optional
+`*.meta.json` sidecars (canonical_source, etag, last_modified). No live HTTP
+in the M1 correctness path.  
+**Why:** North Star M1 requires provenance and three families; M3 owns scheduled
+fetch. Offline sidecars keep clean-clone replay and fail-closed semantics.  
+**Corpus:** Structure-faithful excerpts under `fixtures/corpus/`, not full
+redistribution of live standards.  
+**Status:** Accepted for M1.
+
 ## D008 — Official North Star charter adopted as source of truth
 
 **Decision:** Replace the short M0 north-star stub with the full

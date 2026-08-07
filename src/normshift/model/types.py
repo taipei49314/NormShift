@@ -13,6 +13,23 @@ class ProfileName(StrEnum):
     WHATWG = "whatwg"
 
 
+class DocumentFamily(StrEnum):
+    """Source document family handled by M1 adapters."""
+
+    GENERIC_HTML = "generic_html"
+    RFC = "rfc"
+    W3C = "w3c"
+    WHATWG = "whatwg"
+
+
+class AdapterName(StrEnum):
+    AUTO = "auto"
+    HTML = "html"
+    RFC = "rfc"
+    W3C = "w3c"
+    WHATWG = "whatwg"
+
+
 class Modality(StrEnum):
     MUST = "MUST"
     MUST_NOT = "MUST_NOT"
@@ -40,6 +57,25 @@ class ChangeClassification(StrEnum):
     EXCEPTION_ADDED = "EXCEPTION_ADDED"
     EXCEPTION_REMOVED = "EXCEPTION_REMOVED"
     AMBIGUOUS = "AMBIGUOUS"
+
+
+class Provenance(BaseModel):
+    """Immutable source provenance for a document snapshot (M1)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    document_family: DocumentFamily
+    adapter_id: str
+    adapter_version: str
+    normalization_version: str
+    content_type: str
+    content_sha256: str
+    byte_length: int
+    local_path: str
+    canonical_source: str | None = None
+    etag: str | None = None
+    last_modified: str | None = None
+    fetch_metadata: dict[str, str] = Field(default_factory=dict)
 
 
 class Requirement(BaseModel):
@@ -74,6 +110,8 @@ class RequirementsDocument(BaseModel):
     source_path: str
     extractor_version: str
     requirements: list[Requirement]
+    provenance: Provenance | None = None
+    document_family: DocumentFamily | None = None
 
 
 class AlignmentScore(BaseModel):
@@ -116,6 +154,8 @@ class DocumentSnapshot(BaseModel):
     sha256: str
     version: str
     byte_length: int
+    provenance: Provenance | None = None
+    document_family: DocumentFamily | None = None
 
 
 class Report(BaseModel):

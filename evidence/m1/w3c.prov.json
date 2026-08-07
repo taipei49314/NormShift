@@ -1,0 +1,21 @@
+{
+  "document_version": "WD-excerpt-1",
+  "family": "w3c",
+  "provenance": {
+    "adapter_id": "normshift.adapters.w3c",
+    "adapter_version": "1.0.0",
+    "byte_length": 1202,
+    "canonical_source": "https://www.w3.org/TR/sample-api/",
+    "content_sha256": "7ddf62a67fa7086e06338ee02c87241ade81feeccf1878144f151850a05580da",
+    "content_type": "text/html",
+    "document_family": "w3c",
+    "etag": "W/\"w3c-sample-v1\"",
+    "fetch_metadata": {
+      "corpus_note": "Synthetic W3C-style TR HTML for offline regression; not an official TR snapshot."
+    },
+    "last_modified": "2026-01-15T00:00:00Z",
+    "local_path": "fixtures/corpus/w3c/sample-v1.html",
+    "normalization_version": "1.0.0"
+  },
+  "working_html_sha256": "6b4717d4dc008d056d15852a7332061df70646145f6102b7c34a13e99419dd89"
+}

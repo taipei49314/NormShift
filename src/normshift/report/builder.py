@@ -95,6 +95,24 @@ def write_markdown_report(report: Report, path: Path) -> None:
             f"| {label} | `{doc.path}` | `{doc.version}` | `{doc.sha256}` | {doc.byte_length} |"
         )
     lines.append("")
+    lines.append("### Provenance")
+    lines.append("")
+    for label, doc in (("old", report.old_document), ("new", report.new_document)):
+        prov = doc.provenance
+        if prov is None:
+            lines.append(f"- {label}: _(none)_")
+            continue
+        lines.append(
+            f"- **{label}**: family=`{prov.document_family.value}` "
+            f"adapter=`{prov.adapter_id}`@{prov.adapter_version} "
+            f"type=`{prov.content_type}`"
+        )
+        if prov.canonical_source:
+            lines.append(f"  - canonical: `{prov.canonical_source}`")
+        if prov.etag:
+            lines.append(f"  - etag: `{prov.etag}`")
+
+    lines.append("")
     lines.append("## Summary")
     lines.append("")
     lines.append(f"- Old requirements: **{report.summary.get('old_requirement_count', 0)}**")

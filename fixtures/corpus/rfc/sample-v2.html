@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="version" content="RFC9000-excerpt-2"/>
+  <title>RFC 9000 Excerpt v2</title>
+  <link rel="canonical" href="https://www.rfc-editor.org/rfc/rfc9000.html"/>
+</head>
+<body>
+  <div class="rfc">
+    <nav id="toc"><ul><li>1. Introduction</li></ul></nav>
+    <h1>RFC 9000: QUIC Excerpt (synthetic corpus)</h1>
+    <h2>Status of This Memo</h2>
+    <p>This document is an Internet Standards Track excerpt for offline regression only.</p>
+    <h2>1. Introduction</h2>
+    <p>This excerpt is not the full RFC; it models RFC HTML structure for NormShift M1.</p>
+    <h2>2. Connections</h2>
+    <p id="req-conn">Endpoints MUST establish a connection before exchanging application data.</p>
+    <p id="req-retry">A server MUST retry a handshake when the first attempt fails.</p>
+    <div class="note">
+      <p>Note: implementations MUST NOT treat this note as a normative requirement.</p>
+    </div>
+    <pre><code>// MUST ignore code samples
+send_packet();
+</code></pre>
+    <h2>3. Frames</h2>
+    <p id="req-frame">Senders MUST include a frame type on every frame.</p>
+    <p id="req-ack">Receivers MUST acknowledge STREAM frames promptly.</p>
+  </div>
+</body>
+</html>
