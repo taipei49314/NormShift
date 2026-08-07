@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="version" content="1.0.0" />
+  <title>Synthetic Spec v1</title>
+</head>
+<body>
+  <h1>Synthetic Protocol Spec 1.0.0</h1>
+
+  <h2>1 Transmission</h2>
+  <p id="req-send">Implementers SHOULD send an acknowledgment after each frame.</p>
+  <p id="req-retry">Servers MUST retry failed deliveries up to three times.</p>
+  <p id="req-log">Clients MUST log every authentication failure.</p>
+
+  <h2>2 Privacy</h2>
+  <p id="req-store">Implementers MUST store credentials in encrypted form.</p>
+  <p id="req-cache">User agents SHOULD cache public keys for at most 24 hours.</p>
+
+  <h2>3 Examples</h2>
+  <div class="example">
+    <p>Example only: the client MUST send a heartbeat every second.</p>
+  </div>
+  <pre><code>// pseudo: agent MUST ignore this line
+send("ping");
+</code></pre>
+  <p id="req-mustard">The mustard configuration key MAY be omitted by clients.</p>
+  <p id="req-not-required">A legacy peer is not required to support compression.</p>
+
+  <h2>4 Routing</h2>
+  <p id="req-route-a">Implementers MUST reject unknown critical extensions.</p>
+  <p id="req-route-b">Implementers MUST accept unknown non-critical extensions.</p>
+
+  <h2>5 Session</h2>
+  <p id="req-session">User agents MUST open at most one control channel per origin.</p>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="version" content="2.0.0" />
+  <title>Synthetic Spec v2</title>
+</head>
+<body>
+  <h1>Synthetic Protocol Spec 2.0.0</h1>
+
+  <h2>1 Transmission</h2>
+  <!-- SHOULD -> MUST (STRENGTHENED) -->
+  <p id="req-send">Implementers MUST send an acknowledgment after each frame.</p>
+  <!-- MUST -> SHOULD (WEAKENED) -->
+  <p id="req-retry">Servers SHOULD retry failed deliveries up to three times.</p>
+  <!-- MUST -> MUST NOT (POLARITY_FLIP) -->
+  <p id="req-log">Clients MUST NOT log every authentication failure.</p>
+  <!-- EDITORIAL: whitespace / punctuation only -->
+  <p id="req-store">Implementers  MUST  store credentials in encrypted form.</p>
+  <!-- EXCEPTION_ADDED -->
+  <p id="req-cache">User agents SHOULD cache public keys for at most 24 hours unless private mode is active.</p>
+  <!-- CONDITION_ADDED on similar body; new clause -->
+  <p id="req-sync">Implementers MUST synchronize clocks when a network is available.</p>
+  <!-- ADDED -->
+  <p id="req-new">Senders MUST include a monotonic sequence number on every datagram.</p>
+
+  <h2>2 Privacy</h2>
+  <!-- req-store moved editorial stays in transmission above; privacy section loses store -->
+  <!-- REMOVED: old privacy cache stayed but modified; old store moved content-wise already covered -->
+
+  <h2>3 Examples</h2>
+  <div class="example">
+    <p>Example only: the client MUST send a heartbeat every second.</p>
+  </div>
+  <pre><code>// pseudo: agent MUST ignore this line
+send("ping");
+</code></pre>
+  <p id="req-mustard">The mustard configuration key MAY be omitted by clients.</p>
+  <p id="req-not-required">A legacy peer is not required to support compression.</p>
+
+  <h2>4 Routing</h2>
+  <!-- Two highly similar requirements remain distinct -->
+  <p id="req-route-a">Implementers MUST reject unknown critical extensions.</p>
+  <p id="req-route-b">Implementers MUST accept unknown non-critical extensions.</p>
+
+  <h2>6 Relocated Session</h2>
+  <!-- MOVED from section 5 Session (not remove+add) -->
+  <p id="req-session">User agents MUST open at most one control channel per origin.</p>
+</body>
+</html>
