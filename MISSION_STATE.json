@@ -1,27 +1,29 @@
 {
-  "current_objective": "M0 repair round 3 complete \u2014 portable evidence + canonical replay",
-  "current_hypothesis": "Portable source_ref + full report model replay + entry-type path safety close R2 external gaps",
+  "current_objective": "M0 repair round 4 package subject ready for external re-audit",
+  "current_hypothesis": "Strict JSON + portable generation root + modal-local historical + parent-chain cleanup close R3 P0/P1 blockers",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
   "package_identity": "externally_attested",
   "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q #108 passed",
+    "uv run pytest -q #147 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",
-    "uv run normshift verify --source-root . #0",
-    "relocation verify #0"
+    "uv run normshift diff --source-root . #0",
+    "uv run normshift verify --source-root . #0 verification_scope=FULL"
   ],
   "verified_artifacts": [
-    "docs/EXTERNAL_AUDIT_R2.md",
-    "docs/M0_REPAIR_ROUND3.md",
-    "evidence/m0-repair-round3/"
+    "docs/EXTERNAL_AUDIT_R3_FINAL.md",
+    "docs/GROK_M0_REPAIR_ROUND4.md",
+    "docs/M0_REPAIR_ROUND4.md",
+    "evidence/m0-repair-round4/"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "Awaiting external re-audit of round-3 package",
+    "Awaiting external re-audit of round-4 package",
+    "Historical authority is heuristic/clause-local, not full NL",
     "M1/M2 experimental only"
   ],
-  "next_action": "STOP. External re-audit of R3 package only."
+  "next_action": "STOP. External re-audit of R4 package only. No post-gate commits."
 }

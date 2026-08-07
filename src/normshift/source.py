@@ -5,7 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from normshift.adapters.base import AdaptedDocument, portable_source_ref
+from normshift.adapters.base import (
+    AdaptedDocument,
+    portable_source_ref,
+    provisional_portable_ref,
+)
 from normshift.adapters.registry import load_document
 from normshift.model.types import AdapterName, DocumentFamily, DocumentSnapshot, Provenance
 
@@ -62,7 +66,14 @@ def load_immutable_source(
 
     adapted: AdaptedDocument = load_document(path, adapter=adapter)
     resolved = path.resolve()
-    ref = portable_ref if portable_ref is not None else portable_source_ref(path)
+    if portable_ref is not None:
+        ref = portable_ref
+    else:
+        try:
+            ref = portable_source_ref(path)
+        except ValueError:
+            # Extract-only / non-report path: provisional basename, not absolute.
+            ref = provisional_portable_ref(path)
     # Re-bind provenance.local_path to portable ref for external verify
     prov = adapted.provenance.model_copy(update={"local_path": ref})
     return ImmutableSource(

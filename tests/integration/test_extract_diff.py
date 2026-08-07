@@ -44,6 +44,7 @@ def test_strengthen_diff() -> None:
         FIX / "case01_strengthen_old.html",
         FIX / "case01_strengthen_new.html",
         profile=ProfileName.RFC2119,
+        source_root=ROOT,
     )
     classes = {c.classification for c in report.changes}
     assert ChangeClassification.STRENGTHENED in classes
@@ -54,6 +55,7 @@ def test_relocation_is_moved_not_remove_add() -> None:
         FIX / "case15_relocation_old.html",
         FIX / "case15_relocation_new.html",
         profile=ProfileName.RFC2119,
+        source_root=ROOT,
     )
     classes = {c.classification for c in report.changes}
     assert ChangeClassification.MOVED in classes

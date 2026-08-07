@@ -29,7 +29,9 @@ def _fresh_report(tmp_path: Path) -> Path:
     shutil.copy(FIX / "spec-v1.html", old)
     shutil.copy(FIX / "spec-v2.html", new)
     out = tmp_path / "report.json"
-    run_diff(old, new, profile=ProfileName.RFC2119, json_out=out)
+    run_diff(
+        old, new, profile=ProfileName.RFC2119, json_out=out, source_root=tmp_path
+    )
     return out
 
 
@@ -39,10 +41,12 @@ def test_verify_fails_when_old_source_changes(tmp_path: Path) -> None:
     shutil.copy(FIX / "spec-v1.html", old)
     shutil.copy(FIX / "spec-v2.html", new)
     report = tmp_path / "r.json"
-    run_diff(old, new, profile=ProfileName.RFC2119, json_out=report)
-    assert verify_report_file(report).ok
+    run_diff(
+        old, new, profile=ProfileName.RFC2119, json_out=report, source_root=tmp_path
+    )
+    assert verify_report_file(report, source_root=tmp_path).ok
     old.write_text(old.read_text(encoding="utf-8") + "\n<!-- mutated -->\n", encoding="utf-8")
-    r = verify_report_file(report)
+    r = verify_report_file(report, source_root=tmp_path)
     assert not r.ok
     assert r.errors
 
@@ -53,9 +57,11 @@ def test_verify_fails_when_new_source_missing(tmp_path: Path) -> None:
     shutil.copy(FIX / "spec-v1.html", old)
     shutil.copy(FIX / "spec-v2.html", new)
     report = tmp_path / "r.json"
-    run_diff(old, new, profile=ProfileName.RFC2119, json_out=report)
+    run_diff(
+        old, new, profile=ProfileName.RFC2119, json_out=report, source_root=tmp_path
+    )
     new.unlink()
-    r = verify_report_file(report)
+    r = verify_report_file(report, source_root=tmp_path)
     assert not r.ok
     assert any("not found" in e.lower() or "Source" in e for e in r.errors)
 
@@ -76,7 +82,7 @@ def test_verify_fails_rehashed_dangling_requirement_reference(tmp_path: Path) ->
     from normshift.evidence.hashing import canonical_json_bytes
 
     report.write_bytes(canonical_json_bytes(data))
-    r = verify_report_file(report)
+    r = verify_report_file(report, source_root=tmp_path)
     assert not r.ok
     assert r.errors
 
@@ -92,7 +98,7 @@ def test_verify_fails_rehashed_wrong_summary(tmp_path: Path) -> None:
     from normshift.evidence.hashing import canonical_json_bytes
 
     report.write_bytes(canonical_json_bytes(data))
-    r = verify_report_file(report)
+    r = verify_report_file(report, source_root=tmp_path)
     assert not r.ok
     assert any("summary" in e.lower() for e in r.errors)
 
@@ -108,7 +114,7 @@ def test_verify_recomputes_evidence_hashes(tmp_path: Path) -> None:
     from normshift.evidence.hashing import canonical_json_bytes
 
     report.write_bytes(canonical_json_bytes(data))
-    r = verify_report_file(report)
+    r = verify_report_file(report, source_root=tmp_path)
     assert not r.ok
     # Replay or evidence integrity must reject the forged hashes
     assert any(
@@ -200,24 +206,25 @@ def test_diff_rejects_json_markdown_same_path(tmp_path: Path) -> None:
 
 
 def test_failed_second_write_preserves_preexisting_json(tmp_path: Path) -> None:
-    """Pre-existing JSON must not be deleted if a later write fails."""
-    from normshift.io_safety import write_transaction
+    """Pre-existing JSON must not be deleted if a later write fails.
+
+    Parent-as-file is rejected in non-mutating preflight (PathSafetyError)
+    before any staging; original content is therefore always preserved.
+    """
+    from normshift.io_safety import PathSafetyError, write_transaction
 
     preexisting = tmp_path / "out.json"
     preexisting.write_text("ORIGINAL_USER_CONTENT", encoding="utf-8")
-    # Simulate transaction where second path cannot be created
     bad_dir = tmp_path / "missing_parent_as_file"
     bad_dir.write_text("block", encoding="utf-8")
-    bad_path = bad_dir / "child.md"  # parent is a file → mkdir/write fails
-    with pytest.raises(OSError):
+    bad_path = bad_dir / "child.md"  # parent is a file → preflight rejects
+    with pytest.raises((OSError, PathSafetyError)):
         write_transaction(
             {
                 preexisting: b'{"ok": true}\n',
                 bad_path: b"# md\n",
             }
         )
-    # Original preserved if replace never happened for finals that weren't staged fully
-    # Our transaction stages all temps first; if second fails before any replace, original stays
     assert preexisting.read_text(encoding="utf-8") == "ORIGINAL_USER_CONTENT"
 
 

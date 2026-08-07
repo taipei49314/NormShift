@@ -88,7 +88,14 @@ def test_three_families_diff_replay(tmp_path: Path) -> None:
     ]
     for old, new, profile, adapter, expected in cases:
         out = tmp_path / f"{adapter.value}.json"
-        report = run_diff(old, new, profile=profile, adapter=adapter, json_out=out)
+        report = run_diff(
+            old,
+            new,
+            profile=profile,
+            adapter=adapter,
+            json_out=out,
+            source_root=ROOT,
+        )
         assert out.is_file()
         assert report.old_document.provenance is not None
         assert report.new_document.provenance is not None
@@ -99,14 +106,17 @@ def test_three_families_diff_replay(tmp_path: Path) -> None:
 def test_adapter_failure_no_artifact(tmp_path: Path) -> None:
     bad = tmp_path / "empty.html"
     bad.write_bytes(b"")
+    good = tmp_path / "good.html"
+    good.write_bytes((CORPUS / "rfc" / "sample-v1.html").read_bytes())
     out = tmp_path / "should-not-exist.json"
     with pytest.raises(AdapterError):
         run_diff(
             bad,
-            CORPUS / "rfc" / "sample-v1.html",
+            good,
             profile=ProfileName.RFC2119,
             adapter=AdapterName.HTML,
             json_out=out,
+            source_root=tmp_path,
         )
     assert not out.exists()
 

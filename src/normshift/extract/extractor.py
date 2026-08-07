@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from normshift import EXTRACTOR_VERSION
+from normshift.extract.historical import filter_historical_matches
 from normshift.extract.profiles import find_keyword_matches
 from normshift.extract.roles import extract_roles
 from normshift.model.types import (
@@ -68,6 +69,7 @@ def requirements_from_blocks(
             profile,
             protected_spans=block.protected_spans,
         )
+        matches = filter_historical_matches(block.text, matches)
         if not matches:
             continue
         for km in matches:

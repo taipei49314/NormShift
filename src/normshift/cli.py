@@ -15,6 +15,7 @@ from normshift.extract.extractor import extract_from_source
 from normshift.io_safety import PathSafetyError, assert_outputs_safe, atomic_write_text
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
+from normshift.paths_root import SourceRootError
 from normshift.pipeline import run_diff
 from normshift.source import load_immutable_source
 from normshift.verify.verifier import verify_report_file
@@ -92,14 +93,17 @@ def diff_cmd(
     adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
     json_out: Path | None = typer.Option(None, "--json", help="JSON report path"),
     markdown_out: Path | None = typer.Option(None, "--markdown", help="Markdown report path"),
+    source_root: Path | None = typer.Option(
+        None,
+        "--source-root",
+        help=(
+            "Root for portable source_ref generation. Sources must resolve under this root; "
+            "refs are normalized POSIX paths relative to root. Default: process CWD "
+            "(outside-CWD sources fail closed)."
+        ),
+    ),
 ) -> None:
     """Diff two document versions and emit evidence-linked reports."""
-    if not old_html.is_file():
-        typer.echo(f"error: old document not found: {old_html}", err=True)
-        raise typer.Exit(code=2)
-    if not new_html.is_file():
-        typer.echo(f"error: new document not found: {new_html}", err=True)
-        raise typer.Exit(code=2)
     if json_out is None and markdown_out is None:
         typer.echo("error: provide --json and/or --markdown output path", err=True)
         raise typer.Exit(code=2)
@@ -112,8 +116,12 @@ def diff_cmd(
             adapter=_to_adapter(adapter),
             json_out=json_out,
             markdown_out=markdown_out,
+            source_root=source_root,
         )
     except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except SourceRootError as exc:
         typer.echo(f"error: {exc}", err=True)
         raise typer.Exit(code=2) from exc
     except AdapterError as exc:
@@ -219,24 +227,48 @@ def verify_cmd(
     source_root: Path | None = typer.Option(
         None, "--source-root", help="Root to resolve relative source paths"
     ),
-    old_source: Path | None = typer.Option(None, "--old-source", help="Override old source path"),
-    new_source: Path | None = typer.Option(None, "--new-source", help="Override new source path"),
+    old_source: Path | None = typer.Option(
+        None,
+        "--old-source",
+        help=(
+            "Override old source bytes location. Declared report path is still validated "
+            "(must be portable relative). Scope becomes CONTENT_ONLY_OVERRIDE."
+        ),
+    ),
+    new_source: Path | None = typer.Option(
+        None,
+        "--new-source",
+        help=(
+            "Override new source bytes location. Declared report path is still validated "
+            "(must be portable relative). Scope becomes CONTENT_ONLY_OVERRIDE."
+        ),
+    ),
 ) -> None:
-    """Strict source-aware integrity verification."""
+    """Strict source-aware integrity verification.
+
+    Exit 0 only when verification succeeds. Machine-readable scope is always printed:
+    verification_scope=FULL | verification_scope=CONTENT_ONLY_OVERRIDE.
+    Overrides relocate source bytes only; they do not attest the declared logical path.
+    """
     result = verify_report_file(
         report_path,
         source_root=source_root,
         old_source=old_source,
         new_source=new_source,
     )
+    scope = result.verification_scope
     if result.ok:
-        msg = f"OK integrity={result.content_sha256}"
+        msg = f"OK integrity={result.content_sha256} verification_scope={scope}"
         if result.override_used:
-            msg += " (source path overrides applied; content-bound replay only)"
+            msg += (
+                " (WARNING: source path overrides applied; content-bound replay only; "
+                "declared logical path is not re-attested)"
+            )
         typer.echo(msg)
         raise typer.Exit(code=0)
     for err in result.errors:
         typer.echo(f"error: {err}", err=True)
+    typer.echo(f"verification_scope={scope}", err=True)
     raise typer.Exit(code=1)
 
 

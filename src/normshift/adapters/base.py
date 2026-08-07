@@ -76,8 +76,8 @@ def build_provenance(
             "document_family",
         }
     }
-    # Portable POSIX reference for external verification (not generation-machine absolute).
-    portable = portable_source_ref(path)
+    # Provisional portable path; load_immutable_source rebinds when portable_ref is known.
+    portable = provisional_portable_ref(path)
     return Provenance(
         document_family=family,
         adapter_id=adapter_id,
@@ -94,17 +94,31 @@ def build_provenance(
     )
 
 
-def portable_source_ref(path: Path) -> str:
-    """Return a normalized POSIX path suitable for --source-root resolution."""
+def provisional_portable_ref(path: Path) -> str:
+    """Best-effort POSIX ref for adapter-internal provenance (never absolute)."""
     p = Path(path)
     if not p.is_absolute():
-        return p.as_posix()
+        return p.as_posix().replace("\\", "/")
     try:
         return p.resolve().relative_to(Path.cwd().resolve()).as_posix()
     except ValueError:
-        # Outside cwd: keep name only is unsafe; keep posix absolute as last resort
-        # but prefer relative form when load is called with portable_ref override.
-        return p.as_posix()
+        # Outside CWD: basename only as provisional (must be rebound for reports).
+        return p.name
+
+
+def portable_source_ref(path: Path) -> str:
+    """Return a normalized POSIX path suitable for --source-root resolution.
+
+    Never returns an absolute path. Outside-CWD absolute paths fail closed.
+    Prefer passing ``portable_ref`` from ``resolve_under_source_root``.
+    """
+    from normshift.paths_root import SourceRootError, default_source_root, resolve_under_source_root
+
+    try:
+        _abs, ref = resolve_under_source_root(default_source_root(), Path(path))
+        return ref
+    except SourceRootError as exc:
+        raise ValueError(str(exc)) from exc
 
 
 def adapter_name_to_id(name: AdapterName) -> str:

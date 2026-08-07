@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import stat
 import tempfile
@@ -68,7 +69,6 @@ def _lexists(path: Path) -> bool:
 
 
 def _existing_entry_kind(path: Path) -> str | None:
-    """Return entry kind if directory entry exists (including dangling symlink)."""
     if not _lexists(path):
         return None
     if path.is_symlink():
@@ -88,6 +88,16 @@ def _existing_entry_kind(path: Path) -> str | None:
     if stat.S_ISCHR(mode) or stat.S_ISBLK(mode):
         return "device"
     return "other"
+
+
+def nearest_existing_ancestor(path: Path) -> Path | None:
+    cur = Path(path).parent
+    while True:
+        if _lexists(cur):
+            return cur
+        if cur == cur.parent:
+            return None
+        cur = cur.parent
 
 
 def assert_outputs_safe(
@@ -110,10 +120,18 @@ def assert_outputs_safe(
 
     input_paths = [Path(p) for p in inputs]
 
-    # Existing destination type checks (lexists, not exists)
     for out, lab in zip(concrete, out_labels, strict=True):
         kind = _existing_entry_kind(out)
         if kind is None:
+            # nearest existing ancestor must be a directory (if any)
+            anc = nearest_existing_ancestor(out)
+            if anc is not None:
+                ak = _existing_entry_kind(anc)
+                if ak != "directory":
+                    raise PathSafetyError(
+                        f"Output {lab} has non-directory existing ancestor "
+                        f"({ak}): {anc}"
+                    )
             continue
         if kind != "file":
             raise PathSafetyError(
@@ -121,7 +139,6 @@ def assert_outputs_safe(
                 f"(found {kind}): {out}"
             )
 
-    # Output/output equality and ancestry
     for i in range(len(concrete)):
         for j in range(i + 1, len(concrete)):
             a, b = concrete[i], concrete[j]
@@ -134,7 +151,6 @@ def assert_outputs_safe(
                     f"Output ancestor relationship: {out_labels[i]} and {out_labels[j]}"
                 )
 
-    # Input/output equality and ancestry
     for inp in input_paths:
         for out, lab in zip(concrete, out_labels, strict=True):
             if same_path(inp, out):
@@ -149,9 +165,6 @@ def assert_outputs_safe(
 
 
 def fsync_dir(path: Path) -> None:
-    """Best-effort directory fsync (no-op if unsupported)."""
-    import contextlib
-
     try:
         fd = os.open(str(path), os.O_RDONLY)
     except OSError:
@@ -162,6 +175,29 @@ def fsync_dir(path: Path) -> None:
     finally:
         with contextlib.suppress(OSError):
             os.close(fd)
+
+
+def _ensure_parents(path: Path, created: list[Path]) -> None:
+    """Create missing parent directories; record only those created here."""
+    missing: list[Path] = []
+    cur = path.parent
+    while not _lexists(cur):
+        missing.append(cur)
+        if cur == cur.parent:
+            break
+        cur = cur.parent
+    for d in reversed(missing):
+        d.mkdir(exist_ok=False)
+        created.append(d)
+
+
+def _cleanup_created_dirs(created: list[Path]) -> None:
+    for d in reversed(created):
+        try:
+            if d.is_dir() and not any(d.iterdir()):
+                d.rmdir()
+        except OSError:
+            pass
 
 
 def atomic_write_bytes(path: Path, data: bytes) -> None:
@@ -178,13 +214,9 @@ def write_transaction(
     replace_fn: ReplaceFn | None = None,
     fsync_directories: bool = True,
 ) -> None:
-    """Rollback-safe multi-file commit for regular-file destinations only.
-
-    Guarantee: rollback-safe multi-file commit, not globally atomic visibility.
-    """
+    """Rollback-safe multi-file commit for regular-file destinations only."""
     if not artifacts:
         return
-    # Defense in depth: re-validate destinations without mutating
     assert_outputs_safe(inputs=[], outputs=list(artifacts.keys()))
 
     replacer: ReplaceFn = replace_fn or os.replace
@@ -192,20 +224,27 @@ def write_transaction(
     backups: list[tuple[Path, Path]] = []
     newly_created: list[Path] = []
     staged: list[tuple[Path, Path, bool]] = []
+    created_dirs: list[Path] = []
     dirs_to_fsync: set[Path] = set()
 
     try:
         for final, data in artifacts.items():
             final = Path(final)
-            # Do not create parents if final's parent would require creating under
-            # a path we rejected — only mkdir when preflight already passed
-            final.parent.mkdir(parents=True, exist_ok=True)
             kind = _existing_entry_kind(final)
             if kind is not None and kind != "file":
                 raise PathSafetyError(
                     f"Refusing to replace non-regular output entry ({kind}): {final}"
                 )
+            # Validate ancestor before mkdir
+            anc = nearest_existing_ancestor(final)
+            if anc is not None:
+                ak = _existing_entry_kind(anc)
+                if ak != "directory":
+                    raise PathSafetyError(
+                        f"Non-directory existing ancestor for {final}: {anc} ({ak})"
+                    )
             existed = kind == "file"
+            _ensure_parents(final, created_dirs)
             fd, tmp_name = tempfile.mkstemp(
                 prefix=f".{final.name}.",
                 suffix=".tmp",
@@ -263,10 +302,8 @@ def write_transaction(
         for bak, final in reversed(backups):
             try:
                 if os.path.lexists(final) and not final.is_dir():
-                    try:
+                    with contextlib.suppress(OSError):
                         final.unlink()
-                    except OSError as exc:
-                        restore_errors.append(f"unlink partial {final}: {exc}")
                 if os.path.lexists(bak):
                     replacer(bak, final)
             except Exception as exc:  # noqa: BLE001
@@ -283,6 +320,7 @@ def write_transaction(
                     t.unlink()
             except OSError as exc:
                 restore_errors.append(f"cleanup temp {t}: {exc}")
+        _cleanup_created_dirs(created_dirs)
         if fsync_directories:
             for d in dirs_to_fsync:
                 fsync_dir(d)
@@ -293,11 +331,9 @@ def write_transaction(
         raise
     finally:
         for t in temps:
-            try:
+            with contextlib.suppress(OSError):
                 if os.path.lexists(t):
                     t.unlink()
-            except OSError:
-                pass
 
 
 def ensure_inputs_exist(paths: Iterable[Path]) -> None:

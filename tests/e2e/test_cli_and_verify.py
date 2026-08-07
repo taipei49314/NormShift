@@ -72,6 +72,8 @@ def test_extract_diff_verify_determinism_tamper(tmp_path: Path) -> None:
             str(FIX / "spec-v2.html"),
             "--profile",
             "rfc2119",
+            "--source-root",
+            str(ROOT),
             "--json",
             str(j1),
             "--markdown",
@@ -87,6 +89,8 @@ def test_extract_diff_verify_determinism_tamper(tmp_path: Path) -> None:
             str(FIX / "spec-v2.html"),
             "--profile",
             "rfc2119",
+            "--source-root",
+            str(ROOT),
             "--json",
             str(j2),
         ],
@@ -94,7 +98,7 @@ def test_extract_diff_verify_determinism_tamper(tmp_path: Path) -> None:
     assert d2.exit_code == 0, d2.output
     assert j1.read_bytes() == j2.read_bytes()
 
-    v_ok = runner.invoke(app, ["verify", str(j1)])
+    v_ok = runner.invoke(app, ["verify", str(j1), "--source-root", str(ROOT)])
     assert v_ok.exit_code == 0, v_ok.output
 
     tampered = json.loads(j1.read_text(encoding="utf-8"))
@@ -131,6 +135,11 @@ def test_adversarial_classes(case_old: str, case_new: str, expected: str) -> Non
     from normshift.model.types import ProfileName
     from normshift.pipeline import run_diff
 
-    report = run_diff(FIX / case_old, FIX / case_new, profile=ProfileName.RFC2119)
+    report = run_diff(
+        FIX / case_old,
+        FIX / case_new,
+        profile=ProfileName.RFC2119,
+        source_root=ROOT,
+    )
     classes = {c.classification.value for c in report.changes}
     assert expected in classes

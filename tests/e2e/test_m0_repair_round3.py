@@ -23,17 +23,13 @@ def _mk_report(tmp_path: Path) -> Path:
     """Generate a portable report under tmp_path (relative source refs)."""
     shutil.copy(FIX / "spec-v1.html", tmp_path / "old.html")
     shutil.copy(FIX / "spec-v2.html", tmp_path / "new.html")
-    cwd = Path.cwd()
-    try:
-        os.chdir(tmp_path)
-        run_diff(
-            Path("old.html"),
-            Path("new.html"),
-            profile=ProfileName.RFC2119,
-            json_out=Path("report.json"),
-        )
-    finally:
-        os.chdir(cwd)
+    run_diff(
+        Path("old.html"),
+        Path("new.html"),
+        profile=ProfileName.RFC2119,
+        json_out=tmp_path / "report.json",
+        source_root=tmp_path,
+    )
     return tmp_path / "report.json"
 
 
@@ -47,17 +43,13 @@ def test_packaged_evidence_verifies_after_repository_relocation(tmp_path: Path) 
     shutil.copy(FIX / "spec-v1.html", a / "fixtures" / "synthetic" / "spec-v1.html")
     shutil.copy(FIX / "spec-v2.html", a / "fixtures" / "synthetic" / "spec-v2.html")
     (a / "evidence").mkdir()
-    cwd = Path.cwd()
-    try:
-        os.chdir(a)
-        run_diff(
-            Path("fixtures/synthetic/spec-v1.html"),
-            Path("fixtures/synthetic/spec-v2.html"),
-            profile=ProfileName.RFC2119,
-            json_out=Path("evidence/report.json"),
-        )
-    finally:
-        os.chdir(cwd)
+    run_diff(
+        Path("fixtures/synthetic/spec-v1.html"),
+        Path("fixtures/synthetic/spec-v2.html"),
+        profile=ProfileName.RFC2119,
+        json_out=a / "evidence" / "report.json",
+        source_root=a,
+    )
     # Relocate exact tree to B and delete A
     shutil.copytree(a, b / "repo")
     shutil.rmtree(a)
@@ -253,10 +245,15 @@ def test_transaction_rejects_dangling_symlink_output_without_modifying_it(
 
 def test_in_tree_claims_do_not_pretend_to_self_reference_package_tip() -> None:
     ms = json.loads((ROOT / "MISSION_STATE.json").read_text(encoding="utf-8"))
-    # Identity is externally attested; in-tree must not claim three conflicting tips
     claims = (ROOT / "CLAIMS.md").read_text(encoding="utf-8")
-    assert "externally attested" in claims.lower() or "package identity" in claims.lower() or True
-    # At minimum status vocabulary is coherent
+    # Identity is externally attested; in-tree must not self-pin package tip SHA
+    claims_l = claims.lower()
+    assert (
+        "externally attested" in claims_l
+        or "externally_attested" in claims_l
+        or ms.get("package_identity") == "externally_attested"
+    )
+    assert "package identity" in claims_l or "package_identity" in claims_l
     assert ms["status"] in {
         "M0_PARTIAL",
         "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",

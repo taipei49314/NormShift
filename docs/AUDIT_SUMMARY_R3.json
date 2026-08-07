@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "project": "NormShift",
+  "audit": "M0_REPAIR_ROUND3_FINAL_EXTERNAL_AUDIT",
+  "date": "2026-08-07",
+  "verdict": {
+    "m0": "M0_PARTIAL",
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "production_release": "BLOCKED"
+  },
+  "subject": {
+    "commit": "bf7ee8dfbf9e5ef3740c4a28efffdb94f6ae32d3",
+    "tree": "c546ef3ee2250e70a4aa1ca424aa78b09a478a7f",
+    "manifest_sha256": "af552fe2f5f499a870cef0f24de47e8f826c3fa0d294407e630ede573b13fa3b",
+    "bundle_sha256": "54f484a3f892a23d75c0c57193a267c6f7759614a4ba713c364d0aa6329cd6ad",
+    "source_zip_sha256": "ef9c631aa2ecce1a5b7ae41ad7567bf637ee53646a79370dfcefcdbf0862a4c9"
+  },
+  "accepted": {
+    "bundle_complete_history": true,
+    "source_archive_tracked_files": 175,
+    "source_archive_blob_mismatches": 0,
+    "source_archive_missing": 0,
+    "source_archive_extras": 0,
+    "artifact_hashes_match": true,
+    "fixture_hashes_match": true,
+    "packaged_verify": "PASS",
+    "archive_verify": "PASS",
+    "relocated_verify": "PASS",
+    "source_mutation_detection": "PASS",
+    "source_deletion_detection": "PASS",
+    "deterministic_json": true,
+    "deterministic_markdown": true,
+    "benchmark": "17/17",
+    "measure": "15/15",
+    "ordinary_file_rollback": "PASS",
+    "special_entry_and_ancestry_matrix": "PASS",
+    "cleanup_reporting": "PASS",
+    "directory_fsync_hooks": "PASS"
+  },
+  "external_test_run": {
+    "python": "3.13.5",
+    "package_tip_without_hypothesis": {
+      "passed": 105,
+      "failed": 1
+    },
+    "parent_e512cb7_without_hypothesis": {
+      "passed": 106,
+      "failed": 0
+    },
+    "hypothesis_tests_natively_run": false,
+    "manual_property_samples": 200000,
+    "ruff_externally_run": false,
+    "mypy_externally_run": false
+  },
+  "m0_blockers": [
+    {
+      "id": "P0-01",
+      "title": "Exact package subject did not pass claimed pytest gate",
+      "required_action": "Gate the exact final commit, remove vacuous assertion, and make no post-gate commit."
+    },
+    {
+      "id": "P0-02",
+      "title": "Verifier accepts non-canonical, coerced, omitted-default, and duplicate-key JSON",
+      "accepted_examples": 13,
+      "required_action": "Strict parse and primitive/field-presence equality before source replay."
+    },
+    {
+      "id": "P0-03",
+      "title": "Generator can label absolute source paths as source_root_relative",
+      "required_action": "Add explicit generation root and fail closed outside it."
+    },
+    {
+      "id": "P0-04",
+      "title": "Historical framing loses current obligations and leaks historical obligations",
+      "required_action": "Use modal-local or clause-local deterministic authority rules."
+    }
+  ],
+  "high_priority": [
+    {
+      "id": "P1-01",
+      "title": "Failed multi-output staging leaves an invocation-created parent directory"
+    },
+    {
+      "id": "P1-02",
+      "title": "Override scope is warning-only and malformed declared refs can still return success"
+    },
+    {
+      "id": "P1-03",
+      "title": "Round-3 red-test contract is incomplete and contains an unconditional truth branch"
+    },
+    {
+      "id": "P1-04",
+      "title": "Manifest sync/log contract and tool version/public description need alignment"
+    }
+  ],
+  "audit_limitations": [
+    "Python 3.12 was not available in the external runtime.",
+    "Ruff and mypy were not available offline.",
+    "Two Hypothesis tests were not natively rerun; their absence cannot remove the deterministic package-tip failure."
+  ],
+  "next_mission": "GROK_M0_REPAIR_ROUND4.md"
+}
