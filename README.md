@@ -62,12 +62,15 @@ uv run normshift verify evidence/m0/report.json
 
 ## Design docs
 
-- [North star](docs/NORTH_STAR.md)
-- [Semantic model](docs/SEMANTIC_MODEL.md)
+- [North Star charter](docs/NORTH_STAR.md) — product end-state, milestones M0–M6, governance
+- [Semantic model](docs/SEMANTIC_MODEL.md) — M0 operational model (subset of full taxonomy)
 - [Threat model](docs/THREAT_MODEL.md)
 - [Benchmark method](docs/BENCHMARK_METHOD.md)
 - [Decisions](DECISIONS.md)
 - [Claims](CLAIMS.md)
+
+**Current milestone:** M0 — `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`  
+Do not start M1 (real adapters / crawlers / LLM) until external audit of M0.
 
 ## License
 

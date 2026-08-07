@@ -1,5 +1,15 @@
 # Design Decisions (M0)
 
+## D008 — Official North Star charter adopted as source of truth
+
+**Decision:** Replace the short M0 north-star stub with the full
+`NORMSHIFT_NORTH_STAR` charter under `docs/NORTH_STAR.md`.  
+**Why:** Defines end-state Requirement Lineage Graph, milestone gates M0–M6,
+trust model, and implementer authority limits.  
+**Implication:** After M0 audit, work proceeds only via frozen milestone exits;
+LLM may never be classification authority on the correctness path.  
+**Status:** Accepted 2026-08-07.
+
 ## D001 — Package build backend: hatchling instead of uv_build
 
 **Decision:** Use `hatchling` as the build backend.  

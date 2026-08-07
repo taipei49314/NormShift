@@ -1,7 +1,8 @@
 {
-  "current_objective": "M0 Normative HTML vertical slice",
+  "current_objective": "Adopt official North Star charter; hold M0 pending external audit",
+  "current_hypothesis": "Full NORMSHIFT_NORTH_STAR charter is the governance source of truth; M0 work already satisfies North Star §10 M0 exit items and must not expand into M1 until external audit",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "83e8797f65b5a097a6a4b2976d81961c2230c95f",
+  "last_verified_commit": null,
   "commands_run": [
     "uv sync --all-extras --dev",
     "uv run ruff check .  # exit 0",
@@ -17,13 +18,15 @@
     "evidence/m0/report.md",
     "evidence/m0/report_run2.json",
     "evidence/m0/report_tampered.json",
-    "evidence/m0/M0_EVIDENCE.md"
+    "evidence/m0/M0_EVIDENCE.md",
+    "docs/NORTH_STAR.md"
   ],
   "known_failures": [],
   "unresolved_risks": [
     "External audit of classification policy not performed",
     "Heuristic role extraction incomplete for complex syntax",
-    "Greedy alignment may miss global optimum on large corpora"
+    "Greedy alignment may miss global optimum on large corpora",
+    "M0 does not yet implement full North Star change taxonomy (SPLIT/MERGED/DEFINITION_CHANGED/etc.)"
   ],
-  "next_action": "External audit; consider M1 adapter expansion without relaxing M0 determinism"
+  "next_action": "Stop M0 expansion; external audit. After audit pass, begin M1 adapters only (no dashboard/LLM/DB)."
 }
