@@ -11,10 +11,12 @@ import typer
 from normshift.adapters.errors import AdapterError
 from normshift.adapters.registry import load_document
 from normshift.benchmark.runner import run_benchmark
-from normshift.extract.extractor import extract_requirements
+from normshift.extract.extractor import extract_from_source
+from normshift.io_safety import PathSafetyError, assert_outputs_safe, atomic_write_text
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
 from normshift.pipeline import run_diff
+from normshift.source import load_immutable_source
 from normshift.verify.verifier import verify_report_file
 
 app = typer.Typer(
@@ -54,15 +56,17 @@ def extract_cmd(
     out: Path = typer.Option(..., "--out", help="Output requirements JSON path"),
 ) -> None:
     """Extract normative requirements from a local document."""
+    try:
+        assert_outputs_safe(inputs=[html_path], outputs=[out], labels=["--out"])
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     if not html_path.is_file():
         typer.echo(f"error: source file not found: {html_path}", err=True)
         raise typer.Exit(code=2)
     try:
-        doc = extract_requirements(
-            html_path,
-            _to_profile(profile),
-            adapter=_to_adapter(adapter),
-        )
+        src = load_immutable_source(html_path, adapter=_to_adapter(adapter))
+        doc = extract_from_source(src, _to_profile(profile))
     except AdapterError as exc:
         typer.echo(f"error: adapter failed: {exc}", err=True)
         raise typer.Exit(code=2) from exc
@@ -73,10 +77,9 @@ def extract_cmd(
         typer.echo(f"error: extraction failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
 
-    out.parent.mkdir(parents=True, exist_ok=True)
     payload = doc.model_dump(mode="json")
     raw = json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
-    out.write_text(raw, encoding="utf-8")
+    atomic_write_text(out, raw)
     family = doc.document_family.value if doc.document_family else "unknown"
     typer.echo(f"wrote {len(doc.requirements)} requirements ({family}) → {out}")
 
@@ -110,6 +113,9 @@ def diff_cmd(
             json_out=json_out,
             markdown_out=markdown_out,
         )
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     except AdapterError as exc:
         typer.echo(f"error: adapter failed: {exc}", err=True)
         raise typer.Exit(code=2) from exc
@@ -133,6 +139,11 @@ def ingest_cmd(
     out: Path = typer.Option(..., "--out", help="Provenance JSON path"),
 ) -> None:
     """Load a document through an adapter and write immutable provenance."""
+    try:
+        assert_outputs_safe(inputs=[source], outputs=[out], labels=["--out"])
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     if not source.is_file():
         typer.echo(f"error: source file not found: {source}", err=True)
         raise typer.Exit(code=2)
@@ -142,7 +153,6 @@ def ingest_cmd(
         typer.echo(f"error: adapter failed: {exc}", err=True)
         raise typer.Exit(code=2) from exc
 
-    out.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "document_version": adapted.document_version,
         "family": adapted.family.value,
@@ -151,9 +161,9 @@ def ingest_cmd(
         .sha256(adapted.working_html)
         .hexdigest(),
     }
-    out.write_text(
+    atomic_write_text(
+        out,
         json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
     )
     typer.echo(f"ingested {adapted.family.value} → {out}")
 
@@ -174,6 +184,11 @@ def lineage_cmd(
             typer.echo(f"error: document not found: {p}", err=True)
             raise typer.Exit(code=2)
     try:
+        assert_outputs_safe(
+            inputs=list(documents),
+            outputs=[json_out],
+            labels=["--json"],
+        )
         from normshift.lineage.builder import build_lineage_graph, write_lineage_graph
 
         graph = build_lineage_graph(
@@ -182,6 +197,9 @@ def lineage_cmd(
             adapter=_to_adapter(adapter),
         )
         write_lineage_graph(graph, json_out)
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     except AdapterError as exc:
         typer.echo(f"error: adapter failed: {exc}", err=True)
         raise typer.Exit(code=2) from exc
@@ -198,9 +216,19 @@ def lineage_cmd(
 @app.command("verify")
 def verify_cmd(
     report_path: Path = typer.Argument(..., help="JSON report to verify"),
+    source_root: Path | None = typer.Option(
+        None, "--source-root", help="Root to resolve relative source paths"
+    ),
+    old_source: Path | None = typer.Option(None, "--old-source", help="Override old source path"),
+    new_source: Path | None = typer.Option(None, "--new-source", help="Override new source path"),
 ) -> None:
-    """Verify report integrity and schema conformance."""
-    result = verify_report_file(report_path)
+    """Strict source-aware integrity verification."""
+    result = verify_report_file(
+        report_path,
+        source_root=source_root,
+        old_source=old_source,
+        new_source=new_source,
+    )
     if result.ok:
         typer.echo(f"OK integrity={result.content_sha256}")
         raise typer.Exit(code=0)
@@ -249,7 +277,15 @@ def measure_cmd(
     out: Path = typer.Option(..., "--out", help="Metrics JSON output path"),
 ) -> None:
     """Score extraction, alignment, and classification against frozen labels."""
-    # Fail closed: do not write pass metrics on invalid/missing suite.
+    try:
+        assert_outputs_safe(
+            inputs=[ground_truth],
+            outputs=[out],
+            labels=["--out"],
+        )
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
     try:
         report = run_measure(ground_truth)
     except MeasureError as exc:

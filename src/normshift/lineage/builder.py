@@ -31,7 +31,7 @@ from normshift.model.types import (
     RequirementInstanceRef,
     RequirementsDocument,
 )
-from normshift.snapshot import snapshot_document
+from normshift.source import load_immutable_source
 
 
 def _edge_id(*parts: str) -> str:
@@ -91,18 +91,21 @@ def build_lineage_graph(
     if len(paths) < 2:
         raise ValueError("lineage requires at least two document versions")
 
-    docs = [extract_requirements(p, profile, adapter=adapter) for p in paths]
+    # Single immutable load per path — extract + definitions share the same bytes
+    sources = [load_immutable_source(p, adapter=adapter) for p in paths]
+    docs = [
+        extract_requirements(p, profile, adapter=adapter, source=s)
+        for p, s in zip(paths, sources, strict=True)
+    ]
     versions = [d.document_version for d in docs]
     sha256s = [d.document_sha256 for d in docs]
 
-    # Definitions + dependency links per version (working HTML after adapter)
     all_definitions: list[DefinitionRecord] = []
     all_dep_links: list[DependencyLink] = []
     defs_by_version: list[list[DefinitionRecord]] = []
-    for p, doc in zip(paths, docs, strict=True):
-        _snap, working_html, _adapted = snapshot_document(p, adapter=adapter)
+    for src, doc in zip(sources, docs, strict=True):
         defs = extract_definitions_from_html(
-            working_html,
+            src.working_html,
             document_version=doc.document_version,
             document_sha256=doc.document_sha256,
         )
@@ -532,10 +535,11 @@ def _collect_ambiguity(docs: list[RequirementsDocument]) -> list[AmbiguityItem]:
 
 
 def write_lineage_graph(graph: LineageGraph, path: Path) -> str:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    from normshift.io_safety import atomic_write_bytes
+
     data = graph.model_dump(mode="json")
     digest = integrity_payload_hash(data)
     data["integrity"] = {"alg": "sha256", "content_sha256": digest}
     raw = canonical_json_bytes(data)
-    path.write_bytes(raw)
+    atomic_write_bytes(path, raw)
     return hashlib.sha256(raw).hexdigest()

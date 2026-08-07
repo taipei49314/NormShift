@@ -1,43 +1,35 @@
 # Claims Register
 
-Claims below are **implementation claims**, not release or production claims.
-The implementing agent is not Claim / Evidence / Audit / Release Authority.
+Implementer is **not** Claim / Evidence / Audit / Release Authority.
 
-Governance (North Star §14): each public claim records claim, scope, evidence,
-unsupported boundary, last verified commit, and reviewer status.
-
-## Active claims (M0)
-
-| ID | Claim | Scope | Supporting evidence | Unsupported boundary | Last verified commit | Reviewer status |
-|----|-------|-------|---------------------|----------------------|----------------------|-----------------|
-| C1 | Local HTML can be extracted into structured requirements under rfc2119/whatwg profiles | M0 local HTML only | `tests/`, `normshift extract`, fixtures | Real RFC/W3C corpora, non-HTML formats | pending pin on push tip | unreviewed |
-| C2 | Cross-version alignment exposes multi-signal score components | one-to-one greedy aligner | report `alignment_score` fields | one-to-many / many-to-one / lineage IDs | pending pin on push tip | unreviewed |
-| C3 | Fixed adversarial suite (17 cases) is evaluated by `normshift benchmark` | frozen `benchmark/ground_truth.jsonl` | case 01–17 PASS | Universal semantic correctness | pending pin on push tip | unreviewed |
-| C4 | JSON reports are integrity-hashed; tampering fails `normshift verify` | canonical JSON integrity | case 16 + e2e + `evidence/m0/report_tampered.json` | Cryptographic signatures / key management | pending pin on push tip | unreviewed |
-| C5 | Two identical executions produce byte-identical JSON reports | same tool version + inputs | case 17 + dual run hashes | Non-UTF8 / non-canonical external mutation | pending pin on push tip | unreviewed |
-| C6 | No LLM, embedding, network, or DB required for M0 path | M0 correctness path | dependency set + offline design | Future optional LLM assist (must not be authority) | pending pin on push tip | unreviewed |
-| C7 | M0 milestone implements North Star M0 exit items (deterministic HTML vertical slice) | M0 only | `docs/NORTH_STAR.md` §10 M0 + `evidence/m0/` | M1–M6 capabilities | pending pin on push tip | unreviewed |
-
-## Explicit non-claims
-
-- Does **not** understand arbitrary natural-language standards.
-- Does **not** certify compliance (WCAG, EN 301 549, legal contracts, …).
-- Is **not** production-ready or release-ready.
-- Passing tests/benchmark is **not** proof of universal semantic correctness.
-- Does **not** claim Requirement Lineage Graph (M2), Observatory (M3), or public benchmark standard (M4) are implemented.
-- Maximum milestone status allowed for implementer: `M*_IMPLEMENTED_PENDING_EXTERNAL_AUDIT`.
-
-| C8 | Three offline document families (RFC/W3C/WHATWG) replay via adapters with provenance | M1 local corpus | `fixtures/corpus/`, `evidence/m1/`, adapter tests | Live network fetch / full TR dumps | pending pin | unreviewed |
-| C9 | Adapter failure does not write success artifacts | M1 pipeline | `test_adapter_failure_no_artifact` | Partial mid-write OS crashes | pending pin | unreviewed |
-
-## Milestone status
+## Milestone status (post external audit 2026-08-07)
 
 | Milestone | Status |
 |-----------|--------|
-| M0 Normative HTML Vertical Slice | `M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
-| M1 Real Standards Adapters | `M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` |
-| M2 Requirement Lineage Graph | `M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT` (core; def/xref partial) |
-| M3 Observatory | not started |
-| M4 Public Benchmark | not started |
-| M5 Implementation Impact Mapping | not started |
-| M6 Standards Time Graph | not started |
+| M0 Normative HTML Vertical Slice | `M0_PARTIAL` (trust-chain repair in progress / pending re-audit) |
+| M1 Real Standards Adapters | `EXPERIMENTAL_NOT_ADJUDICATED` |
+| M2 Requirement Lineage Graph | `EXPERIMENTAL_NOT_ADJUDICATED` |
+| Production / Release | **BLOCKED** |
+
+## Active claims
+
+| ID | Claim | Scope | Supporting evidence | Unsupported boundary | Last verified commit | Reviewer status |
+|----|-------|-------|---------------------|----------------------|----------------------|-----------------|
+| C1 | Local HTML extraction under rfc2119/whatwg | M0 local HTML | extract CLI, fixtures, tests | Real TR dumps, full NL | pending pin | unreviewed |
+| C2 | Fixed adversarial 17-case benchmark | frozen labels | `normshift benchmark` | Universal accuracy | pending pin | unreviewed |
+| C3 | Report self-hash + **source/evidence chain** verify | M0 repair | `normshift verify --source-root` | Cryptographic signatures | pending pin | unreviewed |
+| C4 | Output path safety rejects source/GT overwrite | all write CLIs | `tests/e2e/test_m0_repair_contract.py` | All OS symlink edge cases | pending pin | unreviewed |
+| C5 | Classification metrics count unexpected labels as FP | measure scorers | `test_classification_metrics_count_unexpected_labels_as_fp` | Public benchmark leadership | pending pin | unreviewed |
+| C6 | Single immutable source snapshot per pipeline input | run_diff/extract | `test_pipeline_uses_single_source_snapshot` | Concurrent multi-process FS races | pending pin | unreviewed |
+
+## Retracted claims
+
+- **Retracted:** “classification F1=1.0” as a general accuracy claim under `allow_extra` FP omission (external audit P0-03).  
+  Metrics now count unmatched observed labels as FP. Suite gate pass remains separate from precision.
+
+## Explicit non-claims
+
+- Not production-ready or release-ready.
+- M1/M2 not adjudicated complete.
+- Does not understand arbitrary natural-language standards.
+- Passing tests ≠ universal semantic correctness.

@@ -324,12 +324,13 @@ def run_measure(ground_truth: Path) -> MeasureReport:
 
 def write_metrics(report: MeasureReport, path: Path) -> str:
     """Write canonical metrics JSON. Only call after successful run_measure."""
-    path.parent.mkdir(parents=True, exist_ok=True)
+    import hashlib
+
+    from normshift.io_safety import atomic_write_bytes
+
     data = report.to_dict()
     digest = integrity_payload_hash(data)
     data["integrity"] = {"alg": "sha256", "content_sha256": digest}
     raw = canonical_json_bytes(data)
-    path.write_bytes(raw)
-    import hashlib
-
+    atomic_write_bytes(path, raw)
     return hashlib.sha256(raw).hexdigest()

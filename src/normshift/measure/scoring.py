@@ -86,6 +86,8 @@ class ClassificationMetrics:
     expected: list[str] = field(default_factory=list)
     observed: list[str] = field(default_factory=list)
     case_passed: bool = False
+    exact_pass: bool = False
+    permissive_pass: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -228,6 +230,8 @@ def score_classification(
             expected=sorted(expected),
             observed=sorted(observed),
             case_passed=False,
+            exact_pass=False,
+            permissive_pass=False,
         )
 
     if not expected and not forbid_set:
@@ -242,47 +246,59 @@ def score_classification(
                 expected=[],
                 observed=sorted(observed),
                 case_passed=True,
+                exact_pass=True,
+                permissive_pass=True,
             )
+        # empty expected + observations: FP = all observations
+        fp = len(observed)
+        prec, rec, f1 = _prf(0, fp, 0)
         return ClassificationMetrics(
-            precision=1.0 if allow_extra else 0.0,
+            precision=prec,
             recall=1.0,
-            f1=1.0 if allow_extra else 0.0,
+            f1=f1,
             true_positives=0,
-            false_positives=0 if allow_extra else len(observed),
+            false_positives=fp,
             false_negatives=0,
             expected=[],
             observed=sorted(observed),
             case_passed=bool(allow_extra),
+            exact_pass=False,
+            permissive_pass=bool(allow_extra),
         )
 
     if not expected and forbid_set:
         forbidden_hits = [c for c in observed if c in forbid_set]
         ok = len(forbidden_hits) == 0
+        # All observations are FP when expected empty
+        fp = len(observed)
+        prec, rec, f1 = _prf(0, fp, 0) if observed else (1.0, 1.0, 1.0)
         return ClassificationMetrics(
-            precision=1.0 if ok else 0.0,
-            recall=1.0 if ok else 0.0,
-            f1=1.0 if ok else 0.0,
+            precision=prec if observed else 1.0,
+            recall=1.0,
+            f1=f1 if observed else 1.0,
             true_positives=0,
-            false_positives=len(forbidden_hits),
+            false_positives=fp,
             false_negatives=0,
             expected=[],
             observed=sorted(observed),
             case_passed=ok,
+            exact_pass=ok and len(observed) == 0,
+            permissive_pass=ok,
         )
 
-    tp = sum(min(exp_c[k], obs_c[k]) for k in exp_c)
-    fn = sum(max(0, exp_c[k] - obs_c[k]) for k in exp_c)
-    if allow_extra:
-        fp = max(0, sum(obs_c[k] for k in exp_c) - tp)
-    else:
-        fp = sum(max(0, obs_c[k] - exp_c[k]) for k in set(obs_c) | set(exp_c))
+    # Multiset intersection for TP; every unmatched observed item is FP
+    # (including labels not present in expected). allow_extra affects only case_passed.
+    tp = sum(min(exp_c[k], obs_c.get(k, 0)) for k in exp_c)
+    fn = sum(max(0, exp_c[k] - obs_c.get(k, 0)) for k in exp_c)
+    fp = sum(max(0, obs_c[k] - exp_c.get(k, 0)) for k in obs_c)
 
     prec, rec, f1 = _prf(tp, fp, fn)
-    case_passed = (
-        all(obs_c[k] >= v for k, v in exp_c.items()) if allow_extra else exp_c == obs_c
-    )
+    exact_pass = exp_c == obs_c
+    permissive_pass = all(obs_c.get(k, 0) >= v for k, v in exp_c.items())
     if forbid_set and any(c in forbid_set for c in obs_c):
-        case_passed = False
+        exact_pass = False
+        permissive_pass = False
+    case_passed = permissive_pass if allow_extra else exact_pass
     return ClassificationMetrics(
         precision=prec,
         recall=rec,
@@ -293,6 +309,8 @@ def score_classification(
         expected=sorted(expected),
         observed=sorted(observed),
         case_passed=case_passed,
+        exact_pass=exact_pass,
+        permissive_pass=permissive_pass,
     )
 
 

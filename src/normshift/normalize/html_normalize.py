@@ -7,21 +7,23 @@ from dataclasses import dataclass
 
 from lxml import etree, html
 
-IGNORE_TAGS = frozenset(
+# Tags whose *entire* content is non-extractable for keyword hits AND evidence.
+BLOCK_IGNORE_TAGS = frozenset(
     {
         "script",
         "style",
         "noscript",
         "pre",
-        "code",
         "samp",
         "kbd",
-        "var",
         "textarea",
         "svg",
         "math",
     }
 )
+
+# Inline code: preserve text in evidence, but protect from keyword matches.
+INLINE_CODE_TAGS = frozenset({"code", "var"})
 
 INFORMATIVE_CLASS_RE = re.compile(
     r"\b(example|note|informative|non-normative|nonnormative|illustration|"
@@ -30,16 +32,18 @@ INFORMATIVE_CLASS_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Section titles that are typically informative / non-implementer normative.
+# Only clearly non-normative section titles (not Security Considerations / Appendix).
 INFORMATIVE_SECTION_RE = re.compile(
-    r"^(appendix\b|acknowledg|security considerations$|iana considerations$|"
+    r"^(acknowledg|"
     r"references$|normative references$|informative references$|"
-    r"change log$|changelog$|revision history$)",
+    r"change log$|changelog$|revision history$|"
+    r"table of contents$|authors'? addresses$)$",
     re.IGNORECASE,
 )
 
 HEADING_TAGS = frozenset({f"h{i}" for i in range(1, 7)})
 WS_RE = re.compile(r"\s+")
+QUOTE_TAGS = frozenset({"blockquote", "q"})
 
 
 @dataclass(frozen=True)
@@ -53,6 +57,8 @@ class NormalizedBlock:
     structural_index: int
     is_informative: bool
     xpath: str
+    # Ranges in `text` that are protected from keyword matching (inline code).
+    protected_spans: tuple[tuple[int, int], ...] = ()
 
 
 def _local_name(tag: object) -> str:
@@ -120,18 +126,25 @@ def _is_informative_region(el: etree._Element) -> bool:
     anc: etree._Element | None = el
     while anc is not None:
         an = _local_name(anc.tag)
-        if an in IGNORE_TAGS:
+        if an in BLOCK_IGNORE_TAGS:
+            return True
+        if an in QUOTE_TAGS:
             return True
         if INFORMATIVE_CLASS_RE.search(_class_attr(anc)):
             return True
-        if (anc.get("data-normative") or "").lower() in {"false", "0", "no"}:
+        # Explicit markers take precedence
+        dn = (anc.get("data-normative") or "").lower()
+        if dn in {"false", "0", "no"}:
             return True
-        # W3C/ReSpec often uses class="informative" on section
+        if dn in {"true", "1", "yes"}:
+            return False
         classes = _class_attr(anc)
         if re.search(r"\binformative\b", classes, re.I) and not re.search(
             r"\bnormative\b", classes, re.I
         ):
             return True
+        if re.search(r"\bnormative\b", classes, re.I):
+            return False
         role = (anc.get("role") or "").lower()
         if role in {"note", "doc-example", "doc-note", "doc-tip"}:
             return True
@@ -139,33 +152,87 @@ def _is_informative_region(el: etree._Element) -> bool:
     return False
 
 
-def extract_block_text(el: etree._Element) -> str:
-    """Collect visible text, omitting ignored subtrees and nested headings."""
-    parts: list[str] = []
+def _is_explicitly_normative(el: etree._Element) -> bool:
+    anc: etree._Element | None = el
+    while anc is not None:
+        dn = (anc.get("data-normative") or "").lower()
+        if dn in {"true", "1", "yes"}:
+            return True
+        if re.search(r"\bnormative\b", _class_attr(anc), re.I):
+            return True
+        anc = anc.getparent()
+    return False
 
-    def walk(node: etree._Element, ignored: bool) -> None:
+
+def extract_block_text_with_spans(
+    el: etree._Element,
+) -> tuple[str, tuple[tuple[int, int], ...]]:
+    """Collect visible text; preserve inline code; omit block-ignore subtrees.
+
+    Returns (text, protected_spans) where protected_spans are code ranges in text.
+    """
+    parts: list[str] = []
+    protected: list[tuple[int, int]] = []
+
+    def emit(s: str, *, protect: bool) -> None:
+        if not s:
+            return
+        start = sum(len(p) for p in parts)
+        parts.append(s)
+        if protect:
+            protected.append((start, start + len(s)))
+
+    def walk(node: etree._Element, ignored: bool, in_code: bool) -> None:
         nname = _local_name(node.tag) if isinstance(node.tag, str) else ""
         if nname in HEADING_TAGS:
             return
-        now_ignored = ignored or nname in IGNORE_TAGS
+        if nname in BLOCK_IGNORE_TAGS:
+            return
+        now_code = in_code or nname in INLINE_CODE_TAGS
+        now_ignored = ignored  # only block ignore skips entirely
         if node.text and not now_ignored:
-            parts.append(node.text)
+            emit(node.text, protect=now_code)
         for child in node:
             if isinstance(child.tag, str):
-                walk(child, now_ignored)
+                walk(child, now_ignored, now_code)
             if child.tail and not ignored:
-                parts.append(child.tail)
+                # Tail belongs to parent context, not child's code protection
+                emit(child.tail, protect=in_code)
 
     root_name = _local_name(el.tag)
-    root_ignored = root_name in IGNORE_TAGS
-    if el.text and not root_ignored:
-        parts.append(el.text)
+    if root_name in BLOCK_IGNORE_TAGS:
+        return "", ()
+    root_code = root_name in INLINE_CODE_TAGS
+    if el.text:
+        emit(el.text, protect=root_code)
     for child in el:
         if isinstance(child.tag, str):
-            walk(child, root_ignored)
-        if child.tail and not root_ignored:
-            parts.append(child.tail)
-    return normalize_whitespace("".join(parts))
+            walk(child, False, root_code)
+        if child.tail:
+            emit(child.tail, protect=False)
+
+    raw = "".join(parts)
+    # Build mapping from raw offsets to normalized text offsets while collapsing WS.
+    # Simpler approach: normalize full string, re-find protected content substrings.
+    text = normalize_whitespace(raw)
+    # Map protected spans by finding protected substrings after normalize
+    prot_out: list[tuple[int, int]] = []
+    for s, e in protected:
+        frag = normalize_whitespace(raw[s:e])
+        if not frag:
+            continue
+        # Find non-overlapping occurrences
+        start = 0
+        while True:
+            idx = text.find(frag, start)
+            if idx < 0:
+                break
+            span = (idx, idx + len(frag))
+            if not any(a <= span[0] and span[1] <= b for a, b in prot_out):
+                prot_out.append(span)
+                break
+            start = idx + 1
+    return text, tuple(prot_out)
 
 
 def normalize_html(raw: bytes) -> list[NormalizedBlock]:
@@ -198,11 +265,6 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
             section_stack.append((level, title))
             continue
 
-        # Skip blocks under informative-titled leaf sections.
-        leaf_section = section_stack[-1][1] if section_stack else ""
-        if leaf_section and INFORMATIVE_SECTION_RE.search(leaf_section.strip()):
-            continue
-
         if name not in {"p", "li", "dd", "td", "th", "div"}:
             continue
 
@@ -230,8 +292,19 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
             if child_blocks:
                 continue
 
-        is_info = _is_informative_region(el)
-        text = extract_block_text(el)
+        explicit_norm = _is_explicitly_normative(el)
+        is_info = _is_informative_region(el) and not explicit_norm
+
+        # Soft section title hints only when not explicitly normative
+        leaf_section = section_stack[-1][1] if section_stack else ""
+        if (
+            not explicit_norm
+            and leaf_section
+            and INFORMATIVE_SECTION_RE.search(leaf_section.strip())
+        ):
+            is_info = True
+
+        text, protected = extract_block_text_with_spans(el)
         if not text or len(text) < 3:
             continue
 
@@ -251,6 +324,7 @@ def normalize_html(raw: bytes) -> list[NormalizedBlock]:
                 structural_index=structural_index,
                 is_informative=is_info,
                 xpath=xpath,
+                protected_spans=protected,
             )
         )
         structural_index += 1

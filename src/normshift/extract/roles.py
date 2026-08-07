@@ -7,13 +7,11 @@ import re
 from normshift.extract.profiles import KeywordMatch
 from normshift.normalize.html_normalize import normalize_whitespace
 
-# Exception markers
 _EXCEPTION_RE = re.compile(
     r"\b(?P<ex>(?:unless|except\s+when|except\s+if|except)\b[^.;]*)",
     re.IGNORECASE,
 )
 
-# Condition markers
 _CONDITION_RE = re.compile(
     r"\b(?P<cond>(?:when|if|while|whenever|where)\b[^.;]*)",
     re.IGNORECASE,
@@ -22,7 +20,8 @@ _CONDITION_RE = re.compile(
 _ACTOR_RE = re.compile(
     r"\b(?P<actor>"
     r"implementers?|implementations?|user\s+agents?|servers?|clients?|"
-    r"authors?|UAs?|browsers?|applications?|systems?|senders?|receivers?"
+    r"authors?|UAs?|browsers?|applications?|systems?|senders?|receivers?|"
+    r"prox(?:y|ies)|endpoints?"
     r")\b",
     re.IGNORECASE,
 )
@@ -31,18 +30,21 @@ _ACTOR_RE = re.compile(
 def extract_roles(
     text: str, keyword: KeywordMatch
 ) -> tuple[str | None, str | None, str | None, str | None]:
-    """Return (actor, action, condition, exception) when deterministically extractable."""
+    """Return (actor, action, condition, exception) when deterministically extractable.
+
+    Actor candidates are searched only in the subject region *before* the modal keyword.
+    """
     exception = _first_group(_EXCEPTION_RE, text, "ex")
     condition = _first_group(_CONDITION_RE, text, "cond")
 
-    # Avoid treating exception clause as condition when both match same region.
     if exception and condition and condition.lower() in exception.lower():
         condition = None
 
-    actor_m = _ACTOR_RE.search(text)
+    # Subject region only (pre-modal)
+    subject = text[: keyword.start]
+    actor_m = _ACTOR_RE.search(subject)
     actor = normalize_whitespace(actor_m.group("actor")) if actor_m else None
 
-    # Action: text after keyword match, stripped of condition/exception tails.
     after = text[keyword.end :].strip()
     after = _EXCEPTION_RE.sub("", after)
     after = _CONDITION_RE.sub("", after)

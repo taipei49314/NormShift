@@ -57,13 +57,13 @@ def report_to_dict(report: Report) -> dict[str, Any]:
 
 
 def write_json_report(report: Report, path: Path) -> str:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    from normshift.io_safety import atomic_write_bytes
+
     data = report_to_dict(report)
-    # Recompute integrity from final dict (excluding integrity).
     digest = integrity_payload_hash(data)
     data["integrity"] = {"alg": "sha256", "content_sha256": digest}
     raw = canonical_json_bytes(data)
-    path.write_bytes(raw)
+    atomic_write_bytes(path, raw)
     return hashlib_sha256(raw)
 
 
@@ -73,8 +73,7 @@ def hashlib_sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def write_markdown_report(report: Report, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+def markdown_report_text(report: Report) -> str:
     lines: list[str] = []
     lines.append("# NormShift Diff Report")
     lines.append("")
@@ -167,4 +166,10 @@ def write_markdown_report(report: Report, path: Path) -> None:
                 lines.append(f"  - `{h}`")
         lines.append("")
 
-    path.write_text("\n".join(lines), encoding="utf-8")
+    return "\n".join(lines)
+
+
+def write_markdown_report(report: Report, path: Path) -> None:
+    from normshift.io_safety import atomic_write_text
+
+    atomic_write_text(path, markdown_report_text(report))

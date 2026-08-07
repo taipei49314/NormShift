@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normshift.local/schemas/report.schema.json",
+  "title": "NormShiftReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool_version",
+    "profile",
+    "old_document",
+    "new_document",
+    "old_requirements",
+    "new_requirements",
+    "changes",
+    "summary",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "tool_version": { "type": "string" },
+    "profile": { "type": "string", "enum": ["rfc2119", "whatwg"] },
+    "old_document": { "type": "object" },
+    "new_document": { "type": "object" },
+    "old_requirements": { "type": "array", "items": { "type": "object" } },
+    "new_requirements": { "type": "array", "items": { "type": "object" } },
+    "changes": { "type": "array", "items": { "type": "object" } },
+    "summary": { "type": "object" },
+    "integrity": {
+      "type": "object",
+      "required": ["alg", "content_sha256"],
+      "properties": {
+        "alg": { "type": "string" },
+        "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

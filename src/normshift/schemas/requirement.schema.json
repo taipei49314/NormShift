@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normshift.local/schemas/requirement.schema.json",
+  "title": "Requirement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requirement_id",
+    "document_sha256",
+    "document_version",
+    "section_path",
+    "source_locator",
+    "original_text",
+    "normalized_text",
+    "modality",
+    "polarity",
+    "confidence",
+    "extractor_version",
+    "fingerprint"
+  ],
+  "properties": {
+    "requirement_id": { "type": "string", "minLength": 1 },
+    "document_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "document_version": { "type": "string" },
+    "section_path": { "type": "string" },
+    "source_locator": { "type": "string" },
+    "original_text": { "type": "string" },
+    "normalized_text": { "type": "string" },
+    "modality": {
+      "type": "string",
+      "enum": ["MUST", "MUST_NOT", "SHOULD", "SHOULD_NOT", "MAY"]
+    },
+    "polarity": {
+      "type": "string",
+      "enum": ["AFFIRMATIVE", "NEGATIVE"]
+    },
+    "actor": { "type": ["string", "null"] },
+    "action": { "type": ["string", "null"] },
+    "condition": { "type": ["string", "null"] },
+    "exception": { "type": ["string", "null"] },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "extractor_version": { "type": "string" },
+    "fingerprint": { "type": "string" },
+    "structural_index": { "type": "integer", "minimum": 0 }
+  }
+}

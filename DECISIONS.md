@@ -1,72 +1,63 @@
-# Design Decisions (M0)
+# Design Decisions
+
+## D010 — M0 freeze after external audit rejection (2026-08-07)
+
+**Decision:** No new feature work (M1/M2 expansion, adapters, lineage features,
+dashboard, crawler, DB, LLM) until M0 is externally re-accepted.  
+**Status:** M0_PARTIAL. Existing M1/M2 code remains as experimental slices only.  
+**Trigger:** External audit `EXTERNAL_AUDIT.md` (package 20260807-105717).
+
+## D011 — Strict evidence verification is mandatory for M0
+
+**Decision:** `normshift verify` must validate source snapshot hashes, requirement
+ownership, change references, summary counts, evidence hashes, and bundled schema.  
+Self-checksum alone is insufficient.
+
+## D012 — Universal output safety
+
+**Decision:** All artifact-writing commands use shared path-preflight and
+same-directory atomic replace. Input/output collisions fail closed. Pre-existing
+outputs are never deleted on rollback.
+
+## D013 — Metrics separate gate pass from precision
+
+**Decision:** `allow_extra` affects only case gate pass. Unmatched observed labels
+always count as false positives in precision/recall/F1.
 
 ## D009 — M1 adapters are offline-first with provenance sidecars
 
-**Decision:** Real-standard families are supported via local adapters + optional
-`*.meta.json` sidecars (canonical_source, etag, last_modified). No live HTTP
-in the M1 correctness path.  
-**Why:** North Star M1 requires provenance and three families; M3 owns scheduled
-fetch. Offline sidecars keep clean-clone replay and fail-closed semantics.  
-**Corpus:** Structure-faithful excerpts under `fixtures/corpus/`, not full
-redistribution of live standards.  
-**Status:** Accepted for M1.
+**Decision:** Real-standard families via local adapters + optional `*.meta.json`.  
+**Status:** Experimental; not adjudicated as M1 complete.
 
 ## D008 — Official North Star charter adopted as source of truth
 
-**Decision:** Replace the short M0 north-star stub with the full
-`NORMSHIFT_NORTH_STAR` charter under `docs/NORTH_STAR.md`.  
-**Why:** Defines end-state Requirement Lineage Graph, milestone gates M0–M6,
-trust model, and implementer authority limits.  
-**Implication:** After M0 audit, work proceeds only via frozen milestone exits;
-LLM may never be classification authority on the correctness path.  
-**Status:** Accepted 2026-08-07.
+**Decision:** `docs/NORTH_STAR.md` is product charter.  
+**Status:** Accepted.
 
-## D001 — Package build backend: hatchling instead of uv_build
+## D001 — Package build backend: hatchling
 
-**Decision:** Use `hatchling` as the build backend.  
-**Why:** Standard packaging layout with `src/normshift` and reliable console
-script entry points across environments.  
-**Alternative considered:** Keep `uv_build` from `uv init`.  
-**Status:** Accepted for M0.
+**Decision:** Use hatchling. **Status:** Accepted.
 
-## D002 — Alignment algorithm: greedy multi-signal, not Hungarian
+## D002 — Alignment algorithm: greedy multi-signal
 
-**Decision:** Score all pairs, sort deterministically, greedy match with
-ambiguity margin.  
-**Why:** Simpler, fully deterministic, sufficient for M0 fixture sizes;
-exposes score components per pair.  
-**Alternative:** Hungarian algorithm for global optimum.  
-**Status:** Accepted for M0; revisit if large-doc recall suffers.
+**Decision:** Greedy multi-signal aligner. **Status:** Accepted for M0.
 
 ## D003 — One requirement per keyword hit per block
 
-**Decision:** Each normative keyword match in a block yields a requirement.  
-**Why:** Preserves multi-modal sentences; stable ordering by match offset.  
-**Risk:** Rare double-counting if a sentence uses two keywords intentionally.  
-**Status:** Accepted; AMBIGUOUS available when classification is unclear.
+**Decision:** One requirement per keyword match. **Status:** Accepted.
 
-## D004 — Informative region detection is structural + class/role
+## D004 — Informative region detection structural + class/role
 
-**Decision:** Ignore `pre`/`code`/… tags and elements with example/note/informative
-classes or `data-normative=false`.  
-**Why:** Deterministic without NLP; covers adversarial case 10.  
-**Limitation:** Specs that place normative text only inside custom widgets may
-be under-extracted.
+**Decision:** Structural ignore + informative classes. **Status:** Amended by D010 repair (no blanket title skip for Security/Appendix).
 
-## D005 — Report integrity hash excludes `integrity` field
+## D005 — Report integrity hash excludes integrity field
 
-**Decision:** `content_sha256` is SHA-256 of canonical JSON of the report with
-the `integrity` key removed.  
-**Why:** Avoids self-referential hash; enables tamper detection.
+**Decision:** content_sha256 excludes integrity key. **Status:** Accepted; extended by D011.
 
-## D006 — Document version from meta/content, never filename alone
+## D006 — Document version from meta/content
 
-**Decision:** Prefer `<meta name="version">`, `data-version`, H1 version tokens;
-fallback `sha256:` prefix of content digest.  
-**Why:** Mission forbids filename-as-sole version identity.
+**Decision:** Never filename-only version identity. **Status:** Accepted.
 
-## D007 — jsonschema retained for optional schema verification
+## D007 — jsonschema for report verification
 
-**Decision:** Keep `jsonschema` dependency for `report.schema.json` checks in
-`normshift verify`.  
-**Why:** Complements Pydantic runtime models with portable JSON Schema artifacts.
+**Decision:** Bundled schemas required; missing schema is verifier failure. **Status:** Amended by D011.

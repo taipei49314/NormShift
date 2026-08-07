@@ -155,10 +155,21 @@ def patterns_for(profile: ProfileName) -> list[tuple[re.Pattern[str], Modality, 
     raise ValueError(f"Unknown profile: {profile}")
 
 
-def find_keyword_matches(text: str, profile: ProfileName) -> list[KeywordMatch]:
-    """Find normative keyword matches with token boundaries and negation vetoes."""
+def find_keyword_matches(
+    text: str,
+    profile: ProfileName,
+    *,
+    protected_spans: list[tuple[int, int]] | tuple[tuple[int, int], ...] | None = None,
+) -> list[KeywordMatch]:
+    """Find normative keyword matches with token boundaries and negation vetoes.
+
+    ``protected_spans`` are character ranges (e.g. inline code) where keyword
+    matches must not originate.
+    """
     patterns = patterns_for(profile)
     veto_spans = _veto_spans(text)
+    if protected_spans:
+        veto_spans = list(veto_spans) + list(protected_spans)
 
     matches: list[KeywordMatch] = []
     occupied: list[tuple[int, int]] = []
@@ -170,8 +181,6 @@ def find_keyword_matches(text: str, profile: ProfileName) -> list[KeywordMatch]:
                 continue
             if _overlaps_any(start, end, occupied):
                 continue
-            # Extra guard: "mustard" / substring issues already handled by \b,
-            # but reject if match is inside a longer alphabetic token (safety).
             if not _is_token_bounded(text, start, end):
                 continue
             matches.append(

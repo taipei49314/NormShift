@@ -1,27 +1,30 @@
 {
-  "current_objective": "Measure-first instruments + definition/xref dependency on lineage",
-  "current_hypothesis": "Separate extract/align/classify meters + dependency edges make further North Star progress gateable offline",
-  "status": "M2_METERS_AND_DEPS_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "last_verified_commit": "3bec13c9d8b135028b05fc347ce4bc834b3994d6",
+  "current_objective": "M0 Trust-Chain Repair complete — stop for external re-audit",
+  "current_hypothesis": "Strict verify + path safety + honest metrics + extraction fixes restore M0 trust contract",
+  "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+  "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check .  # 0",
     "uv run mypy src  # 0",
-    "uv run pytest -q  # 53 passed",
+    "uv run pytest -q  # 0, 71 passed",
     "uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl  # 17/17",
-    "uv run normshift measure --ground-truth benchmark/measure_suite.jsonl --out evidence/m2/metrics.json  # 15/15, f1=1.0 all layers",
-    "uv run normshift lineage fixtures/lineage/v1.html v2.html v3.html --json evidence/m2/lineage.json  # 0"
+    "uv run normshift measure --ground-truth benchmark/measure_suite.jsonl --out evidence/m0-repair/metrics.json  # 0",
+    "uv run normshift diff ... evidence/m0-repair/report.json  # 0",
+    "uv run normshift verify evidence/m0-repair/report.json --source-root .  # 0",
+    "negative: source mutation/deletion/collisions  # non-zero as required"
   ],
   "verified_artifacts": [
-    "benchmark/measure_suite.jsonl",
-    "evidence/m2/metrics.json",
-    "evidence/m2/lineage.json",
-    "evidence/m2/MEASURE_EVIDENCE.md"
+    "evidence/m0-repair/M0_REPAIR_EVIDENCE.md",
+    "evidence/m0-repair/report.json",
+    "evidence/m0-repair/report.md",
+    "evidence/m0-repair/metrics.json",
+    "evidence/m0-repair/negative/"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "External audit pending",
-    "Definition extraction heuristic may miss complex prose",
-    "Not production/release ready"
+    "Awaiting external re-audit",
+    "M1/M2 experimental code not removed, not claimed complete",
+    "Symlink edge cases residual"
   ],
-  "next_action": "Keep meters green while expanding corpus; external audit before M3 Observatory"
+  "next_action": "STOP. Request external re-audit. No M1/M2 feature work."
 }
