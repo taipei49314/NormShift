@@ -1,0 +1,14 @@
+# Portable evidence requires byte-stable fixtures and reports across platforms.
+* text=auto eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+*.sha256 text eol=lf
+*.lock text eol=lf
