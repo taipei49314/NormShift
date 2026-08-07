@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from normshift import EXTRACTOR_VERSION
-from normshift.extract.historical import filter_historical_matches
+from normshift.extract.historical import bound_current_clause, filter_historical_matches
 from normshift.extract.profiles import find_keyword_matches
 from normshift.extract.roles import extract_roles
 from normshift.model.types import (
@@ -73,8 +73,11 @@ def requirements_from_blocks(
         if not matches:
             continue
         for km in matches:
-            actor, action, condition, exception = extract_roles(block.text, km)
-            norm_text = normalize_whitespace(block.text)
+            # Evidence keeps full original_text; roles/fingerprint use current clause only
+            # so historical-comment edits do not invent semantic change events.
+            clause, km_local = bound_current_clause(block.text, km)
+            actor, action, condition, exception = extract_roles(clause, km_local)
+            norm_text = normalize_whitespace(clause)
             fp = fingerprint_requirement(
                 norm_text,
                 km.modality.value,

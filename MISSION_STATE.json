@@ -1,29 +1,30 @@
 {
-  "current_objective": "M0 repair round 4 package subject ready for external re-audit",
-  "current_hypothesis": "Strict JSON + portable generation root + modal-local historical + parent-chain cleanup close R3 P0/P1 blockers",
+  "current_objective": "M0 repair round 5 package subject ready for external re-audit",
+  "current_hypothesis": "Canonical payload bytes + PurePosix portable-ref + clause-level historical close R4 P0 blockers",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
   "package_identity": "externally_attested",
   "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q #147 passed",
+    "uv run pytest -q #180 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",
     "uv run normshift diff --source-root . #0",
     "uv run normshift verify --source-root . #0 verification_scope=FULL"
   ],
   "verified_artifacts": [
-    "docs/EXTERNAL_AUDIT_R3_FINAL.md",
-    "docs/GROK_M0_REPAIR_ROUND4.md",
-    "docs/M0_REPAIR_ROUND4.md",
-    "evidence/m0-repair-round4/"
+    "docs/EXTERNAL_AUDIT_R4.md",
+    "docs/GROK_M0_REPAIR_ROUND5.md",
+    "docs/M0_REPAIR_ROUND5.md",
+    "evidence/m0-repair-round5/",
+    "scripts/external_package_verify.py"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "Awaiting external re-audit of round-4 package",
-    "Historical authority is heuristic/clause-local, not full NL",
+    "Awaiting external re-audit of round-5 package",
+    "Historical clause heuristics are not full NL understanding",
     "M1/M2 experimental only"
   ],
-  "next_action": "STOP. External re-audit of R4 package only. No post-gate commits."
+  "next_action": "STOP. External re-audit of R5 package only. No post-gate commits."
 }

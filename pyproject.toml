@@ -1,6 +1,6 @@
 [project]
 name = "normshift"
-version = "0.3.1"
+version = "0.3.2"
 description = "Evidence-backed semantic diff for technical standards (M0 core; M1/M2 experimental only)"
 readme = "README.md"
 license = { text = "Apache-2.0" }

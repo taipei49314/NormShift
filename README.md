@@ -2,9 +2,9 @@
 
 Evidence-backed **semantic diff** for technical standards (local HTML M0 core).
 
-> **Status:** M0 trust-core repair (round 4). Production/release **BLOCKED**.  
+> **Status:** M0 trust-core repair (round 5). Production/release **BLOCKED**.  
 > M1/M2 code may exist as **EXPERIMENTAL_NOT_ADJUDICATED** only.  
-> See `docs/EXTERNAL_AUDIT_R3_FINAL.md` and `docs/GROK_M0_REPAIR_ROUND4.md`.
+> See `docs/EXTERNAL_AUDIT_R4.md` and `docs/GROK_M0_REPAIR_ROUND5.md`.
 
 ## Setup
 
@@ -48,13 +48,13 @@ uv run mypy src
 uv run pytest -q
 uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
 uv run normshift measure --ground-truth benchmark/measure_suite.jsonl \
-  --out evidence/m0-repair-round4/metrics.json
+  --out evidence/m0-repair-round5/metrics.json
 uv run normshift diff fixtures/synthetic/spec-v1.html fixtures/synthetic/spec-v2.html \
   --source-root . \
   --profile rfc2119 \
-  --json evidence/m0-repair-round4/report.json \
-  --markdown evidence/m0-repair-round4/report.md
-uv run normshift verify evidence/m0-repair-round4/report.json --source-root .
+  --json evidence/m0-repair-round5/report.json \
+  --markdown evidence/m0-repair-round5/report.md
+uv run normshift verify evidence/m0-repair-round5/report.json --source-root .
 ```
 
 ## License

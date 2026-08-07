@@ -20,6 +20,11 @@ from normshift.model.types import (
     ProfileName,
     Report,
 )
+from normshift.portable_ref import (
+    PortableRefError,
+    resolve_declared_under_root,
+    validate_portable_ref,
+)
 from normshift.report.builder import (
     SUPPORTED_SCHEMA_VERSIONS,
     SUPPORTED_TOOL_VERSIONS,
@@ -78,42 +83,35 @@ def _resolve_source_path(
     override: Path | None,
     side: str,
 ) -> tuple[Path, str]:
-    # Declared ref must always be portable relative (even with overrides)
-    if declared.startswith("/") or (len(declared) > 2 and declared[1] == ":"):
-        raise FileNotFoundError(
-            f"{side} declared source_ref must be relative portable path, got: {declared}"
-        )
-    if ".." in Path(declared).parts:
-        raise FileNotFoundError(f"{side} declared source_ref traversal forbidden: {declared}")
+    # Same PurePosix grammar for full and override verification
+    try:
+        ref = validate_portable_ref(declared)
+    except PortableRefError as exc:
+        raise FileNotFoundError(f"{side} declared source_ref invalid: {exc}") from exc
 
     if override is not None:
         p = Path(override)
         if not p.is_file():
             raise FileNotFoundError(f"{side} override source not found: {p}")
-        return p, declared
+        # Overrides relocate bytes only; declared logical path is not re-attested
+        return p, ref
 
     if source_root is not None:
-        root = source_root.resolve()
-        cand = (root / declared).resolve()
         try:
-            cand.relative_to(root)
-        except ValueError as exc:
-            raise FileNotFoundError(
-                f"{side} path escapes source-root: {declared}"
-            ) from exc
-        if not cand.is_file():
-            raise FileNotFoundError(
-                f"{side} source not found under source-root: {declared}"
-            )
-        return cand, declared.replace("\\", "/")
+            cand, canonical = resolve_declared_under_root(source_root, ref)
+        except PortableRefError as exc:
+            raise FileNotFoundError(f"{side}: {exc}") from exc
+        return cand, canonical
 
-    p = Path(declared)
-    if p.is_file():
-        return p, declared.replace("\\", "/")
-    raise FileNotFoundError(
-        f"{side} source not found: {declared} "
-        "(provide --source-root or --old-source/--new-source)"
-    )
+    # No root: require declared path exists as relative path under CWD and is canonical
+    try:
+        cand, canonical = resolve_declared_under_root(Path.cwd(), ref)
+    except PortableRefError as exc:
+        raise FileNotFoundError(
+            f"{side} source not found / non-canonical: {declared} "
+            f"(provide --source-root or --old-source/--new-source); {exc}"
+        ) from exc
+    return cand, canonical
 
 
 def _adapter_from_report(doc_side: Any) -> AdapterName:
@@ -132,18 +130,58 @@ def verify_report_file(
     new_source: Path | None = None,
     require_sources: bool = True,
 ) -> VerifyResult:
-    errors: list[str] = []
+    """Verify a report file; never raises — failures are structured VerifyResult."""
     override_used = old_source is not None or new_source is not None
     scope = "CONTENT_ONLY_OVERRIDE" if override_used else "FULL"
+    try:
+        return _verify_report_file_impl(
+            path,
+            source_root=source_root,
+            old_source=old_source,
+            new_source=new_source,
+            require_sources=require_sources,
+            override_used=override_used,
+            scope=scope,
+        )
+    except Exception as exc:  # noqa: BLE001 — clean CLI failure, no traceback
+        return VerifyResult(
+            ok=False,
+            errors=[f"Verifier failed closed: {type(exc).__name__}: {exc}"],
+            override_used=override_used,
+            verification_scope=scope,
+        )
+
+
+def _verify_report_file_impl(
+    path: Path,
+    *,
+    source_root: Path | None,
+    old_source: Path | None,
+    new_source: Path | None,
+    require_sources: bool,
+    override_used: bool,
+    scope: str,
+) -> VerifyResult:
+    errors: list[str] = []
 
     if not path.is_file():
-        return VerifyResult(ok=False, errors=[f"Report file not found: {path}"])
+        return VerifyResult(
+            ok=False,
+            errors=[f"Report file not found: {path}"],
+            override_used=override_used,
+            verification_scope=scope,
+        )
 
     try:
         raw = path.read_bytes()
         data = strict_loads(raw)
     except (OSError, UnicodeError, StrictJSONError) as exc:
-        return VerifyResult(ok=False, errors=[f"Strict JSON parse failed: {exc}"])
+        return VerifyResult(
+            ok=False,
+            errors=[f"Strict JSON parse failed: {exc}"],
+            override_used=override_used,
+            verification_scope=scope,
+        )
 
     if not isinstance(data, dict):
         return VerifyResult(ok=False, errors=["Report root must be a JSON object"])
@@ -170,13 +208,22 @@ def verify_report_file(
             ok=False, errors=errors, override_used=override_used, verification_scope=scope
         )
 
-    # Canonical submitted equality: field presence + primitives before replay
-    dumped = report.model_dump(mode="json")
+    # Canonical submitted equality: field presence + payload bytes before replay
     try:
+        dumped = report.model_dump(mode="json")
         deep_require_keys(data, dumped)
-    except StrictJSONError as exc:
+        # Encode may fail on unpaired surrogates — clean failure, not traceback
+        submitted_bytes = canonical_json_bytes(data)
+        dumped_bytes = canonical_json_bytes(dumped)
+    except (StrictJSONError, UnicodeError, ValueError, TypeError) as exc:
         errors.append(f"Submitted JSON field presence/type boundary: {exc}")
-    if canonical_json_bytes(data) != canonical_json_bytes(dumped):
+        return VerifyResult(
+            ok=False,
+            errors=errors,
+            override_used=override_used,
+            verification_scope=scope,
+        )
+    if submitted_bytes != dumped_bytes:
         errors.append(
             "Submitted JSON is not equal to complete typed dump "
             "(coercion, omitted defaults, or non-canonical representation)"
@@ -306,12 +353,23 @@ def verify_report_file(
             }
         )
 
+    # Canonical payload-byte equality (not Python numeric equality: -0.0 == 0.0)
     report_payload = report.model_dump(mode="json")
     live_payload = live.model_dump(mode="json")
     r_wo = {k: v for k, v in report_payload.items() if k != "integrity"}
     l_wo = {k: v for k, v in live_payload.items() if k != "integrity"}
-    if r_wo != l_wo:
+    try:
+        r_bytes = canonical_json_bytes(r_wo)
+        l_bytes = canonical_json_bytes(l_wo)
+    except (UnicodeError, ValueError, TypeError) as exc:
+        errors.append(f"Canonical replay encoding failed: {exc}")
+        r_bytes = b""
+        l_bytes = b"x"
+    if r_bytes != l_bytes:
         mismatched = sorted(k for k in set(r_wo) | set(l_wo) if r_wo.get(k) != l_wo.get(k))
+        # Also detect signed-zero-only differences hidden by Python equality
+        if not mismatched:
+            mismatched = ["<canonical-bytes-differ>"]
         detail = ", ".join(mismatched[:12]) if mismatched else "payload"
         errors.append(
             f"Submitted report does not match complete canonical replay "

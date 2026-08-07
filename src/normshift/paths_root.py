@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from normshift.portable_ref import PortableRefError, validate_portable_ref
+
 
 class SourceRootError(ValueError):
     """Raised when a source cannot be represented under the declared root."""
@@ -12,15 +14,16 @@ class SourceRootError(ValueError):
 def resolve_under_source_root(root: Path, path: Path) -> tuple[Path, str]:
     """Resolve path under root; return (absolute_file, portable_posix_ref).
 
-    Rejects traversal and symlink escape. Never returns an absolute portable ref.
+    Rejects traversal and symlink escape. Portable ref is always canonical
+    PurePosix root-relative form (no '.', '..', repeated separators, absolute).
     """
     root = Path(root).resolve()
     if not root.is_dir():
         raise SourceRootError(f"source-root is not a directory: {root}")
 
     p = Path(path)
-    if re_abs(str(p)) and not p.is_absolute():
-        # Drive-letter style absolute that Path may not mark absolute on POSIX
+    s = str(p)
+    if re_abs(s) and not p.is_absolute():
         raise SourceRootError(f"Illegal absolute-like source path: {path}")
 
     if p.is_absolute():
@@ -33,8 +36,7 @@ def resolve_under_source_root(root: Path, path: Path) -> tuple[Path, str]:
             ) from exc
         p = resolved
     else:
-        # Allow ".." in the *input* only if the resolved path stays under root.
-        # Portable ref is always the normalized path relative to root (no "..").
+        # Input may contain ".." segments; portable ref is always normalized.
         cand = (root / Path(p.as_posix())).resolve()
         try:
             rel = cand.relative_to(root)
@@ -47,7 +49,6 @@ def resolve_under_source_root(root: Path, path: Path) -> tuple[Path, str]:
     if not p.is_file():
         raise SourceRootError(f"Source file not found under source-root: {path}")
 
-    # Reject if any path component is a symlink leading outside root
     cur = root
     for part in Path(rel).parts:
         cur = cur / part
@@ -62,14 +63,10 @@ def resolve_under_source_root(root: Path, path: Path) -> tuple[Path, str]:
         raise SourceRootError(f"Symlink escape under source-root: {path}") from exc
 
     portable = Path(rel).as_posix()
-    if (
-        not portable
-        or portable.startswith("/")
-        or re_abs(portable)
-        or "\\" in portable
-        or ".." in Path(portable).parts
-    ):
-        raise SourceRootError(f"Refusing non-portable source ref: {portable!r}")
+    try:
+        portable = validate_portable_ref(portable)
+    except PortableRefError as exc:
+        raise SourceRootError(str(exc)) from exc
     return p.resolve(), portable
 
 

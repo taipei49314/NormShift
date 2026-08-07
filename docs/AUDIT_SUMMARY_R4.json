@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "project": "NormShift",
+  "audit": "M0_REPAIR_ROUND4_EXTERNAL_AUDIT",
+  "date": "2026-08-07",
+  "verdict": {
+    "m0": "M0_PARTIAL",
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "production_release": "BLOCKED"
+  },
+  "subject": {
+    "commit": "878bfd3a6bb7b649652e81936216277fc8151d5e",
+    "tree": "da83272e68f4a5d324f63917d5a52dafac7e04c9",
+    "bundle_sha256": "89427b1773e0b4b792892bc7ad61a1a78c9bc59100c2c0811b8ebaed683e530e",
+    "source_zip_sha256": "4ba5c032ececb4c548fd715911fae48a02ac8444f26052d46b21aaf6442d5961",
+    "latest_manifest_sha256": "5a2aef267dc487e7eea1e2162f66116192f9b44ed9ab802f4b7a1c762729ee01",
+    "tool_version": "0.3.1"
+  },
+  "accepted": {
+    "bundle_complete_history": true,
+    "bundle_fsck": "PASS",
+    "source_archive_tracked_files": 187,
+    "source_archive_blob_mismatches": 0,
+    "source_archive_missing": 0,
+    "source_archive_extras": 0,
+    "source_archive_unsafe_entries": 0,
+    "packaged_verify": "PASS_FULL",
+    "archive_verify": "PASS_FULL",
+    "relocated_verify": "PASS_FULL",
+    "source_mutation_detection": "PASS",
+    "source_deletion_detection": "PASS",
+    "benchmark": "17/17",
+    "measure": "15/15",
+    "fresh_report_verify": "PASS_FULL",
+    "official_report_sha256": "cb4a2337e8368b3493d76932d4d119cb1fb5b2bae0d4972ed335a34969360187",
+    "official_markdown_sha256": "bbd3ebab5352c22436c96a4ee04832be62df69fbab796b8a1b6dda3b1784f262",
+    "official_metrics_sha256": "71705ea535f12288c8a99aa61108f9bdbfdf1f120431e086e6975145e4b9c5b4",
+    "round4_named_strict_matrix": "PASS",
+    "round4_named_portability_matrix": "PASS",
+    "round4_named_historical_matrix": "PASS",
+    "round4_parent_chain_matrix": "PASS"
+  },
+  "external_test_run": {
+    "python": "3.13.5",
+    "uv": "0.10.0",
+    "pytest_without_hypothesis": {
+      "passed": 145,
+      "failed": 0
+    },
+    "hypothesis_tests_natively_run": false,
+    "unavailable_hypothesis_tests": 2,
+    "manual_property_samples": 500000,
+    "ruff_externally_run": false,
+    "mypy_externally_run": false,
+    "uv_sync_completed": false,
+    "uv_sync_failure_reason": "network unavailable while obtaining Python 3.12"
+  },
+  "m0_blockers": [
+    {
+      "id": "P0-01",
+      "title": "Canonical replay accepts signed-zero representation not emitted by production",
+      "reproduction": "0.0 -> -0.0; rehash; CLI verify returns 0 FULL",
+      "required_action": "Canonical payload-byte comparison plus explicit signed-zero/non-finite policy."
+    },
+    {
+      "id": "P0-02",
+      "title": "Full and override verification accept non-canonical or non-portable source refs",
+      "accepted_examples": [
+        "./fixtures/...",
+        "fixtures//...",
+        "fixtures/./...",
+        "empty override ref",
+        "dot override ref",
+        "backslash traversal",
+        "UNC-like ref",
+        "URI-like ref"
+      ],
+      "required_action": "Shared PurePosix grammar and canonical root-relative recomputation."
+    },
+    {
+      "id": "P0-03",
+      "title": "Historical authority suppresses current previous-object clauses and leaks prior/earlier reports",
+      "required_action": "Bound historical modifiers to specification/version reporting frames and current modal clauses."
+    }
+  ],
+  "high_priority": [
+    {
+      "id": "P1-01",
+      "title": "Historical commentary changes current requirement fingerprint and creates AMBIGUOUS event"
+    },
+    {
+      "id": "P1-02",
+      "title": "Escaped unpaired surrogate produces unhandled verifier traceback"
+    },
+    {
+      "id": "P1-03",
+      "title": "Latest re-export manifest is an incomplete overlay rather than one authoritative full manifest"
+    },
+    {
+      "id": "P1-04",
+      "title": "Exact-package external verifier contract is not submitted as reproducible code/output"
+    }
+  ],
+  "audit_limitations": [
+    "Python 3.12 was not available in the external runtime.",
+    "Hypothesis, Ruff, and mypy were unavailable offline.",
+    "The two Hypothesis tests were supplemented with 500,000 deterministic samples, not claimed as an equivalent native run."
+  ],
+  "next_mission": "GROK_M0_REPAIR_ROUND5.md"
+}

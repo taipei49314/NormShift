@@ -396,7 +396,13 @@ def test_override_rejects_traversal_declared_source_ref(tmp_path: Path) -> None:
         new_source=tmp_path / "new.html",
     )
     assert not r.ok
-    assert any("traversal" in e.lower() for e in r.errors)
+    joined = " ".join(r.errors).lower()
+    assert (
+        "traversal" in joined
+        or ".." in joined
+        or "portable" in joined
+        or "invalid" in joined
+    )
 
 
 def test_override_returns_machine_readable_content_only_scope(tmp_path: Path) -> None:
