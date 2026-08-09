@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
+        with:
+          version: "0.12.2"
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Sync locked environment
+        run: uv sync --frozen --all-extras --dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Type check
+        run: uv run mypy src
+
+      - name: Build distributions
+        run: uv build --out-dir "$RUNNER_TEMP/dist"
+
+      - name: Smoke-test built wheel
+        shell: bash
+        run: |
+          set -euo pipefail
+          smoke_env="$RUNNER_TEMP/normshift-wheel-smoke"
+          uv venv "$smoke_env" --python 3.12
+          uv pip install --python "$smoke_env/bin/python" "$RUNNER_TEMP"/dist/*.whl
+          uv pip check --python "$smoke_env/bin/python"
+
+          cd "$RUNNER_TEMP"
+          "$smoke_env/bin/python" - <<'PY'
+          from importlib.metadata import version
+          from importlib.resources import files
+
+          import normshift
+
+          schemas = files("normshift.schemas")
+          for name in ("change.schema.json", "report.schema.json", "requirement.schema.json"):
+              assert schemas.joinpath(name).is_file(), name
+          print(f"normshift={version('normshift')} module={normshift.__file__}")
+          PY
+          "$smoke_env/bin/normshift" --help
+
+      - name: Test
+        run: uv run pytest -q
+
+      - name: M0 benchmark
+        run: uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
+
+      - name: M0 deterministic evidence replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          evidence_dir="$RUNNER_TEMP/normshift-m0"
+          mkdir -p "$evidence_dir"
+
+          uv run normshift measure \
+            --ground-truth benchmark/measure_suite.jsonl \
+            --out "$evidence_dir/metrics.json"
+          uv run normshift diff \
+            fixtures/synthetic/spec-v1.html \
+            fixtures/synthetic/spec-v2.html \
+            --source-root . \
+            --profile rfc2119 \
+            --json "$evidence_dir/report.json" \
+            --markdown "$evidence_dir/report.md"
+          uv run normshift verify "$evidence_dir/report.json" --source-root .
