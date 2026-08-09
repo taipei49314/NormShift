@@ -634,9 +634,9 @@ def test_external_attestation_contract_has_no_noop_assertion() -> None:
 
 
 def test_no_repository_commit_after_verified_gate() -> None:
-    """In-tree rule: when pending external audit, claims use external attestation."""
+    """In-tree rule: pending audit must not claim external attestation."""
     ms = json.loads((ROOT / "MISSION_STATE.json").read_text(encoding="utf-8"))
     claims = (ROOT / "CLAIMS.md").read_text(encoding="utf-8").lower()
     if ms.get("status") == "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT":
-        assert ms.get("package_identity") == "externally_attested"
-        assert "externally attested" in claims or "externally_attested" in claims
+        assert ms.get("package_identity") == "pending_external_attestation"
+        assert "pending_external_attestation" in claims

@@ -8,6 +8,7 @@ from pathlib import Path
 
 import typer
 
+from normshift import __version__
 from normshift.adapters.errors import AdapterError
 from normshift.adapters.registry import load_document
 from normshift.benchmark.runner import run_benchmark
@@ -26,6 +27,25 @@ app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
 )
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit(code=0)
+
+
+@app.callback()
+def root_options(
+    version: bool = typer.Option(
+        False,
+        "--version",
+        help="Print the NormShift package version and exit.",
+        callback=_version_callback,
+        is_eager=True,
+    ),
+) -> None:
+    """NormShift command-line interface."""
 
 
 class ProfileOpt(StrEnum):
@@ -82,7 +102,7 @@ def extract_cmd(
     raw = json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
     atomic_write_text(out, raw)
     family = doc.document_family.value if doc.document_family else "unknown"
-    typer.echo(f"wrote {len(doc.requirements)} requirements ({family}) → {out}")
+    typer.echo(f"wrote {len(doc.requirements)} requirements ({family}) -> {out}")
 
 
 @app.command("diff")
@@ -135,7 +155,7 @@ def diff_cmd(
         raise typer.Exit(code=1) from exc
 
     typer.echo(
-        f"diff complete: {len(report.old_requirements)}→{len(report.new_requirements)} "
+        f"diff complete: {len(report.old_requirements)}->{len(report.new_requirements)} "
         f"requirements, {len(report.changes)} changes"
     )
 
@@ -173,7 +193,7 @@ def ingest_cmd(
         out,
         json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n",
     )
-    typer.echo(f"ingested {adapted.family.value} → {out}")
+    typer.echo(f"ingested {adapted.family.value} -> {out}")
 
 
 @app.command("lineage")
@@ -217,7 +237,7 @@ def lineage_cmd(
 
     typer.echo(
         f"lineage: {len(graph.versions)} versions, {len(graph.nodes)} lineages, "
-        f"{len(graph.edges)} edges, {len(graph.ambiguity_queue)} ambiguities → {json_out}"
+        f"{len(graph.edges)} edges, {len(graph.ambiguity_queue)} ambiguities -> {json_out}"
     )
 
 
@@ -335,7 +355,7 @@ def measure_cmd(
         f"measure: {report.cases_passed}/{report.case_count} cases, "
         f"extract_f1={report.extraction.get('f1')} "
         f"align_f1={report.alignment.get('f1')} "
-        f"class_f1={report.classification.get('f1')} → {out}"
+        f"class_f1={report.classification.get('f1')} -> {out}"
     )
     if not report.ok:
         for c in report.case_results:

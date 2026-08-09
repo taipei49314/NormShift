@@ -130,7 +130,7 @@ def run_benchmark(ground_truth: Path) -> BenchmarkReport:
                     passed = False
                     detail = f"Missing expected {expected}; observed {observed}"
         else:
-            detail = "expected⊆observed" if passed else f"expected={expected} observed={observed}"
+            detail = "expected<=observed" if passed else f"expected={expected} observed={observed}"
 
         # Determinism case handled separately by tests; optional flag.
         if case.get("check_determinism"):

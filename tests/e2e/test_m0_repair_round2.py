@@ -411,8 +411,9 @@ def test_claims_pin_exact_verified_commit() -> None:
     """External-attestation contract: no self-referential package-tip SHA in-tree.
 
     Package commit/tree equality belongs to the external MANIFEST verifier.
-    In-tree status may be pending external audit with package_identity=externally_attested
-    and last_verified_commit null (must not invent a self-pin).
+    In-tree status may be pending external audit only with
+    package_identity=pending_external_attestation and last_verified_commit null
+    (must not invent either a self-pin or an external verdict).
     """
     ms = json.loads((ROOT / "MISSION_STATE.json").read_text(encoding="utf-8"))
     text = (ROOT / "CLAIMS.md").read_text(encoding="utf-8")
@@ -425,9 +426,9 @@ def test_claims_pin_exact_verified_commit() -> None:
         "M0_BLOCKED",
     }
     if status == "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT":
-        assert ms.get("package_identity") == "externally_attested"
+        assert ms.get("package_identity") == "pending_external_attestation"
         # Self-referential SHA inside the same commit is forbidden / not required
         if sha is not None:
             assert isinstance(sha, str) and len(sha) == 40
         assert "pending pin" not in text_l
-        assert "externally attested" in text_l or "externally_attested" in text_l
+        assert "pending_external_attestation" in text_l

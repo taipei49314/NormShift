@@ -1,0 +1,626 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normshift.dev/schemas/package-manifest-v1.schema.json",
+  "title": "NormShift exact-subject package manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "run_id",
+    "package_version",
+    "package_commit",
+    "package_tree",
+    "repository",
+    "timestamps",
+    "environment",
+    "status",
+    "m1",
+    "m2",
+    "working_directory_policy",
+    "artifacts",
+    "logs",
+    "files",
+    "commands",
+    "counts",
+    "matrices",
+    "archive",
+    "bundle",
+    "determinism",
+    "replay",
+    "sbom",
+    "checks",
+    "known_limitations",
+    "unclaimed_scopes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "normshift-package-manifest/v1"
+    },
+    "milestone": {
+      "const": "M0"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "package_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[A-Za-z0-9._+-]*)?$"
+    },
+    "package_commit": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "package_tree": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "default_branch", "dirty"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://github\\.com/taipei49314/NormShift(?:\\.git)?$"
+        },
+        "default_branch": {
+          "const": "master"
+        },
+        "dirty": {
+          "const": false
+        }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_at", "finished_at"],
+      "properties": {
+        "started_at": {
+          "$ref": "#/$defs/utc_timestamp"
+        },
+        "finished_at": {
+          "$ref": "#/$defs/utc_timestamp"
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os",
+        "architecture",
+        "python",
+        "uv",
+        "git",
+        "build_frontend",
+        "build_backend",
+        "source_date_epoch",
+        "gate_state_policy",
+        "normshift"
+      ],
+      "properties": {
+        "os": {"type": "string", "minLength": 1, "maxLength": 256},
+        "architecture": {"type": "string", "minLength": 1, "maxLength": 128},
+        "python": {"type": "string", "minLength": 1, "maxLength": 128},
+        "uv": {"type": "string", "minLength": 1, "maxLength": 128},
+        "git": {"type": "string", "minLength": 1, "maxLength": 128},
+        "build_frontend": {"type": "string", "minLength": 1, "maxLength": 128},
+        "build_backend": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["module", "distribution", "version"],
+          "properties": {
+            "module": {"const": "hatchling.build"},
+            "distribution": {"const": "hatchling"},
+            "version": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)+$"}
+          }
+        },
+        "source_date_epoch": {"type": "string", "pattern": "^[1-9][0-9]{8,11}$"},
+        "gate_state_policy": {"const": "ephemeral_outside_repository"},
+        "normshift": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["m0", "m1", "m2", "release"],
+      "properties": {
+        "m0": {"const": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT"},
+        "m1": {"const": "EXPERIMENTAL_NOT_ADJUDICATED"},
+        "m2": {"const": "EXPERIMENTAL_NOT_ADJUDICATED"},
+        "release": {"const": "BLOCKED"}
+      }
+    },
+    "m1": {"$ref": "#/$defs/not_adjudicated_scope"},
+    "m2": {"$ref": "#/$defs/not_adjudicated_scope"},
+    "working_directory_policy": {
+      "const": "clean_exact_commit_repository_root"
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle",
+        "source_zip",
+        "wheel",
+        "sdist",
+        "sbom",
+        "checksums",
+        "audit_contract",
+        "manifest_schema"
+      ],
+      "properties": {
+        "bundle": {"$ref": "#/$defs/file_record"},
+        "source_zip": {"$ref": "#/$defs/file_record"},
+        "wheel": {"$ref": "#/$defs/file_record"},
+        "sdist": {"$ref": "#/$defs/file_record"},
+        "sbom": {"$ref": "#/$defs/file_record"},
+        "checksums": {"$ref": "#/$defs/file_record"},
+        "audit_contract": {"$ref": "#/$defs/file_record"},
+        "manifest_schema": {"$ref": "#/$defs/file_record"}
+      }
+    },
+    "logs": {
+      "$ref": "#/$defs/file_record_map"
+    },
+    "files": {
+      "$ref": "#/$defs/file_record_map"
+    },
+    "commands": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/command_record"
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pytest", "benchmark", "measure"],
+      "properties": {
+        "pytest": {"$ref": "#/$defs/pytest_counts"},
+        "benchmark": {"$ref": "#/$defs/case_counts"},
+        "measure": {"$ref": "#/$defs/measure_counts"}
+      }
+    },
+    "matrices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["r4_r5"],
+      "properties": {
+        "r4_r5": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["log", "junit_file", "cases"],
+          "properties": {
+            "log": {"$ref": "#/$defs/record_id"},
+            "junit_file": {"$ref": "#/$defs/record_id"},
+            "cases": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 512,
+              "items": {"$ref": "#/$defs/matrix_case"}
+            }
+          }
+        }
+      }
+    },
+    "archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prefix",
+        "tracked_file_count",
+        "archive_file_count",
+        "missing_count",
+        "extra_count",
+        "duplicate_count",
+        "unsafe_count",
+        "case_collision_count",
+        "blob_equality"
+      ],
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}/$"
+        },
+        "tracked_file_count": {"type": "integer", "minimum": 1},
+        "archive_file_count": {"type": "integer", "minimum": 1},
+        "missing_count": {"const": 0},
+        "extra_count": {"const": 0},
+        "duplicate_count": {"const": 0},
+        "unsafe_count": {"const": 0},
+        "case_collision_count": {"const": 0},
+        "blob_equality": {"const": true}
+      }
+    },
+    "bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head", "tree", "fsck"],
+      "properties": {
+        "head": {"$ref": "#/$defs/git_oid"},
+        "tree": {"$ref": "#/$defs/git_oid"},
+        "fsck": {"const": true}
+      }
+    },
+    "determinism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_json", "report_markdown", "metrics"],
+      "properties": {
+        "report_json": {"$ref": "#/$defs/determinism_record"},
+        "report_markdown": {"$ref": "#/$defs/determinism_record"},
+        "metrics": {"$ref": "#/$defs/determinism_record"}
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_path", "source_root", "expected_scope"],
+      "properties": {
+        "report_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^\\u0000]+$"
+        },
+        "source_root": {"const": "."},
+        "expected_scope": {"const": "FULL"}
+      }
+    },
+    "sbom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "spec_version",
+        "generator",
+        "generator_argv",
+        "validator",
+        "lockfile_sha256",
+        "root",
+        "inventory",
+        "distribution_requirements",
+        "runtime_requirements_file"
+      ],
+      "properties": {
+        "format": {"const": "CycloneDX"},
+        "spec_version": {"const": "1.5"},
+        "generator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": {"const": "uv"},
+            "version": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        },
+        "generator_argv": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {"type": "string", "minLength": 1, "maxLength": 2048}
+        },
+        "lockfile_sha256": {"$ref": "#/$defs/sha256"},
+        "validator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version", "mode"],
+          "properties": {
+            "name": {"const": "cyclonedx-python-lib"},
+            "version": {"const": "11.11.0"},
+            "mode": {"const": "strict-offline-1.5"}
+          }
+        },
+        "root": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": {"const": "normshift"},
+            "version": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        },
+        "inventory": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "source"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1, "maxLength": 256},
+              "version": {"type": "string", "minLength": 1, "maxLength": 256},
+              "source": {"type": "string", "minLength": 1, "maxLength": 2048}
+            }
+          }
+        },
+        "distribution_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {"type": "string", "minLength": 1, "maxLength": 2048}
+        },
+        "runtime_requirements_file": {"$ref": "#/$defs/record_id"}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relocation_verify",
+        "extracted_archive_verify",
+        "wheel_smoke",
+        "sdist_smoke"
+      ],
+      "properties": {
+        "relocation_verify": {"const": true},
+        "extracted_archive_verify": {"const": true},
+        "wheel_smoke": {"const": true},
+        "sdist_smoke": {"const": true}
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"type": "string", "minLength": 1, "maxLength": 2048}
+    },
+    "unclaimed_scopes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"type": "string", "minLength": 1, "maxLength": 2048}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "utc_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "file_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "size"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^\\u0000]+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size": {"type": "integer", "minimum": 0, "maximum": 1099511627776}
+      }
+    },
+    "file_record_map": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 4096,
+      "propertyNames": {"$ref": "#/$defs/record_id"},
+      "additionalProperties": {"$ref": "#/$defs/file_record"}
+    },
+    "command_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "gate",
+        "argv",
+        "cwd",
+        "started_at",
+        "finished_at",
+        "required",
+        "exit_code",
+        "log"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/record_id"},
+        "gate": {
+          "enum": [
+            "dependency_sync",
+            "ruff",
+            "mypy",
+            "pytest",
+            "benchmark",
+            "measure",
+            "diff",
+            "verify",
+            "r4_r5",
+            "bundle",
+            "source_archive",
+            "build",
+            "sbom",
+            "relocation_verify",
+            "extracted_archive_verify",
+            "wheel_smoke",
+            "sdist_smoke",
+            "package_verify",
+            "other"
+          ]
+        },
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {"type": "string", "minLength": 1, "maxLength": 4096}
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "started_at": {"$ref": "#/$defs/utc_timestamp"},
+        "finished_at": {"$ref": "#/$defs/utc_timestamp"},
+        "required": {"const": true},
+        "exit_code": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+        "log": {"$ref": "#/$defs/record_id"}
+      }
+    },
+    "pytest_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collected",
+        "passed",
+        "failed",
+        "skipped",
+        "xfailed",
+        "xpassed",
+        "errors",
+        "junit_file"
+      ],
+      "properties": {
+        "collected": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "skipped": {"type": "integer", "minimum": 0},
+        "xfailed": {"type": "integer", "minimum": 0},
+        "xpassed": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "junit_file": {"$ref": "#/$defs/record_id"}
+      }
+    },
+    "case_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed", "cases"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "passed"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1, "maxLength": 512},
+              "passed": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    },
+    "measure_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed", "cases", "metrics"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "passed"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1, "maxLength": 512},
+              "passed": {"type": "boolean"}
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["extraction", "alignment", "classification"],
+          "properties": {
+            "extraction": {"$ref": "#/$defs/prf_metrics"},
+            "alignment": {"$ref": "#/$defs/prf_metrics"},
+            "classification": {"$ref": "#/$defs/prf_metrics"}
+          }
+        }
+      }
+    },
+    "prf_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "recall", "f1"],
+      "properties": {
+        "precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "recall": {"type": "number", "minimum": 0, "maximum": 1},
+        "f1": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "not_adjudicated_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptance_evaluated",
+        "reason",
+        "corpus_refs",
+        "ground_truth_refs",
+        "per_class"
+      ],
+      "properties": {
+        "acceptance_evaluated": {"const": false},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "corpus_refs": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {"$ref": "#/$defs/record_id"}
+        },
+        "ground_truth_refs": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {"$ref": "#/$defs/record_id"}
+        },
+        "per_class": {
+          "type": "object",
+          "maxProperties": 256,
+          "propertyNames": {"$ref": "#/$defs/record_id"},
+          "additionalProperties": {"$ref": "#/$defs/prf_metrics"}
+        }
+      }
+    },
+    "matrix_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "expected_exit", "actual_exit_code"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "expected_exit": {"enum": ["zero", "nonzero"]},
+        "actual_exit_code": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "determinism_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first", "second", "equal"],
+      "properties": {
+        "first": {"$ref": "#/$defs/record_id"},
+        "second": {"$ref": "#/$defs/record_id"},
+        "equal": {"const": true}
+      }
+    }
+  }
+}

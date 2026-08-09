@@ -5,7 +5,9 @@ Implementer is **not** Claim / Evidence / Audit / Release Authority.
 ## Package identity terminology
 
 - **package_commit / package_tree**: recorded only in the **external** package MANIFEST / bundle HEAD.
-- **package_identity = externally_attested**: package equality is attested outside the tree.
+- **package_identity = pending_external_attestation**: no package equality claim exists yet.
+- **package_identity = externally_attested** is permitted only after a detached audit
+  binds one frozen authoritative manifest to its exact package bytes.
 - One authoritative external MANIFEST per package (no unlinked re-export overlay).
 
 ## Milestone status

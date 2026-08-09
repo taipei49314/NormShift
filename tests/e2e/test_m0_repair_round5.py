@@ -555,4 +555,4 @@ def test_no_unlinked_reexport_overlay_manifest() -> None:
         "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
         "M0_BLOCKED",
     }
-    assert ms.get("package_identity") == "externally_attested"
+    assert ms.get("package_identity") == "pending_external_attestation"

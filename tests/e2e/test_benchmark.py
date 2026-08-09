@@ -16,3 +16,13 @@ def test_ground_truth_benchmark() -> None:
         f"{r.case_id}: {r.detail} exp={r.expected} obs={r.observed}" for r in failed
     )
     assert report.ok, msg
+
+
+def test_benchmark_cli_output_is_cp1252_safe() -> None:
+    """Benchmark progress must render on the default non-UTF-8 Windows stream."""
+    report = run_benchmark(ROOT / "benchmark" / "ground_truth.jsonl")
+    rendered = [f"[PASS] {result.case_id}: {result.detail}" for result in report.results]
+    rendered.append(f"benchmark: {report.passed}/{report.total} passed, {report.failed} failed")
+
+    for line in rendered:
+        line.encode("cp1252")

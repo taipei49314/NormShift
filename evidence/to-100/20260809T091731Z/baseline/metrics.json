@@ -1,0 +1,655 @@
+{
+  "alignment": {
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "case_count": 15,
+  "case_results": [
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "01_should_to_must_strengthened",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "STRENGTHENED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "STRENGTHENED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "02_must_to_should_weakened",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "WEAKENED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "WEAKENED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "03_must_to_must_not_polarity_flip",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "POLARITY_FLIP"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "POLARITY_FLIP"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 2,
+        "precision": 1.0,
+        "pred_positive_pairs": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "case_id": "04_section_move_moved",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "MOVED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "MOVED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 4,
+        "precision": 1.0,
+        "pred_count": 4,
+        "recall": 1.0,
+        "true_positives": 4
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "05_editorial_only",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "EDITORIAL"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "EDITORIAL"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "06_added_clause",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "ADDED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "ADDED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 3,
+        "precision": 1.0,
+        "pred_count": 3,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "07_removed_clause",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "REMOVED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "REMOVED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 3,
+        "precision": 1.0,
+        "pred_count": 3,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "08_exception_added",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "EXCEPTION_ADDED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "EXCEPTION_ADDED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "09_condition_added",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "CONDITION_ADDED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "CONDITION_ADDED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 0,
+        "precision": 1.0,
+        "pred_positive_pairs": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "case_id": "10_ignore_code_pre_example",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 0,
+        "precision": 1.0,
+        "pred_count": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 0,
+        "precision": 1.0,
+        "pred_positive_pairs": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "case_id": "11_mustard_not_must",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 0,
+        "precision": 1.0,
+        "pred_count": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 0,
+        "precision": 1.0,
+        "pred_positive_pairs": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "case_id": "12_not_required_not_must_not",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 0,
+        "precision": 1.0,
+        "pred_count": 0,
+        "recall": 1.0,
+        "true_positives": 0
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 3,
+        "precision": 1.0,
+        "pred_positive_pairs": 3,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      "case_id": "13_whatwg_lowercase",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "UNCHANGED",
+          "UNCHANGED",
+          "UNCHANGED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "UNCHANGED",
+          "UNCHANGED",
+          "UNCHANGED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 6,
+        "precision": 1.0,
+        "pred_count": 6,
+        "recall": 1.0,
+        "true_positives": 6
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 2,
+        "precision": 1.0,
+        "pred_positive_pairs": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "case_id": "14_similar_not_cross_matched",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "UNCHANGED",
+          "UNCHANGED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "UNCHANGED",
+          "UNCHANGED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 4,
+        "precision": 1.0,
+        "pred_count": 4,
+        "recall": 1.0,
+        "true_positives": 4
+      },
+      "passed": true
+    },
+    {
+      "alignment": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_positive_pairs": 1,
+        "precision": 1.0,
+        "pred_positive_pairs": 1,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "case_id": "15_relocation_not_remove_add",
+      "classification": {
+        "case_passed": true,
+        "exact_pass": true,
+        "expected": [
+          "MOVED"
+        ],
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "observed": [
+          "MOVED"
+        ],
+        "permissive_pass": true,
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      },
+      "detail": "ok",
+      "extraction": {
+        "f1": 1.0,
+        "false_negatives": 0,
+        "false_positives": 0,
+        "gold_count": 2,
+        "precision": 1.0,
+        "pred_count": 2,
+        "recall": 1.0,
+        "true_positives": 2
+      },
+      "passed": true
+    }
+  ],
+  "cases_failed": 0,
+  "cases_passed": 15,
+  "classification": {
+    "case_pass_rate": 1.0,
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "extraction": {
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "ground_truth_path": "benchmark/measure_suite.jsonl",
+  "ground_truth_sha256": "310de3f7b87d15c4ed131a8a1e131b55461e06fc0645b523cf2a8ec055cf5b1c",
+  "integrity": {
+    "alg": "sha256",
+    "content_sha256": "ab7dc54513f1d94c19b43d07bfd5b824b078f0ec648ff6c0c946e74be1170066"
+  },
+  "schema_version": "1.0.0",
+  "tool_version": "0.3.2"
+}

@@ -38,6 +38,15 @@ def test_cli_module_help() -> None:
     assert "benchmark" in result.stdout
 
 
+def test_cli_version_matches_package() -> None:
+    from importlib.metadata import version
+
+    result = _run("--version")
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.strip() == version("normshift")
+
+
 def test_extract_diff_verify_determinism_tamper(tmp_path: Path) -> None:
     from typer.testing import CliRunner
 
