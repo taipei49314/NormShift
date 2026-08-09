@@ -15,10 +15,36 @@ concurrency:
 
 jobs:
   deterministic-gates:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    name: deterministic-gates (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUTF8: "1"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Keep environments and caches outside the checkout
+        shell: pwsh
+        run: |
+          $externalState = @{
+            UV_PROJECT_ENVIRONMENT = Join-Path $env:RUNNER_TEMP "normshift-project-env"
+            UV_CACHE_DIR = Join-Path $env:RUNNER_TEMP "uv-cache"
+            HYPOTHESIS_STORAGE_DIRECTORY = Join-Path $env:RUNNER_TEMP "hypothesis"
+            MYPY_CACHE_DIR = Join-Path $env:RUNNER_TEMP "mypy-cache"
+            RUFF_CACHE_DIR = Join-Path $env:RUNNER_TEMP "ruff-cache"
+          }
+          foreach ($item in $externalState.GetEnumerator()) {
+            Add-Content -Path $env:GITHUB_ENV -Value "$($item.Key)=$($item.Value)" -Encoding utf8
+          }
+
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: "0.12.2"
@@ -35,52 +61,253 @@ jobs:
         run: uv run mypy src
 
       - name: Build distributions
-        run: uv build --out-dir "$RUNNER_TEMP/dist"
-
-      - name: Smoke-test built wheel
-        shell: bash
+        shell: pwsh
         run: |
-          set -euo pipefail
-          smoke_env="$RUNNER_TEMP/normshift-wheel-smoke"
-          uv venv "$smoke_env" --python 3.12
-          uv pip install --python "$smoke_env/bin/python" "$RUNNER_TEMP"/dist/*.whl
-          uv pip check --python "$smoke_env/bin/python"
+          $ErrorActionPreference = "Stop"
+          $dist = Join-Path $env:RUNNER_TEMP "dist"
+          uv build --out-dir $dist --no-create-gitignore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-          cd "$RUNNER_TEMP"
-          "$smoke_env/bin/python" - <<'PY'
-          from importlib.metadata import version
+      - name: Smoke-test built wheel and sdist
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          function Assert-NativeSuccess {
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+          $dist = Join-Path $env:RUNNER_TEMP "dist"
+          $wheels = @(Get-ChildItem -LiteralPath $dist -Filter "*.whl")
+          $sdists = @(Get-ChildItem -LiteralPath $dist -Filter "*.tar.gz")
+          if ($wheels.Count -ne 1) { throw "expected exactly one built wheel" }
+          if ($sdists.Count -ne 1) { throw "expected exactly one built sdist" }
+
+          function Test-Distribution {
+            param(
+              [System.IO.FileInfo] $Artifact,
+              [string] $Label
+            )
+            $smokeEnv = Join-Path $env:RUNNER_TEMP "normshift-$Label-smoke"
+            uv venv $smokeEnv --python 3.12
+            Assert-NativeSuccess
+            if ($env:RUNNER_OS -eq "Windows") {
+              $python = Join-Path $smokeEnv "Scripts/python.exe"
+              $entry = Join-Path $smokeEnv "Scripts/normshift.exe"
+            } else {
+              $python = Join-Path $smokeEnv "bin/python"
+              $entry = Join-Path $smokeEnv "bin/normshift"
+            }
+            uv pip install --python $python $Artifact.FullName
+            Assert-NativeSuccess
+            uv pip check --python $python
+            Assert-NativeSuccess
+
+            Push-Location $env:RUNNER_TEMP
+            try {
+              @'
+          from importlib.metadata import entry_points, version
           from importlib.resources import files
 
           import normshift
 
+          assert version("normshift") == normshift.__version__
+          scripts = {item.name: item.value for item in entry_points(group="console_scripts")}
+          assert scripts.get("normshift") == "normshift.cli:app"
           schemas = files("normshift.schemas")
-          for name in ("change.schema.json", "report.schema.json", "requirement.schema.json"):
+          for name in (
+              "change.schema.json",
+              "report.schema.json",
+              "requirement.schema.json",
+              "package_manifest_v1.schema.json",
+              "command_log_v1.schema.json",
+          ):
               assert schemas.joinpath(name).is_file(), name
           print(f"normshift={version('normshift')} module={normshift.__file__}")
-          PY
-          "$smoke_env/bin/normshift" --help
+          '@ | & $python -
+              Assert-NativeSuccess
+              & $entry --version
+              Assert-NativeSuccess
+              & $entry --help
+              Assert-NativeSuccess
+            } finally {
+              Pop-Location
+            }
+          }
 
-      - name: Test
-        run: uv run pytest -q
+          Test-Distribution -Artifact $wheels[0] -Label "wheel"
+          Test-Distribution -Artifact $sdists[0] -Label "sdist"
+
+      - name: Test with no non-pass outcomes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $junit = Join-Path $env:RUNNER_TEMP "pytest.xml"
+          $terminal = Join-Path $env:RUNNER_TEMP "pytest.log"
+          uv run pytest -q -ra --color=no -p no:cacheprovider "--junitxml=$junit" 2>&1 |
+            Tee-Object -FilePath $terminal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $env:NORMSHIFT_CI_JUNIT = $junit
+          $env:NORMSHIFT_CI_PYTEST_LOG = $terminal
+          @'
+          import os
+          from pathlib import Path
+
+          from normshift.audit.package_build import _parse_junit, _require_clean_pytest
+
+          junit = Path(os.environ["NORMSHIFT_CI_JUNIT"])
+          terminal = Path(os.environ["NORMSHIFT_CI_PYTEST_LOG"]).read_text(
+              encoding="utf-8", errors="replace"
+          )
+          summary = _parse_junit(junit, terminal)
+          _require_clean_pytest(summary, "cross-platform CI")
+          print(summary.counts)
+          '@ | uv run python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: M0 R4 and R5 regression matrices
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $junit = Join-Path $env:RUNNER_TEMP "m0-r4-r5.xml"
+          $terminal = Join-Path $env:RUNNER_TEMP "m0-r4-r5.log"
+          uv run pytest -q -ra --color=no -p no:cacheprovider "--junitxml=$junit" `
+            tests/e2e/test_m0_repair_round4.py `
+            tests/e2e/test_m0_repair_round5.py 2>&1 | Tee-Object -FilePath $terminal
+          $pytestExit = $LASTEXITCODE
+          if ($pytestExit -ne 0) { exit $pytestExit }
+
+          $env:NORMSHIFT_CI_JUNIT = $junit
+          $env:NORMSHIFT_CI_PYTEST_LOG = $terminal
+          @'
+          import os
+          from pathlib import Path
+
+          from normshift.audit.package_build import _parse_junit, _require_clean_pytest
+
+          junit = Path(os.environ["NORMSHIFT_CI_JUNIT"])
+          terminal = Path(os.environ["NORMSHIFT_CI_PYTEST_LOG"]).read_text(
+              encoding="utf-8", errors="replace"
+          )
+          summary = _parse_junit(junit, terminal)
+          _require_clean_pytest(summary, "M0 R4/R5")
+          print(summary.counts)
+          '@ | uv run python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: M0 benchmark
-        run: uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
+        shell: pwsh
+        run: |
+          $terminal = Join-Path $env:RUNNER_TEMP "m0-benchmark.log"
+          uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl 2>&1 |
+            Tee-Object -FilePath $terminal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: M0 deterministic evidence replay
-        shell: bash
+        shell: pwsh
         run: |
-          set -euo pipefail
-          evidence_dir="$RUNNER_TEMP/normshift-m0"
-          mkdir -p "$evidence_dir"
+          $ErrorActionPreference = "Stop"
+          function Assert-NativeSuccess {
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
-          uv run normshift measure \
-            --ground-truth benchmark/measure_suite.jsonl \
-            --out "$evidence_dir/metrics.json"
-          uv run normshift diff \
-            fixtures/synthetic/spec-v1.html \
-            fixtures/synthetic/spec-v2.html \
-            --source-root . \
-            --profile rfc2119 \
-            --json "$evidence_dir/report.json" \
-            --markdown "$evidence_dir/report.md"
-          uv run normshift verify "$evidence_dir/report.json" --source-root .
+          $evidenceRoot = Join-Path $env:RUNNER_TEMP "normshift-m0"
+          foreach ($run in @("run1", "run2")) {
+            $evidenceDir = Join-Path $evidenceRoot $run
+            New-Item -ItemType Directory -Force -Path $evidenceDir | Out-Null
+            $metrics = Join-Path $evidenceDir "metrics.json"
+            $reportJson = Join-Path $evidenceDir "report.json"
+            $reportMarkdown = Join-Path $evidenceDir "report.md"
+
+            uv run normshift measure `
+              --ground-truth benchmark/measure_suite.jsonl `
+              --out $metrics
+            Assert-NativeSuccess
+            uv run normshift diff `
+              fixtures/synthetic/spec-v1.html `
+              fixtures/synthetic/spec-v2.html `
+              --source-root . `
+              --profile rfc2119 `
+              --json $reportJson `
+              --markdown $reportMarkdown
+            Assert-NativeSuccess
+            uv run normshift verify $reportJson --source-root .
+            Assert-NativeSuccess
+          }
+
+          $env:NORMSHIFT_CI_EVIDENCE = $evidenceRoot
+          @'
+          import os
+          from hashlib import sha256
+          from pathlib import Path
+
+          root = Path(os.environ["NORMSHIFT_CI_EVIDENCE"])
+          for name in ("metrics.json", "report.json", "report.md"):
+              left = (root / "run1" / name).read_bytes()
+              right = (root / "run2" / name).read_bytes()
+              assert left == right, f"non-deterministic output: {name}"
+              print(f"{name} sha256={sha256(left).hexdigest()}")
+          '@ | uv run python -
+          Assert-NativeSuccess
+
+      - name: Export frozen CycloneDX SBOM
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $sbom = Join-Path $env:RUNNER_TEMP "normshift-sbom.cdx.json"
+          uv export --preview-features sbom-export --frozen --no-dev --no-editable `
+            --format cyclonedx1.5 --output-file $sbom
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:NORMSHIFT_CI_SBOM = $sbom
+          @'
+          import json
+          import os
+          import tomllib
+          from pathlib import Path
+
+          from cyclonedx.schema import SchemaVersion
+          from cyclonedx.validation.json import JsonStrictValidator
+
+          sbom = Path(os.environ["NORMSHIFT_CI_SBOM"])
+          raw = sbom.read_text(encoding="utf-8")
+          assert JsonStrictValidator(SchemaVersion.V1_5).validate_str(raw) is None
+          payload = json.loads(raw)
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]
+          root = payload["metadata"]["component"]
+          assert payload["bomFormat"] == "CycloneDX"
+          assert payload["specVersion"] == "1.5"
+          assert (root["name"], root["version"]) == (project["name"], project["version"])
+          assert payload["components"]
+          assert payload["dependencies"]
+          print(f"components={len(payload['components'])} dependencies={len(payload['dependencies'])}")
+          '@ | uv run python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Confirm exact checkout stayed clean
+        shell: pwsh
+        run: |
+          git diff --check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $state = @(git status --porcelain=v1 --untracked-files=all --ignored)
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($state.Count -ne 0) {
+            $state | ForEach-Object { Write-Error $_ }
+            throw "CI gates left tracked, untracked, or ignored state in the checkout"
+          }
+
+      - name: Retain cross-platform review evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: m0-ci-${{ matrix.os }}-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/dist/*
+            ${{ runner.temp }}/pytest.xml
+            ${{ runner.temp }}/pytest.log
+            ${{ runner.temp }}/m0-r4-r5.xml
+            ${{ runner.temp }}/m0-r4-r5.log
+            ${{ runner.temp }}/m0-benchmark.log
+            ${{ runner.temp }}/normshift-m0/**
+            ${{ runner.temp }}/normshift-sbom.cdx.json
+          if-no-files-found: warn
+          retention-days: 90

@@ -367,6 +367,22 @@ def test_junit_rejects_xpass_from_pytest_terminal_summary(tmp_path: Path) -> Non
         package_build._require_clean_pytest(summary, "pytest")
 
 
+def test_junit_rejects_class_xpass_with_flattened_classname(tmp_path: Path) -> None:
+    junit = tmp_path / "class-xpass.xml"
+    junit.write_text(
+        '<testsuite><testcase classname="tests.x.TestFeature" name="test_y" /></testsuite>',
+        encoding="utf-8",
+    )
+    terminal = "XPASS tests/x.py::TestFeature::test_y reason\n"
+
+    summary = package_build._parse_junit(junit, terminal)
+
+    assert summary.counts["passed"] == 0
+    assert summary.counts["xpassed"] == 1
+    with pytest.raises(PackageBuildError, match="xpassed"):
+        package_build._require_clean_pytest(summary, "pytest")
+
+
 def test_benchmark_parser_requires_exact_17_cases() -> None:
     case_lines = [f"[PASS] case-{index:02}: ok" for index in range(17)]
     output = "\n".join([*case_lines, "benchmark: 17/17 passed, 0 failed"])
