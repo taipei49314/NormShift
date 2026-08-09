@@ -1,0 +1,18 @@
+command=uv run normshift benchmark --ground-truth benchmark/ground_truth.jsonl
+exit_code=1
+platform=Windows NT 10.0.26200.0
+python=CPython 3.12.13
+stdout_encoding=cp1252
+
+Traceback root:
+  src/normshift/cli.py:295 in benchmark_cmd
+    typer.echo(f"[PASS] {r.case_id}: {r.detail}")
+  encodings/cp1252.py:19 in encode
+    codecs.charmap_encode(input, self.errors, encoding_table)[0]
+
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2286' in position 47:
+character maps to <undefined>
+
+The inherited command computed benchmark cases but failed before printing the
+summary. The subsequent regression test reproduced the exact unencodable detail
+string `expected\u2286observed` with strict cp1252 encoding before the repair.

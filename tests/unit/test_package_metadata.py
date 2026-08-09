@@ -1,0 +1,32 @@
+"""Package identity and reproducible build metadata tests."""
+
+from __future__ import annotations
+
+import re
+import tomllib
+from pathlib import Path
+
+from normshift import EXTRACTOR_VERSION, __version__
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_package_versions_are_consistent() -> None:
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    package_version = project["project"]["version"]
+
+    assert package_version == __version__ == EXTRACTOR_VERSION
+
+
+def test_build_backend_is_exactly_pinned() -> None:
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    requirements = project["build-system"]["requires"]
+
+    assert requirements == ["hatchling==1.31.0"]
+    assert re.fullmatch(r"hatchling==\d+\.\d+\.\d+", requirements[0])
+
+
+def test_packaged_audit_verifier_declares_requirement_parser_dependency() -> None:
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    assert "packaging>=24.0" in project["project"]["dependencies"]

@@ -1,30 +1,37 @@
 {
-  "current_objective": "M0 repair round 5 package subject ready for external re-audit",
-  "current_hypothesis": "Canonical payload bytes + PurePosix portable-ref + clause-level historical close R4 P0 blockers",
+  "current_objective": "Build and independently audit one exact-SHA M0 authoritative package",
+  "current_hypothesis": "R5 behavior plus strict package tooling can close the remaining M0 trust gate without expanding M1/M2",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
-  "package_identity": "externally_attested",
+  "package_identity": "pending_external_attestation",
   "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q #180 passed",
+    "uv run pytest -q -ra #262 passed",
+    "uv run pytest tests/e2e/test_m0_repair_round4.py tests/e2e/test_m0_repair_round5.py #72 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",
     "uv run normshift diff --source-root . #0",
-    "uv run normshift verify --source-root . #0 verification_scope=FULL"
+    "uv run normshift verify --source-root . #0 verification_scope=FULL",
+    "uv build #wheel+sdist",
+    "uv export --frozen --no-dev --no-editable --format cyclonedx1.5 #strict schema PASS"
   ],
   "verified_artifacts": [
     "docs/EXTERNAL_AUDIT_R4.md",
     "docs/GROK_M0_REPAIR_ROUND5.md",
     "docs/M0_REPAIR_ROUND5.md",
+    "docs/M0_AUDIT_CONTRACT.md",
     "evidence/m0-repair-round5/",
+    "schemas/package_manifest_v1.schema.json",
+    "schemas/command_log_v1.schema.json",
+    "scripts/build_authoritative_package.py",
     "scripts/external_package_verify.py"
   ],
   "known_failures": [],
   "unresolved_risks": [
-    "Awaiting external re-audit of round-5 package",
+    "Awaiting exact-SHA authoritative package construction and detached clean-room re-audit",
     "Historical clause heuristics are not full NL understanding",
     "M1/M2 experimental only"
   ],
-  "next_action": "STOP. External re-audit of R5 package only. No post-gate commits."
+  "next_action": "Merge the M0 package-tooling PR, build from the exact merged SHA, and run detached clean-room re-audit."
 }
