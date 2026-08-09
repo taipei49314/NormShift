@@ -216,6 +216,58 @@ def test_safe_zip_name_rejects_literal_backslash() -> None:
         pv._safe_zip_name("NormShift-test/a\\b", directory=False)
 
 
+def test_source_zip_rejects_raw_header_backslash_before_windows_normalization(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo, commit, tree, _, source_zip, prefix = _git_fixture(tmp_path)
+    original = f"{prefix}.gitattributes".encode("ascii")
+    tampered = f"{prefix.rstrip('/')}\\.gitattributes".encode("ascii")
+    payload = source_zip.read_bytes()
+    assert len(original) == len(tampered)
+    assert payload.count(original) == 2  # local header + central directory
+    source_zip.write_bytes(payload.replace(original, tampered))
+    manifest = {
+        "package_commit": commit,
+        "package_tree": tree,
+        "archive": _archive_claim(repo, commit, source_zip, prefix),
+    }
+    # Exercise the Windows ZipInfo normalization path on every CI platform.
+    monkeypatch.setattr(zipfile.os, "sep", "\\")
+
+    state = pv._State()
+    pv._verify_source_zip(repo, source_zip, manifest, state)
+
+    assert state.error_count > 0
+    assert any("backslash" in error for error in state.errors)
+    destination = tmp_path / "must-not-extract"
+    destination.mkdir()
+    with pytest.raises(ValueError, match="backslash"):
+        pv._extract_preflighted_source(source_zip, destination, prefix)
+    with pytest.raises(package_build.PackageBuildError, match="unsafe_count"):
+        package_build._inspect_source_archive(source_zip, repo, commit, prefix)
+
+
+def test_source_zip_rejects_local_and_central_filename_mismatch(tmp_path: Path) -> None:
+    repo, commit, tree, _, source_zip, prefix = _git_fixture(tmp_path)
+    original = f"{prefix}.gitattributes".encode("ascii")
+    tampered = f"{prefix.rstrip('/')}\\.gitattributes".encode("ascii")
+    payload = source_zip.read_bytes()
+    assert payload.count(original) == 2
+    source_zip.write_bytes(payload.replace(original, tampered, 1))
+    manifest = {
+        "package_commit": commit,
+        "package_tree": tree,
+        "archive": _archive_claim(repo, commit, source_zip, prefix),
+    }
+
+    state = pv._State()
+    pv._verify_source_zip(repo, source_zip, manifest, state)
+
+    assert state.error_count > 0
+    assert any("local ZIP header" in error for error in state.errors)
+
+
 def test_source_zip_accepts_and_extracts_canonical_root_directory(tmp_path: Path) -> None:
     repo, commit, tree, _, source_zip, prefix = _git_fixture(tmp_path)
     manifest = {
