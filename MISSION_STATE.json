@@ -7,7 +7,7 @@
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q -ra #265 passed",
+    "uv run pytest -q -ra #273 passed",
     "uv run pytest tests/e2e/test_m0_repair_round4.py tests/e2e/test_m0_repair_round5.py #72 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",
@@ -29,7 +29,8 @@
   ],
   "known_failures": [
     "Candidate d755e27f invalidated before attestation after a raw ZIP backslash false-success; fixed by PR #3",
-    "Candidate 063cd7e7 invalidated before attestation because its exact commit had no required macOS CI job"
+    "Candidate 063cd7e7 invalidated before attestation because its exact commit had no required macOS CI job; fixed by PR #4",
+    "Candidate 02e9a74c invalidated before attestation because the verifier did not canonicalize the optional Git remote .git suffix; fixed by PR #5"
   ],
   "unresolved_risks": [
     "Awaiting three-platform CI on the exact merged SHA, a new authoritative package, and detached clean-room re-audit",

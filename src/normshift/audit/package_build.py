@@ -300,7 +300,7 @@ def _normalize_repository_url(raw: str) -> str:
             "repository URL must be the public NormShift GitHub URL without credentials, "
             "port, query, or fragment"
         )
-    return f"https://github.com{parsed.path}"
+    return "https://github.com/taipei49314/NormShift"
 
 
 def _assert_default_branch_subject(repo: Path, default_branch: str, commit: str) -> None:

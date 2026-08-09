@@ -52,7 +52,7 @@ def test_repository_url_accepts_only_normshift_public_https_forms() -> None:
         "git@github.com:taipei49314/NormShift.git".replace(
             "git@github.com:", "https://github.com/"
         )
-    ) == "https://github.com/taipei49314/NormShift.git"
+    ) == "https://github.com/taipei49314/NormShift"
 
 
 def test_default_branch_subject_requires_exact_remote_default_sha(

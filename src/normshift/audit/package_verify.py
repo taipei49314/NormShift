@@ -532,7 +532,10 @@ def _git(repo: Path, *args: str) -> str:
 def _normalized_git_remote(raw: str) -> str:
     if raw.startswith("git@github.com:"):
         raw = "https://github.com/" + raw.removeprefix("git@github.com:")
-    return raw.rstrip("/")
+    normalized = raw.rstrip("/")
+    if normalized.endswith(".git"):
+        normalized = normalized.removesuffix(".git")
+    return normalized
 
 
 def _verify_repo_and_bundle(
