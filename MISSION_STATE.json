@@ -7,7 +7,7 @@
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q -ra #262 passed",
+    "uv run pytest -q -ra #264 passed",
     "uv run pytest tests/e2e/test_m0_repair_round4.py tests/e2e/test_m0_repair_round5.py #72 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",

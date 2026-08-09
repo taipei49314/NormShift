@@ -731,20 +731,29 @@ def _inspect_source_archive(
     case_collision_count = 0
     archive_files: dict[str, zipfile.ZipInfo] = {}
     seen_names: set[str] = set()
-    casefold_names: set[str] = set()
+    casefold_names: dict[str, str] = {}
     with zipfile.ZipFile(source_zip) as archive:
         for info in archive.infolist():
-            if info.filename in seen_names:
+            original_name = info.orig_filename
+            if original_name in seen_names:
                 duplicate_count += 1
-            seen_names.add(info.filename)
-            folded = info.filename.casefold()
-            if folded in casefold_names and info.filename not in archive_files:
+            seen_names.add(original_name)
+            folded = original_name.casefold()
+            previous = casefold_names.get(folded)
+            if previous is not None and previous != original_name:
                 case_collision_count += 1
-            casefold_names.add(folded)
-            safe, relative = _safe_zip_member(info.filename, prefix)
+            else:
+                casefold_names[folded] = original_name
+            safe, relative = _safe_zip_member(original_name, prefix)
             mode = (info.external_attr >> 16) & 0xFFFF
             kind = stat.S_IFMT(mode)
             if not safe or kind not in {0, stat.S_IFREG, stat.S_IFDIR}:
+                unsafe_count += 1
+                continue
+            try:
+                with archive.open(info):
+                    pass
+            except (NotImplementedError, RuntimeError, zipfile.BadZipFile):
                 unsafe_count += 1
                 continue
             if relative is not None:

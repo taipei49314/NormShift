@@ -637,6 +637,16 @@ def _safe_zip_name(name: str, *, directory: bool) -> str:
     return candidate
 
 
+def _validate_zip_local_header(source: zipfile.ZipFile, info: zipfile.ZipInfo) -> None:
+    try:
+        with source.open(info):
+            pass
+    except (NotImplementedError, RuntimeError, zipfile.BadZipFile) as exc:
+        raise ValueError(
+            f"invalid local ZIP header for {info.orig_filename!r}: {exc}"
+        ) from exc
+
+
 def _git_tree(repo: Path, commit: str) -> dict[str, tuple[str, str]]:
     result = _run(["git", "-C", str(repo), "ls-tree", "-r", "-z", commit])
     if result.returncode != 0:
@@ -678,16 +688,17 @@ def _verify_source_zip(
                 raise ValueError(f"archive has more than {MAX_ZIP_MEMBERS} members")
             for info in infos:
                 kind = _zip_member_kind(info)
+                original_name = info.orig_filename
                 try:
-                    canonical = _safe_zip_name(info.filename, directory=kind == "directory")
+                    canonical = _safe_zip_name(original_name, directory=kind == "directory")
                 except ValueError as exc:
                     unsafe_count += 1
-                    state.fail("source_zip", f"unsafe member {info.filename!r}: {exc}")
+                    state.fail("source_zip", f"unsafe member {original_name!r}: {exc}")
                     continue
-                if info.filename in seen_names:
+                if original_name in seen_names:
                     duplicate_count += 1
-                    state.fail("source_zip", f"duplicate ZIP member: {info.filename!r}")
-                seen_names.add(info.filename)
+                    state.fail("source_zip", f"duplicate ZIP member: {original_name!r}")
+                seen_names.add(original_name)
                 folded = unicodedata.normalize("NFC", canonical).casefold()
                 previous = seen_casefold.get(folded)
                 if previous is not None and previous != canonical:
@@ -700,11 +711,17 @@ def _verify_source_zip(
                     seen_casefold[folded] = canonical
                 if kind == "special":
                     unsafe_count += 1
-                    state.fail("source_zip", f"symlink or special member: {info.filename!r}")
+                    state.fail("source_zip", f"symlink or special member: {original_name!r}")
                     continue
                 if info.flag_bits & 0x1:
                     unsafe_count += 1
-                    state.fail("source_zip", f"encrypted member: {info.filename!r}")
+                    state.fail("source_zip", f"encrypted member: {original_name!r}")
+                    continue
+                try:
+                    _validate_zip_local_header(source, info)
+                except ValueError as exc:
+                    unsafe_count += 1
+                    state.fail("source_zip", str(exc))
                     continue
                 prefix_root = prefix.rstrip("/")
                 is_root_directory = kind == "directory" and canonical == prefix_root
@@ -1835,13 +1852,15 @@ def _extract_preflighted_source(source_zip: Path, destination: Path, prefix: str
     with zipfile.ZipFile(source_zip) as source:
         for info in source.infolist():
             kind = _zip_member_kind(info)
-            canonical = _safe_zip_name(info.filename, directory=kind == "directory")
+            original_name = info.orig_filename
+            canonical = _safe_zip_name(original_name, directory=kind == "directory")
+            if kind == "special" or info.flag_bits & 0x1:
+                raise ValueError(f"archive became unsafe before extraction: {original_name!r}")
+            _validate_zip_local_header(source, info)
             prefix_root = prefix.rstrip("/")
             is_root_directory = kind == "directory" and canonical == prefix_root
-            if kind == "special" or (
-                not is_root_directory and not canonical.startswith(prefix_root + "/")
-            ):
-                raise ValueError(f"archive became unsafe before extraction: {info.filename!r}")
+            if not is_root_directory and not canonical.startswith(prefix_root + "/"):
+                raise ValueError(f"archive became unsafe before extraction: {original_name!r}")
         source.extractall(destination)
     root = destination / prefix.rstrip("/")
     if not root.is_dir():

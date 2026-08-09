@@ -67,7 +67,9 @@ is not a PASS.
    confirm exact HEAD and tree.
 4. Inspect `Source.zip` before extraction. Reject duplicate, ambiguous-case,
    backslash, rooted, traversal, symlink, special, extra, missing, or wrong-prefix
-   entries; compare every archived byte to the matching Git blob.
+   entries; validate original central-directory names before platform path
+   normalization, require matching local-header names, and compare every archived
+   byte to the matching Git blob.
 5. Run frozen dependency sync, Ruff, strict mypy, the complete pytest suite, all
    M0 R4/R5 regression modules, benchmark 17/17, measure 15/15, diff, and FULL
    verification.
