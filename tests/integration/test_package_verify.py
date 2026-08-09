@@ -146,7 +146,7 @@ def test_repository_identity_normalizes_ssh_origin_and_ignores_local_branch(
         "package_commit": commit,
         "package_tree": tree,
         "repository": {
-            "url": "https://github.com/taipei49314/NormShift.git",
+            "url": "https://github.com/taipei49314/NormShift",
             "default_branch": "master",
             "dirty": False,
         },
@@ -157,6 +157,77 @@ def test_repository_identity_normalizes_ssh_origin_and_ignores_local_branch(
     pv._verify_repo_and_bundle(repo, bundle, manifest, state)
 
     assert state.error_count == 0, state.errors
+
+
+@pytest.mark.parametrize(
+    ("remote_url", "manifest_url"),
+    [
+        (
+            "https://github.com/taipei49314/NormShift.git",
+            "https://github.com/taipei49314/NormShift",
+        ),
+        (
+            "https://github.com/taipei49314/NormShift",
+            "https://github.com/taipei49314/NormShift.git",
+        ),
+    ],
+)
+def test_repository_identity_normalizes_https_dot_git_suffix(
+    tmp_path: Path,
+    remote_url: str,
+    manifest_url: str,
+) -> None:
+    repo, commit, tree, bundle, _, _ = _git_fixture(tmp_path)
+    _run("git", "remote", "set-url", "origin", remote_url, cwd=repo)
+    manifest = {
+        "package_commit": commit,
+        "package_tree": tree,
+        "repository": {
+            "url": manifest_url,
+            "default_branch": "master",
+            "dirty": False,
+        },
+        "bundle": {"head": commit, "tree": tree, "fsck": True},
+    }
+
+    state = pv._State()
+    pv._verify_repo_and_bundle(repo, bundle, manifest, state)
+
+    assert state.error_count == 0, state.errors
+
+
+@pytest.mark.parametrize(
+    "remote_url",
+    [
+        "https://token@github.com/taipei49314/NormShift.git",
+        "https://github.com:443/taipei49314/NormShift.git",
+        "https://github.com/taipei49314/NormShift.git?token=secret",
+        "https://github.com/taipei49314/NormShift.git#fragment",
+        "https://github.com/taipei49314/NormShift.git.evil",
+        "https://github.com/taipei49314/NormShift%2egit",
+    ],
+)
+def test_repository_identity_rejects_remote_url_lookalikes(
+    tmp_path: Path,
+    remote_url: str,
+) -> None:
+    repo, commit, tree, bundle, _, _ = _git_fixture(tmp_path)
+    _run("git", "remote", "set-url", "origin", remote_url, cwd=repo)
+    manifest = {
+        "package_commit": commit,
+        "package_tree": tree,
+        "repository": {
+            "url": "https://github.com/taipei49314/NormShift",
+            "default_branch": "master",
+            "dirty": False,
+        },
+        "bundle": {"head": commit, "tree": tree, "fsck": True},
+    }
+
+    state = pv._State()
+    pv._verify_repo_and_bundle(repo, bundle, manifest, state)
+
+    assert any("origin URL differs" in error for error in state.errors)
 
 
 def test_repository_identity_rejects_commit_not_at_remote_default(tmp_path: Path) -> None:
