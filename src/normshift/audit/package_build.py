@@ -416,6 +416,7 @@ def _parse_junit(path: Path, terminal_output: str = "") -> PytestSummary:
         raise PackageBuildError(f"invalid or missing JUnit XML {path}: {exc}") from exc
 
     xpass_ids = set(re.findall(r"(?m)^XPASS\s+(\S+)", terminal_output))
+    matched_xpass_ids: set[str] = set()
     counts = {
         "collected": 0,
         "passed": 0,
@@ -451,10 +452,21 @@ def _parse_junit(path: Path, terminal_output: str = "") -> PytestSummary:
                     outcome = "skipped"
             elif node_id in xpass_ids:
                 counts["xpassed"] += 1
+                matched_xpass_ids.add(node_id)
                 outcome = "xpassed"
             else:
                 counts["passed"] += 1
         cases.append({"id": node_id, "outcome": outcome})
+
+    # Pytest's JUnit ``classname`` flattens class names into the dotted module
+    # path, so the reconstructed ID above cannot reliably equal terminal IDs
+    # such as ``tests/x.py::TestFeature::test_case``.  Any unmatched terminal
+    # XPASS must still fail closed instead of being silently counted as passed.
+    unmatched_xpasses = xpass_ids - matched_xpass_ids
+    if len(unmatched_xpasses) > counts["passed"]:
+        raise PackageBuildError("pytest terminal reports more XPASS cases than JUnit passes")
+    counts["passed"] -= len(unmatched_xpasses)
+    counts["xpassed"] += len(unmatched_xpasses)
 
     if counts["collected"] == 0:
         raise PackageBuildError("JUnit collected zero tests")

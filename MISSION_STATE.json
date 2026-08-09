@@ -1,13 +1,13 @@
 {
   "current_objective": "Build and independently audit one exact-SHA M0 authoritative package",
-  "current_hypothesis": "R5 behavior plus strict package tooling can close the remaining M0 trust gate without expanding M1/M2",
+  "current_hypothesis": "Strict package tooling plus exact-SHA Linux, Windows, and macOS CI can close the remaining M0 trust gate without expanding M1/M2",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
   "package_identity": "pending_external_attestation",
   "last_verified_commit": null,
   "commands_run": [
     "uv run ruff check . #0",
     "uv run mypy src #0",
-    "uv run pytest -q -ra #264 passed",
+    "uv run pytest -q -ra #265 passed",
     "uv run pytest tests/e2e/test_m0_repair_round4.py tests/e2e/test_m0_repair_round5.py #72 passed",
     "uv run normshift benchmark #17/17",
     "uv run normshift measure #15/15",
@@ -27,11 +27,14 @@
     "scripts/build_authoritative_package.py",
     "scripts/external_package_verify.py"
   ],
-  "known_failures": [],
+  "known_failures": [
+    "Candidate d755e27f invalidated before attestation after a raw ZIP backslash false-success; fixed by PR #3",
+    "Candidate 063cd7e7 invalidated before attestation because its exact commit had no required macOS CI job"
+  ],
   "unresolved_risks": [
-    "Awaiting exact-SHA authoritative package construction and detached clean-room re-audit",
+    "Awaiting three-platform CI on the exact merged SHA, a new authoritative package, and detached clean-room re-audit",
     "Historical clause heuristics are not full NL understanding",
     "M1/M2 experimental only"
   ],
-  "next_action": "Merge the M0 package-tooling PR, build from the exact merged SHA, and run detached clean-room re-audit."
+  "next_action": "Merge the cross-platform CI PR only after all three required jobs pass, then build a new exact-SHA package and run detached clean-room re-audit."
 }
