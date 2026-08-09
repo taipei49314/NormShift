@@ -218,6 +218,7 @@ def test_safe_zip_name_rejects_literal_backslash() -> None:
 
 def test_source_zip_rejects_raw_header_backslash_before_windows_normalization(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     repo, commit, tree, _, source_zip, prefix = _git_fixture(tmp_path)
     original = f"{prefix}.gitattributes".encode("ascii")
@@ -231,6 +232,8 @@ def test_source_zip_rejects_raw_header_backslash_before_windows_normalization(
         "package_tree": tree,
         "archive": _archive_claim(repo, commit, source_zip, prefix),
     }
+    # Exercise the Windows ZipInfo normalization path on every CI platform.
+    monkeypatch.setattr(zipfile.os, "sep", "\\")
 
     state = pv._State()
     pv._verify_source_zip(repo, source_zip, manifest, state)
@@ -241,6 +244,8 @@ def test_source_zip_rejects_raw_header_backslash_before_windows_normalization(
     destination.mkdir()
     with pytest.raises(ValueError, match="backslash"):
         pv._extract_preflighted_source(source_zip, destination, prefix)
+    with pytest.raises(package_build.PackageBuildError, match="unsafe_count"):
+        package_build._inspect_source_archive(source_zip, repo, commit, prefix)
 
 
 def test_source_zip_rejects_local_and_central_filename_mismatch(tmp_path: Path) -> None:
