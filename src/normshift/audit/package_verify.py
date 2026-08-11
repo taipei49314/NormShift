@@ -37,6 +37,11 @@ from jsonschema import Draft202012Validator, FormatChecker
 from packaging.requirements import Requirement
 from packaging.utils import canonicalize_name
 
+from normshift.audit.wheel_normalize import (
+    assert_canonical_wheel_file,
+    normalize_wheel_file,
+)
+
 JsonObject = dict[str, Any]
 
 MANIFEST_VERSION = "normshift-package-manifest/v1"
@@ -1738,6 +1743,7 @@ def _verify_distribution_provenance(
     environment = manifest["environment"]
     assert isinstance(archive, dict) and isinstance(environment, dict)
     try:
+        assert_canonical_wheel_file(wheel)
         source_date_epoch = _git(
             repo,
             "show",
@@ -1754,20 +1760,24 @@ def _verify_distribution_provenance(
                 tmp / "source",
                 str(archive["prefix"]),
             )
+            raw_output = tmp / "raw-dist"
             output = tmp / "dist"
             _run_checked(
-                [uv, "build", "--out-dir", str(output), "--no-create-gitignore"],
+                [uv, "build", "--out-dir", str(raw_output), "--no-create-gitignore"],
                 cwd=source_root,
                 timeout=900,
                 env=_subprocess_environment(source_date_epoch=source_date_epoch),
             )
-            rebuilt = sorted(path for path in output.iterdir() if path.is_file())
+            rebuilt = sorted(path for path in raw_output.iterdir() if path.is_file())
             expected_names = sorted((wheel.name, sdist.name))
             if [path.name for path in rebuilt] != expected_names:
                 raise RuntimeError(
                     "exact Source.zip rebuild emitted unexpected distribution set: "
                     f"{[path.name for path in rebuilt]}"
                 )
+            output.mkdir()
+            normalize_wheel_file(raw_output / wheel.name, output / wheel.name)
+            shutil.move(raw_output / sdist.name, output / sdist.name)
             for candidate in (wheel, sdist):
                 rebuilt_path = output / candidate.name
                 if (

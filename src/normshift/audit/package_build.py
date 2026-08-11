@@ -17,6 +17,7 @@ import re
 import shutil
 import stat
 import subprocess
+import sys
 import tarfile
 import tempfile
 import tomllib
@@ -31,6 +32,11 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Final
 from urllib.parse import urlsplit
 from xml.etree import ElementTree
+
+from normshift.audit.wheel_normalize import (
+    WheelNormalizationError,
+    assert_canonical_wheel_file,
+)
 
 MANIFEST_SCHEMA_VERSION: Final = "normshift-package-manifest/v1"
 RUN_ID_RE: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{7,95}$")
@@ -1395,27 +1401,48 @@ def _build_distributions_and_sbom(
     project_name: str,
     version: str,
 ) -> DistributionProducts:
-    dist_dir = package_root / "_build-dist"
-    dist_dir.mkdir()
+    raw_dist_dir = package_root / "_raw-build-dist"
+    canonical_dist_dir = package_root / "_build-dist"
+    raw_dist_dir.mkdir()
+    canonical_dist_dir.mkdir()
     recorder.run(
         "build_distributions",
         "build",
-        ("uv", "build", "--out-dir", dist_dir, "--no-create-gitignore"),
+        ("uv", "build", "--out-dir", raw_dist_dir, "--no-create-gitignore"),
     )
-    expected_wheel = dist_dir / f"{project_name}-{version}-py3-none-any.whl"
-    expected_sdist = dist_dir / f"{project_name}-{version}.tar.gz"
-    wheels = sorted(dist_dir.glob("*.whl"))
-    sdists = sorted(dist_dir.glob("*.tar.gz"))
-    if wheels != [expected_wheel] or sdists != [expected_sdist]:
+    raw_wheel = raw_dist_dir / f"{project_name}-{version}-py3-none-any.whl"
+    raw_sdist = raw_dist_dir / f"{project_name}-{version}.tar.gz"
+    wheels = sorted(raw_dist_dir.glob("*.whl"))
+    sdists = sorted(raw_dist_dir.glob("*.tar.gz"))
+    if wheels != [raw_wheel] or sdists != [raw_sdist]:
         raise PackageBuildError(
             "uv build did not emit exactly the canonical wheel and sdist names: "
             f"wheels={wheels}, sdists={sdists}"
         )
+    expected_wheel = canonical_dist_dir / raw_wheel.name
+    recorder.run(
+        "normalize_wheel",
+        "other",
+        (
+            sys.executable,
+            "-B",
+            repo / "scripts" / "normalize_wheel.py",
+            raw_wheel,
+            "--output",
+            expected_wheel,
+        ),
+    )
+    try:
+        assert_canonical_wheel_file(expected_wheel)
+    except WheelNormalizationError as exc:
+        raise PackageBuildError(f"built wheel was not canonicalized: {exc}") from exc
     wheel = package_root / expected_wheel.name
-    sdist = package_root / expected_sdist.name
+    sdist = package_root / raw_sdist.name
     shutil.move(expected_wheel, wheel)
-    shutil.move(expected_sdist, sdist)
-    dist_dir.rmdir()
+    shutil.move(raw_sdist, sdist)
+    raw_wheel.unlink()
+    raw_dist_dir.rmdir()
+    canonical_dist_dir.rmdir()
 
     sbom = package_root / f"{project_name}-{version}-sbom.cdx.json"
     sbom_argv = (*SBOM_EXPORT_ARGV, "--output-file", str(sbom))
