@@ -30,3 +30,9 @@ def test_packaged_audit_verifier_declares_requirement_parser_dependency() -> Non
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 
     assert "packaging>=24.0" in project["project"]["dependencies"]
+
+
+def test_m1_source_manifest_schema_is_packaged() -> None:
+    repository_schema = ROOT / "schemas" / "m1_source_manifest_v1.schema.json"
+    packaged_schema = ROOT / "src" / "normshift" / "schemas" / repository_schema.name
+    assert repository_schema.read_bytes() == packaged_schema.read_bytes()

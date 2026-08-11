@@ -12,6 +12,12 @@ from normshift import __version__
 from normshift.adapters.errors import AdapterError
 from normshift.adapters.registry import load_document
 from normshift.benchmark.runner import run_benchmark
+from normshift.corpus.acquisition import (
+    AcquisitionError,
+    CorpusReplayResult,
+    acquire_corpus,
+    verify_corpus_offline,
+)
 from normshift.extract.extractor import extract_from_source
 from normshift.io_safety import PathSafetyError, assert_outputs_safe, atomic_write_text
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
@@ -27,6 +33,11 @@ app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
 )
+corpus_app = typer.Typer(
+    help="Hash-frozen M1 source acquisition (experimental; not M1 acceptance).",
+    no_args_is_help=True,
+)
+app.add_typer(corpus_app, name="corpus")
 
 
 def _version_callback(value: bool) -> None:
@@ -67,6 +78,89 @@ def _to_profile(p: ProfileOpt) -> ProfileName:
 
 def _to_adapter(a: AdapterOpt) -> AdapterName:
     return AdapterName(a.value)
+
+
+def _echo_corpus_result(result: CorpusReplayResult) -> None:
+    typer.echo(
+        json.dumps(
+            {
+                "corpus_id": result.corpus_id,
+                "families": list(result.families),
+                "manifest_sha256": result.manifest_sha256,
+                "mode": result.mode,
+                "source_count": result.source_count,
+                "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+
+
+@corpus_app.command("acquire")
+def corpus_acquire_cmd(
+    manifest: Path = typer.Argument(..., help="Strict M1 source manifest JSON"),
+    snapshot_root: Path = typer.Option(..., "--snapshot-root", help="Dedicated empty root"),
+    manifest_sha256: str = typer.Option(
+        ...,
+        "--manifest-sha256",
+        help="Externally frozen manifest SHA-256",
+    ),
+    acceptance_policy: Path = typer.Option(
+        Path("acceptance/m1_m2_prereg_v1.json"),
+        "--acceptance-policy",
+        help="Frozen pre-result acceptance policy bound by the manifest",
+    ),
+    timeout_seconds: float = typer.Option(30.0, "--timeout-seconds", min=0.1, max=300.0),
+) -> None:
+    """Acquire pinned source bytes; all checks pass before any output is committed."""
+    try:
+        result = acquire_corpus(
+            manifest,
+            snapshot_root,
+            manifest_sha256=manifest_sha256,
+            acceptance_policy_path=acceptance_policy,
+            timeout_seconds=timeout_seconds,
+        )
+    except (AcquisitionError, PathSafetyError) as exc:
+        typer.echo(f"error: M1 source acquisition rejected: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001 - fail-closed CLI boundary
+        typer.echo(f"error: M1 source acquisition failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _echo_corpus_result(result)
+
+
+@corpus_app.command("verify-sources")
+def corpus_verify_sources_cmd(
+    manifest: Path = typer.Argument(..., help="Strict M1 source manifest JSON"),
+    snapshot_root: Path = typer.Option(..., "--snapshot-root", help="Dedicated corpus root"),
+    manifest_sha256: str = typer.Option(
+        ...,
+        "--manifest-sha256",
+        help="Externally frozen manifest SHA-256",
+    ),
+    acceptance_policy: Path = typer.Option(
+        Path("acceptance/m1_m2_prereg_v1.json"),
+        "--acceptance-policy",
+        help="Frozen pre-result acceptance policy bound by the manifest",
+    ),
+) -> None:
+    """Verify pinned bytes, receipts, provenance, and adapters with no network access."""
+    try:
+        result = verify_corpus_offline(
+            manifest,
+            snapshot_root,
+            manifest_sha256=manifest_sha256,
+            acceptance_policy_path=acceptance_policy,
+        )
+    except AcquisitionError as exc:
+        typer.echo(f"error: M1 source replay rejected: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001 - fail-closed CLI boundary
+        typer.echo(f"error: M1 source replay failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _echo_corpus_result(result)
 
 
 @app.command("extract")

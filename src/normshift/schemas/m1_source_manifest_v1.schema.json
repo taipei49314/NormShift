@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normshift.dev/schemas/m1-source-manifest-v1.schema.json",
+  "title": "NormShift M1 real-source acquisition manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "corpus_id",
+    "corpus_kind",
+    "adjudication_status",
+    "acceptance_policy",
+    "ground_truth_status",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": {"const": "normshift-m1-source-manifest/v1"},
+    "corpus_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+    "corpus_kind": {"enum": ["ACTUAL_STANDARDS_SOURCE_CONTRACT", "SOURCE_CONTRACT_TEST"]},
+    "adjudication_status": {"const": "EXPERIMENTAL_NOT_ADJUDICATED"},
+    "acceptance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sha256", "local_ref", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._/-]{0,255}$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "local_ref": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "status": {"enum": ["FROZEN_PRE_RESULT", "FROZEN_BEFORE_BLIND_EVALUATION"]}
+      }
+    },
+    "ground_truth_status": {"const": "NOT_INCLUDED"},
+    "sources": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/source"},
+      "allOf": [
+        {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "rfc"}}}, "minContains": 1},
+        {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "w3c"}}}, "minContains": 1},
+        {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "whatwg"}}}, "minContains": 1}
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"corpus_kind": {"const": "ACTUAL_STANDARDS_SOURCE_CONTRACT"}}},
+      "then": {
+        "properties": {
+          "acceptance_policy": {
+            "properties": {
+              "id": {"const": "normshift-m1-m2-prereg-v1"},
+              "sha256": {"const": "0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773"},
+              "local_ref": {"const": "acceptance/m1_m2_prereg_v1.json"},
+              "status": {"const": "FROZEN_BEFORE_BLIND_EVALUATION"}
+            }
+          },
+          "sources": {
+            "minItems": 6,
+            "allOf": [
+              {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "rfc"}}}, "minContains": 2},
+              {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "w3c"}}}, "minContains": 2},
+              {"contains": {"type": "object", "required": ["family"], "properties": {"family": {"const": "whatwg"}}}, "minContains": 2}
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nullable_nonempty_string": {
+      "oneOf": [
+        {"type": "string", "minLength": 1, "maxLength": 2048},
+        {"type": "null"}
+      ]
+    },
+    "https_url": {
+      "type": "string",
+      "pattern": "^https://[a-z0-9.-]+/[^?#]*$",
+      "maxLength": 4096
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "family",
+        "adapter",
+        "profile",
+        "adapter_version",
+        "normalization_version",
+        "identity_preflight_version",
+        "standard_id",
+        "version_or_date",
+        "document_version",
+        "canonical_url",
+        "acquisition_url",
+        "curator_retrieved_at_utc",
+        "redirect_chain",
+        "etag",
+        "last_modified",
+        "media_type",
+        "charset",
+        "content_sha256",
+        "byte_length",
+        "local_ref",
+        "license"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+        "family": {"enum": ["rfc", "w3c", "whatwg"]},
+        "adapter": {"enum": ["rfc", "w3c", "whatwg"]},
+        "profile": {"enum": ["rfc2119", "whatwg"]},
+        "adapter_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "normalization_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "identity_preflight_version": {"const": "1.0.0"},
+        "standard_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "version_or_date": {"type": "string", "minLength": 1, "maxLength": 256},
+        "document_version": {"type": "string", "minLength": 1, "maxLength": 256},
+        "canonical_url": {
+          "allOf": [{"$ref": "#/$defs/https_url"}],
+          "description": "Immutable dated/versioned source URL; must equal redirect_chain final URL, not a mutable HTML rel=canonical URL."
+        },
+        "acquisition_url": {"$ref": "#/$defs/https_url"},
+        "curator_retrieved_at_utc": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "redirect_chain": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {"$ref": "#/$defs/https_url"}
+        },
+        "etag": {"$ref": "#/$defs/nullable_nonempty_string"},
+        "last_modified": {"$ref": "#/$defs/nullable_nonempty_string"},
+        "media_type": {"type": "string", "pattern": "^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$"},
+        "charset": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[a-z0-9._-]+$"},
+            {"type": "null"}
+          ]
+        },
+        "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "byte_length": {"type": "integer", "minimum": 1, "maximum": 67108864},
+        "local_ref": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["document_or_license", "url", "redistribution_basis", "snapshot_distribution"],
+          "properties": {
+            "document_or_license": {"type": "string", "minLength": 1, "maxLength": 512},
+            "url": {"$ref": "#/$defs/https_url"},
+            "redistribution_basis": {"type": "string", "minLength": 1, "maxLength": 4096},
+            "snapshot_distribution": {"enum": ["embedded", "fetch_recipe_only"]}
+          }
+        }
+      }
+    }
+  }
+}

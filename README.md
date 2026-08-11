@@ -100,6 +100,15 @@ uv run normshift diff fixtures/synthetic/spec-v1.html fixtures/synthetic/spec-v2
 uv run normshift verify evidence/m0-repair-round5/report.json --source-root .
 ```
 
+## Experimental M1 source acquisition
+
+The strict source-acquisition primitive is documented in
+`docs/M1_SOURCE_ACQUISITION.md`. It binds a reviewer-frozen policy and curator
+source manifest before pinned reacquisition, commits only after every
+source/provenance/adapter check succeeds, and replays those source bindings offline.
+It does **not** include labels, inspect holdouts, run M1 quality measurement, or claim
+M1 acceptance.
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
