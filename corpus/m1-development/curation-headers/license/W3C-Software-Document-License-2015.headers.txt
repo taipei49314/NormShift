@@ -1,0 +1,7 @@
+HTTP/1.1 301 Moved Permanently
+Content-Length: 0
+location: https://www.w3.org/copyright/software-license-2015/
+
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+

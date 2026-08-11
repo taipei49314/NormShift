@@ -1,0 +1,701 @@
+{
+  "schema_version": "normshift-independent-source-curation/v1",
+  "curation_status": "DEVELOPMENT_SOURCE_CORPUS_READY__ACCEPTANCE_NOT_ADJUDICATED",
+  "created_at_utc": "2026-08-11T00:48:00Z",
+  "policy": {
+    "id": "normshift-m1-m2-prereg-v1",
+    "sha256": "0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773",
+    "local_ref": "policy/m1_m2_prereg_v1.json",
+    "source_commit": "5a8d5a38c866eac2b8b382fac1af64d63707a73f",
+    "hash_verified": true
+  },
+  "scope_boundaries": {
+    "candidate_executed": false,
+    "predictions_viewed_or_created": false,
+    "gold_viewed_or_created": false,
+    "labels_viewed_or_created": false,
+    "scores_viewed_or_created": false,
+    "holdout_membership_created_or_disclosed": false,
+    "repository_or_github_modified": false,
+    "expedition_auto_data_used_as_evidence": false
+  },
+  "integrity_summary": {
+    "source_count": 10,
+    "total_raw_bytes": 1700259,
+    "official_https_200_count": 10,
+    "redirect_count_total": 0,
+    "zero_byte_count": 0,
+    "embedded_nul_count": 0,
+    "independent_second_fetch_byte_identical_count": 10,
+    "families": {
+      "RFC": 3,
+      "W3C_TR": 3,
+      "WHATWG": 4
+    }
+  },
+  "source_readiness_only": {
+    "m1_distinct_actual_versions_per_family": {
+      "RFC": 3,
+      "W3C_TR": 3,
+      "WHATWG": 4
+    },
+    "m1_minimum_two_distinct_versions_per_family_available": true,
+    "m2_consecutive_official_lineage_chains_available": 3,
+    "m2_minimum_three_consecutive_versions_per_chain_available": true,
+    "m2_family_chain_coverage_available": [
+      "RFC",
+      "W3C_TR",
+      "WHATWG"
+    ],
+    "acceptance_implication": "NONE; no labels, predictions, metrics, scorer, blind holdout, or external audit were evaluated"
+  },
+  "sources": [
+    {
+      "source_id": "rfc-tls-1.0-rfc2246",
+      "family": "RFC",
+      "chain_id": "rfc-tls-1.0-1.2",
+      "standard_id": "RFC 2246",
+      "standard_name": "The TLS Protocol Version 1.0",
+      "version_or_date": "TLS 1.0; January 1999",
+      "requested_url": "https://www.rfc-editor.org/rfc/rfc2246.html",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc2246.html",
+      "canonical_url": "https://www.rfc-editor.org/rfc/rfc2246.html",
+      "canonical_basis": "official RFC Editor final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "redirect_chain": [
+        "https://www.rfc-editor.org/rfc/rfc2246.html"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:47.6960022Z",
+      "http_status": 200,
+      "etag_or_null": "W/\"b589e062b572e18bc21d5ac516864b6a\"",
+      "last_modified_or_null": null,
+      "media_type": "text/html",
+      "charset_or_null": null,
+      "raw_sha256": "82ef7a3d371e5801b445aea0c639b1fa0851ae542d740a5b238d00e07d6c3cf3",
+      "byte_length": 195469,
+      "raw_ref": "raw/RFC/rfc2246.html",
+      "headers_ref": "http/rfc-tls-1.0.headers.txt",
+      "replay_ref": "replay/RFC/rfc2246.html",
+      "replay_headers_ref": "replay-http/rfc2246.headers.txt",
+      "replay_sha256": "82ef7a3d371e5801b445aea0c639b1fa0851ae542d740a5b238d00e07d6c3cf3",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.rfc",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/RFC/rfc2246.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.rfc-editor.org/rfc/rfc2246.html with curl fail-closed redirect handling; retain raw/RFC/rfc2246.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "RFC 2026-era document-embedded Full Copyright Statement; IETF Trust TLP publication guidance",
+        "license_url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+        "document_notice_url": "https://www.rfc-editor.org/rfc/rfc2246.html",
+        "redistribution_basis": "The complete RFC says distribution is unlimited and grants copying and distribution when its copyright notice and grant paragraph are retained. The TLP FAQ confirms unmodified IETF Documents may be published for any purpose.",
+        "required_notice": "Redistribute only the complete, unmodified snapshot and retain every RFC copyright, attribution, legal legend, and disclaimer; do not imply IETF endorsement.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "terminal RFC page marker is Page 80 and the complete Full Copyright Statement is present"
+      ]
+    },
+    {
+      "source_id": "rfc-tls-1.1-rfc4346",
+      "family": "RFC",
+      "chain_id": "rfc-tls-1.0-1.2",
+      "standard_id": "RFC 4346",
+      "standard_name": "The Transport Layer Security (TLS) Protocol Version 1.1",
+      "version_or_date": "TLS 1.1; April 2006",
+      "requested_url": "https://www.rfc-editor.org/rfc/rfc4346.html",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc4346.html",
+      "canonical_url": "https://www.rfc-editor.org/rfc/rfc4346.html",
+      "canonical_basis": "official RFC Editor final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "redirect_chain": [
+        "https://www.rfc-editor.org/rfc/rfc4346.html"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:48.3730867Z",
+      "http_status": 200,
+      "etag_or_null": "W/\"afc836df464679deaeed76c4955ad74a\"",
+      "last_modified_or_null": null,
+      "media_type": "text/html",
+      "charset_or_null": null,
+      "raw_sha256": "b58c88a5bb51205bf656cf80b5053d9eb32db38847daea95b4402b91da7bba1e",
+      "byte_length": 223410,
+      "raw_ref": "raw/RFC/rfc4346.html",
+      "headers_ref": "http/rfc-tls-1.1.headers.txt",
+      "replay_ref": "replay/RFC/rfc4346.html",
+      "replay_headers_ref": "replay-http/rfc4346.headers.txt",
+      "replay_sha256": "b58c88a5bb51205bf656cf80b5053d9eb32db38847daea95b4402b91da7bba1e",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.rfc",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/RFC/rfc4346.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.rfc-editor.org/rfc/rfc4346.html with curl fail-closed redirect handling; retain raw/RFC/rfc4346.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "BCP 78 document notice and IETF Trust Legal Provisions 5.0",
+        "license_url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+        "document_notice_url": "https://www.rfc-editor.org/rfc/rfc4346.html",
+        "redistribution_basis": "The complete RFC says distribution is unlimited, embeds its BCP 78 copyright notice, and the TLP grants publication and distribution of complete unmodified IETF Documents.",
+        "required_notice": "Redistribute only the complete, unmodified snapshot and retain every RFC copyright, attribution, legal legend, and disclaimer; do not imply IETF endorsement.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "terminal RFC page marker is Page 87 and the complete Full Copyright Statement is present"
+      ]
+    },
+    {
+      "source_id": "rfc-tls-1.2-rfc5246",
+      "family": "RFC",
+      "chain_id": "rfc-tls-1.0-1.2",
+      "standard_id": "RFC 5246",
+      "standard_name": "The Transport Layer Security (TLS) Protocol Version 1.2",
+      "version_or_date": "TLS 1.2; August 2008",
+      "requested_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+      "final_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+      "canonical_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+      "canonical_basis": "official RFC Editor final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "redirect_chain": [
+        "https://www.rfc-editor.org/rfc/rfc5246.html"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:48.8293570Z",
+      "http_status": 200,
+      "etag_or_null": "W/\"cf76bc12a9a2765242c371817484d5b6\"",
+      "last_modified_or_null": null,
+      "media_type": "text/html",
+      "charset_or_null": null,
+      "raw_sha256": "a6102891f08ad01933fdce6891c0045432b699c917db12903cfa694372b5e86a",
+      "byte_length": 268261,
+      "raw_ref": "raw/RFC/rfc5246.html",
+      "headers_ref": "http/rfc-tls-1.2.headers.txt",
+      "replay_ref": "replay/RFC/rfc5246.html",
+      "replay_headers_ref": "replay-http/rfc5246.headers.txt",
+      "replay_sha256": "a6102891f08ad01933fdce6891c0045432b699c917db12903cfa694372b5e86a",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.rfc",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/RFC/rfc5246.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.rfc-editor.org/rfc/rfc5246.html with curl fail-closed redirect handling; retain raw/RFC/rfc5246.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "BCP 78 document notice and IETF Trust Legal Provisions 5.0",
+        "license_url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+        "document_notice_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+        "redistribution_basis": "The complete RFC says distribution is unlimited, embeds its IETF Trust/BCP 78 copyright notice, and the TLP grants publication and distribution of complete unmodified IETF Documents.",
+        "required_notice": "Redistribute only the complete, unmodified snapshot and retain every RFC copyright, attribution, legal legend, and disclaimer; do not imply IETF endorsement.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "terminal RFC page marker is Page 104 and the complete Full Copyright Statement is present"
+      ]
+    },
+    {
+      "source_id": "w3c-micropub-cr-20161018",
+      "family": "W3C_TR",
+      "chain_id": "w3c-micropub-cr-pr-rec",
+      "standard_id": "Micropub",
+      "standard_name": "Micropub",
+      "version_or_date": "2016-10-18",
+      "publication_status": "W3C Candidate Recommendation",
+      "requested_url": "https://www.w3.org/TR/2016/CR-micropub-20161018/",
+      "final_url": "https://www.w3.org/TR/2016/CR-micropub-20161018/",
+      "canonical_url": "https://www.w3.org/TR/2016/CR-micropub-20161018/",
+      "canonical_basis": "dated W3C This Version URL and final response URL",
+      "observed_link_rel_canonical_or_null": "https://www.w3.org/TR/micropub/",
+      "redirect_chain": [
+        "https://www.w3.org/TR/2016/CR-micropub-20161018/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:49.0951670Z",
+      "http_status": 200,
+      "etag_or_null": null,
+      "last_modified_or_null": "Sat, 15 Oct 2016 17:06:25 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "8341ae06105a972b8c5e2e60d9924722a174705b7396619caf734c3b7db890f3",
+      "byte_length": 163776,
+      "raw_ref": "raw/W3C_TR/CR-micropub-20161018.html",
+      "headers_ref": "http/w3c-micropub-cr-20161018.headers.txt",
+      "replay_ref": "replay/W3C_TR/CR-micropub-20161018.html",
+      "replay_headers_ref": "replay-http/micropub-cr.headers.txt",
+      "replay_sha256": "8341ae06105a972b8c5e2e60d9924722a174705b7396619caf734c3b7db890f3",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.w3c",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/W3C_TR/CR-micropub-20161018.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.w3.org/TR/2016/CR-micropub-20161018/ with curl fail-closed redirect handling; retain raw/W3C_TR/CR-micropub-20161018.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "W3C Software and Document License, 2015 version",
+        "license_url": "https://www.w3.org/copyright/software-license-2015/",
+        "document_declared_license_url": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document",
+        "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+        "required_notice": "Bundle a viewable copy of the full W3C Software and Document License notice and retain the document's copyright, status, original URI, disclaimers, and trademark restrictions.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "doctype, closing html element, dated This Version URL, status, and change log are present"
+      ]
+    },
+    {
+      "source_id": "w3c-micropub-pr-20170413",
+      "family": "W3C_TR",
+      "chain_id": "w3c-micropub-cr-pr-rec",
+      "standard_id": "Micropub",
+      "standard_name": "Micropub",
+      "version_or_date": "2017-04-13",
+      "publication_status": "W3C Proposed Recommendation",
+      "requested_url": "https://www.w3.org/TR/2017/PR-micropub-20170413/",
+      "final_url": "https://www.w3.org/TR/2017/PR-micropub-20170413/",
+      "canonical_url": "https://www.w3.org/TR/2017/PR-micropub-20170413/",
+      "canonical_basis": "dated W3C This Version URL and final response URL",
+      "observed_link_rel_canonical_or_null": "https://www.w3.org/TR/micropub/",
+      "redirect_chain": [
+        "https://www.w3.org/TR/2017/PR-micropub-20170413/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:49.3331467Z",
+      "http_status": 200,
+      "etag_or_null": null,
+      "last_modified_or_null": "Thu, 13 Apr 2017 07:59:08 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "3edf8e00e5b1068ad83f8a714531d9980acbcee655848f0cc405ba3f8b640597",
+      "byte_length": 175848,
+      "raw_ref": "raw/W3C_TR/PR-micropub-20170413.html",
+      "headers_ref": "http/w3c-micropub-pr-20170413.headers.txt",
+      "replay_ref": "replay/W3C_TR/PR-micropub-20170413.html",
+      "replay_headers_ref": "replay-http/micropub-pr.headers.txt",
+      "replay_sha256": "3edf8e00e5b1068ad83f8a714531d9980acbcee655848f0cc405ba3f8b640597",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.w3c",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/W3C_TR/PR-micropub-20170413.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.w3.org/TR/2017/PR-micropub-20170413/ with curl fail-closed redirect handling; retain raw/W3C_TR/PR-micropub-20170413.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "W3C Software and Document License, 2015 version",
+        "license_url": "https://www.w3.org/copyright/software-license-2015/",
+        "document_declared_license_url": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document",
+        "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+        "required_notice": "Bundle a viewable copy of the full W3C Software and Document License notice and retain the document's copyright, status, original URI, disclaimers, and trademark restrictions.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "doctype, closing html element, dated This Version URL, status, direct Previous Version URL, and change log are present"
+      ]
+    },
+    {
+      "source_id": "w3c-micropub-rec-20170523",
+      "family": "W3C_TR",
+      "chain_id": "w3c-micropub-cr-pr-rec",
+      "standard_id": "Micropub",
+      "standard_name": "Micropub",
+      "version_or_date": "2017-05-23",
+      "publication_status": "W3C Recommendation",
+      "requested_url": "https://www.w3.org/TR/2017/REC-micropub-20170523/",
+      "final_url": "https://www.w3.org/TR/2017/REC-micropub-20170523/",
+      "canonical_url": "https://www.w3.org/TR/2017/REC-micropub-20170523/",
+      "canonical_basis": "dated W3C This Version URL and final response URL",
+      "observed_link_rel_canonical_or_null": "https://www.w3.org/TR/micropub/",
+      "redirect_chain": [
+        "https://www.w3.org/TR/2017/REC-micropub-20170523/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:49.5861338Z",
+      "http_status": 200,
+      "etag_or_null": null,
+      "last_modified_or_null": "Sun, 21 May 2017 14:54:51 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "9eebd4b244e9b0fce61ab6830a79527ff780ebcd225316009451a9c6d902551d",
+      "byte_length": 172429,
+      "raw_ref": "raw/W3C_TR/REC-micropub-20170523.html",
+      "headers_ref": "http/w3c-micropub-rec-20170523.headers.txt",
+      "replay_ref": "replay/W3C_TR/REC-micropub-20170523.html",
+      "replay_headers_ref": "replay-http/micropub-rec.headers.txt",
+      "replay_sha256": "9eebd4b244e9b0fce61ab6830a79527ff780ebcd225316009451a9c6d902551d",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.w3c",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "rfc2119",
+      "portable_source_ref": "raw/W3C_TR/REC-micropub-20170523.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://www.w3.org/TR/2017/REC-micropub-20170523/ with curl fail-closed redirect handling; retain raw/W3C_TR/REC-micropub-20170523.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "W3C Software and Document License, 2015 version",
+        "license_url": "https://www.w3.org/copyright/software-license-2015/",
+        "document_declared_license_url": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document",
+        "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+        "required_notice": "Bundle a viewable copy of the full W3C Software and Document License notice and retain the document's copyright, status, original URI, disclaimers, and trademark restrictions.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "non-empty HTTP 200 response with curl byte count equal to file length",
+        "doctype, closing html element, dated This Version URL, status, direct Previous Version URL, and change log are present"
+      ]
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2023-07",
+      "family": "WHATWG",
+      "chain_id": "whatwg-mimesniff-review-drafts",
+      "standard_id": "MIME Sniffing",
+      "standard_name": "MIME Sniffing Standard",
+      "version_or_date": "2023-07",
+      "published_date": "2023-07-17",
+      "publication_status": "WHATWG Review Draft",
+      "requested_url": "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/",
+      "final_url": "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/",
+      "canonical_url": "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/",
+      "canonical_basis": "official dated Review Draft final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "observed_living_standard_url": "https://mimesniff.spec.whatwg.org/",
+      "redirect_chain": [
+        "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:51.8501614Z",
+      "http_status": 200,
+      "etag_or_null": "\"64b50be0-239ce\"",
+      "last_modified_or_null": "Mon, 17 Jul 2023 09:37:36 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "01528914273a059ea6d61035f0b778013b128a3635421da91c3a4199c09cf109",
+      "byte_length": 145870,
+      "raw_ref": "raw/WHATWG/mimesniff-review-2023-07.html",
+      "headers_ref": "http/whatwg-mimesniff-rd-2023-07.headers.txt",
+      "replay_ref": "replay/WHATWG/mimesniff-review-2023-07.html",
+      "replay_headers_ref": "replay-http/mimesniff-2023.headers.txt",
+      "replay_sha256": "01528914273a059ea6d61035f0b778013b128a3635421da91c3a4199c09cf109",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "whatwg",
+      "portable_source_ref": "raw/WHATWG/mimesniff-review-2023-07.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://mimesniff.spec.whatwg.org/review-drafts/2023-07/ with curl fail-closed redirect handling; retain raw/WHATWG/mimesniff-review-2023-07.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "policy_url": "https://whatwg.org/ipr-policy",
+        "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. Full raw HTML is redistributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+        "required_notice": "Attribute WHATWG and the named copyright holders, identify the MIME Sniffing title and source URL, link CC BY 4.0, and state that the snapshot is unmodified.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "HTTP Content-Length exactly equals the retained file length",
+        "doctype, exact Review Draft title/date, intellectual-property section, and terminal generated content are present"
+      ]
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2024-07",
+      "family": "WHATWG",
+      "chain_id": "whatwg-mimesniff-review-drafts",
+      "standard_id": "MIME Sniffing",
+      "standard_name": "MIME Sniffing Standard",
+      "version_or_date": "2024-07",
+      "published_date": "2024-07-15",
+      "publication_status": "WHATWG Review Draft",
+      "requested_url": "https://mimesniff.spec.whatwg.org/review-drafts/2024-07/",
+      "final_url": "https://mimesniff.spec.whatwg.org/review-drafts/2024-07/",
+      "canonical_url": "https://mimesniff.spec.whatwg.org/review-drafts/2024-07/",
+      "canonical_basis": "official dated Review Draft final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "observed_living_standard_url": "https://mimesniff.spec.whatwg.org/",
+      "redirect_chain": [
+        "https://mimesniff.spec.whatwg.org/review-drafts/2024-07/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:55.5968001Z",
+      "http_status": 200,
+      "etag_or_null": "\"66950668-1e4f9\"",
+      "last_modified_or_null": "Mon, 15 Jul 2024 11:22:16 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "596ec6c40da0dc935e4664d03d6ac9ea55d3d7787d9eee24bb303cc84717218f",
+      "byte_length": 124153,
+      "raw_ref": "raw/WHATWG/mimesniff-review-2024-07.html",
+      "headers_ref": "http/whatwg-mimesniff-rd-2024-07.headers.txt",
+      "replay_ref": "replay/WHATWG/mimesniff-review-2024-07.html",
+      "replay_headers_ref": "replay-http/mimesniff-2024.headers.txt",
+      "replay_sha256": "596ec6c40da0dc935e4664d03d6ac9ea55d3d7787d9eee24bb303cc84717218f",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "whatwg",
+      "portable_source_ref": "raw/WHATWG/mimesniff-review-2024-07.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://mimesniff.spec.whatwg.org/review-drafts/2024-07/ with curl fail-closed redirect handling; retain raw/WHATWG/mimesniff-review-2024-07.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "policy_url": "https://whatwg.org/ipr-policy",
+        "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. Full raw HTML is redistributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+        "required_notice": "Attribute WHATWG and the named copyright holders, identify the MIME Sniffing title and source URL, link CC BY 4.0, and state that the snapshot is unmodified.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "HTTP Content-Length exactly equals the retained file length",
+        "doctype, exact Review Draft title/date, intellectual-property section, and terminal references are present"
+      ]
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2025-01",
+      "family": "WHATWG",
+      "chain_id": "whatwg-mimesniff-review-drafts",
+      "standard_id": "MIME Sniffing",
+      "standard_name": "MIME Sniffing Standard",
+      "version_or_date": "2025-01",
+      "published_date": "2025-01-20",
+      "publication_status": "WHATWG Review Draft",
+      "requested_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-01/",
+      "final_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-01/",
+      "canonical_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-01/",
+      "canonical_basis": "official dated Review Draft final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "observed_living_standard_url": "https://mimesniff.spec.whatwg.org/",
+      "redirect_chain": [
+        "https://mimesniff.spec.whatwg.org/review-drafts/2025-01/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:44:41.1954678Z",
+      "http_status": 200,
+      "etag_or_null": "\"678e0dad-1b857\"",
+      "last_modified_or_null": "Mon, 20 Jan 2025 08:47:41 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "b5388f593d4941b61015659e57daca1e7e9eb44508ee04b3854a9b2f2b4e7421",
+      "byte_length": 112727,
+      "raw_ref": "raw/WHATWG/mimesniff-review-2025-01.html",
+      "headers_ref": "http/whatwg-mimesniff-rd-2025-01.headers.txt",
+      "replay_ref": "replay/WHATWG/mimesniff-review-2025-01.html",
+      "replay_headers_ref": "replay-http/mimesniff-2025-01.headers.txt",
+      "replay_sha256": "b5388f593d4941b61015659e57daca1e7e9eb44508ee04b3854a9b2f2b4e7421",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "whatwg",
+      "portable_source_ref": "raw/WHATWG/mimesniff-review-2025-01.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://mimesniff.spec.whatwg.org/review-drafts/2025-01/ with curl fail-closed redirect handling; retain raw/WHATWG/mimesniff-review-2025-01.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "policy_url": "https://whatwg.org/ipr-policy",
+        "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. Full raw HTML is redistributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+        "required_notice": "Attribute WHATWG and the named copyright holders, identify the MIME Sniffing title and source URL, link CC BY 4.0, and state that the snapshot is unmodified.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "HTTP Content-Length exactly equals the retained file length",
+        "doctype, exact Review Draft title/date, intellectual-property section, and terminal references are present"
+      ]
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2025-07",
+      "family": "WHATWG",
+      "chain_id": "whatwg-mimesniff-review-drafts",
+      "standard_id": "MIME Sniffing",
+      "standard_name": "MIME Sniffing Standard",
+      "version_or_date": "2025-07",
+      "published_date": "2025-07-21",
+      "publication_status": "WHATWG Review Draft",
+      "requested_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-07/",
+      "final_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-07/",
+      "canonical_url": "https://mimesniff.spec.whatwg.org/review-drafts/2025-07/",
+      "canonical_basis": "official dated Review Draft final snapshot URL; no link rel=canonical was declared",
+      "observed_link_rel_canonical_or_null": null,
+      "observed_living_standard_url": "https://mimesniff.spec.whatwg.org/",
+      "redirect_chain": [
+        "https://mimesniff.spec.whatwg.org/review-drafts/2025-07/"
+      ],
+      "redirect_count": 0,
+      "retrieved_at_utc": "2026-08-11T00:41:57.5543038Z",
+      "http_status": 200,
+      "etag_or_null": "\"687df7ae-1ce2c\"",
+      "last_modified_or_null": "Mon, 21 Jul 2025 08:17:50 GMT",
+      "media_type": "text/html",
+      "charset_or_null": "utf-8",
+      "raw_sha256": "db83d3e4a68e6a89361ef10c8113ea569feb05c7782818d9b6223a0b213117b7",
+      "byte_length": 118316,
+      "raw_ref": "raw/WHATWG/mimesniff-review-2025-07.html",
+      "headers_ref": "http/whatwg-mimesniff-rd-2025-07.headers.txt",
+      "replay_ref": "replay/WHATWG/mimesniff-review-2025-07.html",
+      "replay_headers_ref": "replay-http/mimesniff-2025.headers.txt",
+      "replay_sha256": "db83d3e4a68e6a89361ef10c8113ea569feb05c7782818d9b6223a0b213117b7",
+      "replay_byte_identical": true,
+      "adapter_id": "normshift.adapters.whatwg",
+      "adapter_version": "1.0.0",
+      "normalization_version": "1.0.0",
+      "profile": "whatwg",
+      "portable_source_ref": "raw/WHATWG/mimesniff-review-2025-07.html",
+      "acquisition_recipe_or_snapshot_ref": "HTTPS GET https://mimesniff.spec.whatwg.org/review-drafts/2025-07/ with curl fail-closed redirect handling; retain raw/WHATWG/mimesniff-review-2025-07.html only after HTTP 200 and exact SHA-256/byte-length verification",
+      "license": {
+        "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "policy_url": "https://whatwg.org/ipr-policy",
+        "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. Full raw HTML is redistributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+        "required_notice": "Attribute WHATWG and the named copyright holders, identify the MIME Sniffing title and source URL, link CC BY 4.0, and state that the snapshot is unmodified.",
+        "snapshot_distribution": "legally_redistributed_pinned_snapshot"
+      },
+      "completeness_evidence": [
+        "two independent official fetches were byte-identical",
+        "HTTP Content-Length exactly equals the retained file length",
+        "doctype, exact Review Draft title/date, intellectual-property section, and terminal references are present"
+      ]
+    }
+  ],
+  "lineage_chains": [
+    {
+      "chain_id": "rfc-tls-1.0-1.2",
+      "family": "RFC",
+      "ordered_source_ids": [
+        "rfc-tls-1.0-rfc2246",
+        "rfc-tls-1.1-rfc4346",
+        "rfc-tls-1.2-rfc5246"
+      ],
+      "consecutive_version_count": 3,
+      "continuity_status": "SUPPORTED_BY_DOCUMENTS",
+      "continuity_basis": [
+        "RFC 4346 header says it obsoletes RFC 2246 and its introduction calls it a revision of TLS 1.0",
+        "RFC 5246 header says it obsoletes RFC 4346 and its introduction calls it a revision of TLS 1.1"
+      ]
+    },
+    {
+      "chain_id": "w3c-micropub-cr-pr-rec",
+      "family": "W3C_TR",
+      "ordered_source_ids": [
+        "w3c-micropub-cr-20161018",
+        "w3c-micropub-pr-20170413",
+        "w3c-micropub-rec-20170523"
+      ],
+      "consecutive_version_count": 3,
+      "continuity_status": "SUPPORTED_BY_DOCUMENTS",
+      "continuity_basis": [
+        "the Proposed Recommendation identifies the 2016-10-18 Candidate Recommendation as its direct Previous Version",
+        "the Recommendation identifies the 2017-04-13 Proposed Recommendation as its direct Previous Version",
+        "both later versions contain explicit change logs from the preceding version"
+      ]
+    },
+    {
+      "chain_id": "whatwg-mimesniff-review-drafts",
+      "family": "WHATWG",
+      "ordered_source_ids": [
+        "whatwg-mimesniff-review-2023-07",
+        "whatwg-mimesniff-review-2024-07",
+        "whatwg-mimesniff-review-2025-01",
+        "whatwg-mimesniff-review-2025-07"
+      ],
+      "consecutive_version_count": 4,
+      "continuity_status": "SUPPORTED_BY_PINNED_OFFICIAL_INDEX_AND_DOCUMENTS",
+      "continuity_basis": [
+        "all four documents are official dated Review Drafts of MIME Sniffing and link the same Living Standard",
+        "the WHATWG mimesniff repository review-drafts index at commit 39aa53511b13953d84fef8d4131d6f61d0ccbde6 lists 2023-07.bs, 2024-07.bs, 2025-01.bs, and 2025-07.bs contiguously with no omitted Review Draft between them"
+      ],
+      "official_index_ref": "chain-evidence-whatwg-mimesniff-review-drafts.json",
+      "official_index_sha256": "2b227abf39c7d45f29e87bacba14f2b7ffbba928bfcf568c58a2ee0dea5581ab"
+    }
+  ],
+  "license_evidence": [
+    {
+      "id": "IETF-TLP-5",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+      "local_ref": "license-evidence/IETF-TLP-5.html",
+      "sha256": "9ae8dca17817e331cca993e80261c14ae6b73b0194ecb7a7055645839b67ef67",
+      "byte_length": 72616
+    },
+    {
+      "id": "IETF-TLP-FAQ",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/copyright-policy-and-tlp-faq/",
+      "local_ref": "license-evidence/IETF-TLP-FAQ.html",
+      "sha256": "610eaaa046b55b8df39456e6ed7dafd4d3ded19884500f9da8aded02c33151f9",
+      "byte_length": 76042
+    },
+    {
+      "id": "W3C-Software-Document-License-2015",
+      "requested_url": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document",
+      "url": "https://www.w3.org/copyright/software-license-2015/",
+      "redirect_count": 1,
+      "local_ref": "license-evidence/W3C-Software-Document-License-2015.html",
+      "sha256": "d2f31d95646fcc5f3b6e61b39d44898e6d828d9259e87fa2bc1184452d5803df",
+      "byte_length": 26970
+    },
+    {
+      "id": "WHATWG-IPR-Policy",
+      "url": "https://whatwg.org/ipr-policy",
+      "local_ref": "license-evidence/WHATWG-IPR-Policy.html",
+      "sha256": "7cc4d98fe3179995010bc00e64ec6b64dd782aae8c6de7dd9c7533b901107227",
+      "byte_length": 36038
+    },
+    {
+      "id": "CC-BY-4.0-legalcode",
+      "url": "https://creativecommons.org/licenses/by/4.0/legalcode.en",
+      "local_ref": "license-evidence/CC-BY-4.0-legalcode.html",
+      "sha256": "6d55b998ed5c54f43426d059a8c549ed58a3321e5463e6a6af1c6b56ab78c333",
+      "byte_length": 48970
+    }
+  ],
+  "license_conclusion": {
+    "selected_development_sources": "CLEAR_FOR_COMPLETE_UNMODIFIED_PINNED_SNAPSHOT_REDISTRIBUTION_WITH_REQUIRED_NOTICES",
+    "generic_or_unknown_license_used": false,
+    "conditions": [
+      "do not modify RFC snapshots and retain all embedded RFC notices and disclaimers",
+      "bundle a viewable full W3C Software and Document License notice and retain W3C document status, notices and disclaimers",
+      "provide WHATWG attribution, source, CC BY 4.0 link, and modification status (unmodified)",
+      "do not imply endorsement or grant of patent rights"
+    ],
+    "legal_advice": false
+  },
+  "whole_document_split_plan": {
+    "status": "PROTOCOL_ONLY__BLIND_MEMBERSHIP_NOT_CREATED_OR_DISCLOSED",
+    "acquired_sources_are": "VISIBLE_DEVELOPMENT_SOURCE_CORPUS_ONLY",
+    "conflict": "With only one three-or-more-version chain per family, putting at least one document from every family into M1 holdout while forbidding any M2 chain from crossing splits would place every available family chain wholly in holdout and leave no real development chain.",
+    "no_leak_resolution": "After the implementation candidate is hash-bound, the independent evaluation owner must select and acquire one additional, disjoint official lineage chain of at least three consecutive versions for each family. Its identities, URLs, raw hashes, split membership, labels and per-case outputs must remain unavailable to implementation until the policy permits reveal.",
+    "minimum_projected_counts": {
+      "visible_development_documents": 10,
+      "blind_holdout_documents": 9,
+      "total_documents": 19,
+      "overall_holdout_fraction": "9/19 = 47.37%",
+      "by_family": {
+        "RFC": "3 holdout / 6 total = 50%",
+        "W3C_TR": "3 holdout / 6 total = 50%",
+        "WHATWG": "3 holdout / 7 total = 42.86%"
+      }
+    },
+    "constraints": [
+      "split only on whole official documents",
+      "never split one standard lineage chain across development and holdout",
+      "no raw SHA-256 or derived normalized/excerpt overlap",
+      "holdout acquisition and manifest freezing belong to the independent evaluation owner in a fresh environment",
+      "any holdout source license, official identity, hash, length, or continuity uncertainty is BLOCKED_EXTERNAL"
+    ]
+  },
+  "final_boundary": {
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "release": "BLOCKED",
+    "blind_holdout": "BLOCKED_EXTERNAL_UNTIL_INDEPENDENT_POST_CANDIDATE_ACQUISITION",
+    "allowed_claim": "official replayable development-source corpus curated; source minima available only"
+  }
+}

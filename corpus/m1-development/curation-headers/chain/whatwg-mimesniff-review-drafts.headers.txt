@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Content-Length: 11929
+Content-Type: application/json; charset=utf-8
+ETag: "9da3f3ba4f37761d3a80a8049c6060c24f3b8aa9"
+Last-Modified: Fri, 17 Jul 2026 13:17:47 GMT
+
