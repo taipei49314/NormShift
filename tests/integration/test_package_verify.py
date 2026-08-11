@@ -811,6 +811,15 @@ def test_distribution_provenance_rejects_bytes_not_rebuilt_from_source_zip(
         return ""
 
     monkeypatch.setattr(pv, "_run_checked", fake_run_checked)
+    canonical_checks: list[Path] = []
+    normalized_rebuilds: list[tuple[Path, Path]] = []
+
+    def fake_normalize(source: Path, output: Path) -> None:
+        normalized_rebuilds.append((source, output))
+        output.write_bytes(source.read_bytes())
+
+    monkeypatch.setattr(pv, "assert_canonical_wheel_file", canonical_checks.append)
+    monkeypatch.setattr(pv, "normalize_wheel_file", fake_normalize)
     state = pv._State()
     pv._verify_distribution_provenance(
         source_root,
@@ -826,6 +835,10 @@ def test_distribution_provenance_rejects_bytes_not_rebuilt_from_source_zip(
 
     assert state.error_count == 2
     assert all("differs from the exact Source.zip rebuild" in error for error in state.errors)
+    assert canonical_checks == [wheel]
+    assert [(source.name, output.name) for source, output in normalized_rebuilds] == [
+        (wheel.name, wheel.name)
+    ]
 
 
 def test_sbom_graph_comparison_detects_missing_transitive_component() -> None:

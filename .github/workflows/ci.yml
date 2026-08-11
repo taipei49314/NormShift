@@ -64,9 +64,20 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
+          $rawDist = Join-Path $env:RUNNER_TEMP "raw-dist"
           $dist = Join-Path $env:RUNNER_TEMP "dist"
-          uv build --out-dir $dist --no-create-gitignore
+          uv build --out-dir $rawDist --no-create-gitignore
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $wheels = @(Get-ChildItem -LiteralPath $rawDist -Filter "*.whl")
+          $sdists = @(Get-ChildItem -LiteralPath $rawDist -Filter "*.tar.gz")
+          if ($wheels.Count -ne 1) { throw "expected exactly one built wheel" }
+          if ($sdists.Count -ne 1) { throw "expected exactly one built sdist" }
+          New-Item -ItemType Directory -Path $dist | Out-Null
+          $canonicalWheel = Join-Path $dist $wheels[0].Name
+          uv run --frozen python -B scripts/normalize_wheel.py $wheels[0].FullName `
+            --output $canonicalWheel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Move-Item -LiteralPath $sdists[0].FullName -Destination $dist
 
       - name: Smoke-test built wheel and sdist
         shell: pwsh
@@ -322,3 +333,60 @@ jobs:
             ${{ runner.temp }}/normshift-sbom.cdx.json
           if-no-files-found: warn
           retention-days: 90
+
+  cross-platform-distribution-equality:
+    name: cross-platform distribution byte equality
+    needs: deterministic-gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.2"
+          python-version: "3.12"
+          enable-cache: false
+
+      - name: Download exact-run distribution evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: m0-ci-*-${{ github.sha }}
+          path: ${{ runner.temp }}/cross-platform-artifacts
+
+      - name: Require byte-identical wheel and sdist across all runners
+        shell: pwsh
+        env:
+          UV_CACHE_DIR: ${{ runner.temp }}/uv-cache
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root = Join-Path $env:RUNNER_TEMP "cross-platform-artifacts"
+          $wheels = @(Get-ChildItem -LiteralPath $root -Recurse -Filter "*.whl")
+          $sdists = @(Get-ChildItem -LiteralPath $root -Recurse -Filter "*.tar.gz")
+          if ($wheels.Count -ne 3) { throw "expected one wheel from each of three runners" }
+          if ($sdists.Count -ne 3) { throw "expected one sdist from each of three runners" }
+          if (@($wheels.Name | Sort-Object -Unique).Count -ne 1) {
+            throw "runner wheel names differ"
+          }
+          if (@($sdists.Name | Sort-Object -Unique).Count -ne 1) {
+            throw "runner sdist names differ"
+          }
+          foreach ($wheel in $wheels) {
+            uv run --no-project --python 3.12 python -B scripts/normalize_wheel.py `
+              --check $wheel.FullName
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          $wheelHashes = @(
+            $wheels | ForEach-Object {
+              (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash.ToLowerInvariant()
+            } | Sort-Object -Unique
+          )
+          $sdistHashes = @(
+            $sdists | ForEach-Object {
+              (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash.ToLowerInvariant()
+            } | Sort-Object -Unique
+          )
+          if ($wheelHashes.Count -ne 1) { throw "runner wheel bytes differ: $wheelHashes" }
+          if ($sdistHashes.Count -ne 1) { throw "runner sdist bytes differ: $sdistHashes" }
+          Write-Output "wheel sha256=$($wheelHashes[0])"
+          Write-Output "sdist sha256=$($sdistHashes[0])"
