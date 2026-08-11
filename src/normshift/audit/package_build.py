@@ -1573,7 +1573,8 @@ def _run_distribution_smoke(
             "r=files('normshift.schemas'); "
             "assert all(r.joinpath(n).is_file() for n in "
             "('report.schema.json','change.schema.json','requirement.schema.json',"
-            "'package_manifest_v1.schema.json','command_log_v1.schema.json')); "
+            "'package_manifest_v1.schema.json','command_log_v1.schema.json',"
+            "'m1_source_manifest_v1.schema.json')); "
             "print('metadata-entrypoint-schemas=PASS')"
         )
         metadata = recorder.run(

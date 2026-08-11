@@ -1343,6 +1343,7 @@ def _wheel_metadata(path: Path) -> tuple[str, str, list[str], str]:
         for schema_name in (
             "normshift/schemas/package_manifest_v1.schema.json",
             "normshift/schemas/command_log_v1.schema.json",
+            "normshift/schemas/m1_source_manifest_v1.schema.json",
         ):
             if schema_name not in names:
                 raise ValueError(f"wheel omits packaged schema {schema_name}")
@@ -1797,7 +1798,8 @@ def _runtime_smoke(python: Path, entrypoint: Path, expected_version: str) -> Non
         "assert any(e.name=='normshift' and e.value=='normshift.cli:app' for e in eps); "
         "base=r.files('normshift.schemas'); "
         "assert base.joinpath('package_manifest_v1.schema.json').is_file(); "
-        "assert base.joinpath('command_log_v1.schema.json').is_file()"
+        "assert base.joinpath('command_log_v1.schema.json').is_file(); "
+        "assert base.joinpath('m1_source_manifest_v1.schema.json').is_file()"
     )
     _run_checked([str(python), "-I", "-c", code])
     if not entrypoint.is_file():

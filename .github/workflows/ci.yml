@@ -120,6 +120,7 @@ jobs:
               "requirement.schema.json",
               "package_manifest_v1.schema.json",
               "command_log_v1.schema.json",
+              "m1_source_manifest_v1.schema.json",
           ):
               assert schemas.joinpath(name).is_file(), name
           print(f"normshift={version('normshift')} module={normshift.__file__}")
