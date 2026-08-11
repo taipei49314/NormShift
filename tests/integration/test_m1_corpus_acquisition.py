@@ -26,6 +26,7 @@ from normshift.corpus.acquisition import (
     load_source_manifest,
     verify_corpus_offline,
 )
+from normshift.io_safety import write_transaction
 from normshift.model.types import AdapterName
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -327,6 +328,56 @@ def test_complete_acquisition_is_idempotently_verified_not_refetched(tmp_path: P
     assert result.mode == "OFFLINE_VERIFIED"
 
 
+def test_acquisition_replays_written_bytes_before_reporting_success(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    policy_path = _write_policy(tmp_path)
+    original_write = write_transaction
+
+    def corrupting_write(artifacts: dict[Path, bytes]) -> None:
+        original_write(artifacts)
+        first = next(iter(artifacts))
+        first.write_bytes(first.read_bytes() + b"tampered-after-commit")
+
+    monkeypatch.setattr(
+        "normshift.corpus.acquisition.write_transaction",
+        corrupting_write,
+    )
+    with pytest.raises(AcquisitionError, match="size mismatch"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=_fetcher(raw_by_id),
+            allow_test_contract=True,
+        )
+
+    refetched = False
+
+    def forbidden_refetch(_record: SourceRecord) -> FetchResult:
+        nonlocal refetched
+        refetched = True
+        raise AssertionError("a quarantined complete inventory must not be refetched")
+
+    with pytest.raises(AcquisitionError, match="size mismatch"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=forbidden_refetch,
+            allow_test_contract=True,
+        )
+    assert refetched is False
+
+
 def test_wrong_manifest_hash_fails_before_fetch_or_output(tmp_path: Path) -> None:
     payload, _ = _manifest_payload()
     manifest_path = tmp_path / "sources.json"
@@ -423,6 +474,66 @@ def test_manifest_rejects_casefold_output_collision(tmp_path: Path) -> None:
         )
 
 
+@pytest.mark.parametrize("suffix", ["", ".meta.json", ".receipt.json"])
+def test_manifest_rejects_exact_duplicate_output_ref(
+    tmp_path: Path,
+    suffix: str,
+) -> None:
+    payload, _ = _manifest_payload()
+    payload["sources"][1]["local_ref"] = payload["sources"][0]["local_ref"] + suffix
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    with pytest.raises(AcquisitionError, match="duplicate portable output ref"):
+        load_source_manifest(
+            manifest_path,
+            expected_sha256=digest,
+            acceptance_policy_path=policy_path,
+            allow_test_contract=True,
+        )
+
+
+def test_manifest_rejects_output_file_directory_collision(tmp_path: Path) -> None:
+    payload, _ = _manifest_payload()
+    payload["sources"][0]["local_ref"] = "snapshots/shared"
+    payload["sources"][1]["local_ref"] = "snapshots/shared/source.html"
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    with pytest.raises(AcquisitionError, match="file/directory collision"):
+        load_source_manifest(
+            manifest_path,
+            expected_sha256=digest,
+            acceptance_policy_path=policy_path,
+            allow_test_contract=True,
+        )
+
+
+def test_actual_contract_rejects_custom_fetcher(tmp_path: Path) -> None:
+    payload = _actual_contract_payload()
+    manifest_path = tmp_path / "actual-sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    called = False
+
+    def forbidden_fetch(_record: SourceRecord) -> FetchResult:
+        nonlocal called
+        called = True
+        raise AssertionError("custom fetcher must not run for an actual-source contract")
+
+    with pytest.raises(AcquisitionError, match="custom fetchers are restricted"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=ROOT / FROZEN_POLICY_REF,
+            fetcher=forbidden_fetch,
+        )
+    assert called is False
+    assert list(snapshot_root.rglob("*")) == []
+
+
 def test_manifest_rejects_casefold_parent_directory_collision(tmp_path: Path) -> None:
     payload, _ = _manifest_payload()
     payload["sources"][0]["local_ref"] = "snapshots/RFC/first.html"
@@ -439,7 +550,21 @@ def test_manifest_rejects_casefold_parent_directory_collision(tmp_path: Path) ->
         )
 
 
-@pytest.mark.parametrize("segment", ["CON", "aux.txt", "trailing.", "trailing "])
+@pytest.mark.parametrize(
+    "segment",
+    [
+        "CON",
+        "aux.txt",
+        "trailing.",
+        "trailing ",
+        "bad<.html",
+        "bad>.html",
+        'bad".html',
+        "bad|.html",
+        "bad?.html",
+        "bad*.html",
+    ],
+)
 def test_manifest_rejects_windows_unsafe_output_segments(
     tmp_path: Path,
     segment: str,
@@ -449,13 +574,87 @@ def test_manifest_rejects_windows_unsafe_output_segments(
     manifest_path = tmp_path / "sources.json"
     digest = _write_manifest(manifest_path, payload)
     policy_path = _write_policy(tmp_path)
-    with pytest.raises(AcquisitionError, match="Windows"):
+    with pytest.raises(AcquisitionError, match="Windows|portable ASCII"):
         load_source_manifest(
             manifest_path,
             expected_sha256=digest,
             acceptance_policy_path=policy_path,
             allow_test_contract=True,
         )
+
+
+def test_manifest_rejects_overlong_output_ref_segments_before_fetch(tmp_path: Path) -> None:
+    payload, _ = _manifest_payload()
+    payload["sources"][0]["local_ref"] = f"snapshots/rfc/{'a' * 256}.html"
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    with pytest.raises(AcquisitionError, match="path segment exceeds 255"):
+        load_source_manifest(
+            manifest_path,
+            expected_sha256=digest,
+            acceptance_policy_path=policy_path,
+            allow_test_contract=True,
+        )
+
+
+def test_acquisition_rejects_long_concrete_transaction_path_before_fetch(
+    tmp_path: Path,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    payload["sources"][0]["local_ref"] = f"snapshots/rfc/{'a' * 237}.html"
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+
+    fetched = False
+
+    def forbidden_fetch(_record: SourceRecord) -> FetchResult:
+        nonlocal fetched
+        fetched = True
+        return _fetcher(raw_by_id)(_record)
+
+    with pytest.raises(AcquisitionError, match="transaction path exceeds"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=forbidden_fetch,
+            allow_test_contract=True,
+        )
+    assert fetched is False
+
+
+def test_derived_output_ref_over_total_cap_fails_before_fetch(tmp_path: Path) -> None:
+    payload, _ = _manifest_payload()
+    long_ref = "snapshots/" + "/".join([*(["a" * 100] * 9), "b" * 93])
+    assert len(long_ref.encode("ascii")) == 1012
+    payload["sources"][0]["local_ref"] = long_ref
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    fetched = False
+
+    def forbidden_fetch(_record: SourceRecord) -> FetchResult:
+        nonlocal fetched
+        fetched = True
+        raise AssertionError("overlong derived refs must fail before fetch")
+
+    with pytest.raises(AcquisitionError, match="portable output ref exceeds 1024"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=forbidden_fetch,
+            allow_test_contract=True,
+        )
+    assert fetched is False
 
 
 def test_manifest_rejects_canonical_final_url_disagreement(tmp_path: Path) -> None:
@@ -545,7 +744,135 @@ def test_actual_contract_rejects_renamed_duplicate_bytes_as_two_versions(
             "byte_length": first["byte_length"],
         }
     )
-    with pytest.raises(AcquisitionError, match="document_version.*content_sha256.*canonical_url"):
+    with pytest.raises(AcquisitionError, match="duplicate actual RFC standard_id"):
+        _load_actual_contract(tmp_path, payload)
+
+
+@pytest.mark.parametrize(
+    "duplicate_field",
+    ["content_sha256", "acquisition_url"],
+)
+def test_actual_contract_rejects_duplicate_identity_among_three_records(
+    tmp_path: Path,
+    duplicate_field: str,
+) -> None:
+    payload = _actual_contract_payload()
+    first = payload["sources"][0]
+    third = deepcopy(payload["sources"][1])
+    third.update(
+        {
+            "source_id": "rfc-5246",
+            "standard_id": "RFC 5246",
+            "version_or_date": "2008-08",
+            "document_version": "sha256:ffffffffffff",
+            "canonical_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+            "acquisition_url": "https://www.rfc-editor.org/rfc/rfc5246.html",
+            "redirect_chain": ["https://www.rfc-editor.org/rfc/rfc5246.html"],
+            "content_sha256": "f" * 64,
+            "byte_length": 12345,
+            "local_ref": "snapshots/rfc/rfc-5246.html",
+        }
+    )
+    if duplicate_field == "acquisition_url":
+        third["acquisition_url"] = first["acquisition_url"]
+        third["redirect_chain"] = [first["acquisition_url"], third["canonical_url"]]
+    else:
+        third[duplicate_field] = first[duplicate_field]
+    payload["sources"].append(third)
+
+    with pytest.raises(
+        AcquisitionError,
+        match=f"duplicate actual-source {duplicate_field}",
+    ):
+        _load_actual_contract(tmp_path, payload)
+
+
+def test_actual_contract_rejects_duplicate_document_version_within_standard(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first_w3c = payload["sources"][2]
+    third = deepcopy(payload["sources"][3])
+    third.update(
+        {
+            "source_id": "w3c-micropub-wd",
+            "version_or_date": "2015-01-01",
+            "document_version": first_w3c["document_version"],
+            "canonical_url": "https://www.w3.org/TR/2015/WD-micropub-20150101/",
+            "acquisition_url": "https://www.w3.org/TR/2015/WD-micropub-20150101/",
+            "redirect_chain": ["https://www.w3.org/TR/2015/WD-micropub-20150101/"],
+            "content_sha256": "c" * 64,
+            "byte_length": 12345,
+            "local_ref": "snapshots/w3c/micropub-wd.html",
+        }
+    )
+    payload["sources"].append(third)
+
+    with pytest.raises(AcquisitionError, match="within family/standard"):
+        _load_actual_contract(tmp_path, payload)
+
+
+def test_actual_contract_allows_same_document_version_for_different_standards(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first_w3c = payload["sources"][2]
+    second_w3c = payload["sources"][3]
+    second_w3c["standard_id"] = "Other Standard"
+    second_w3c["document_version"] = first_w3c["document_version"]
+
+    manifest = _load_actual_contract(tmp_path, payload)
+    assert len(manifest.sources) == 6
+
+
+def test_actual_contract_rejects_duplicate_canonical_url_among_three_records(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first_w3c = payload["sources"][2]
+    third = deepcopy(payload["sources"][3])
+    third.update(
+        {
+            "source_id": "w3c-micropub-cr-alias",
+            "standard_id": "Micropub alternate identity",
+            "version_or_date": first_w3c["version_or_date"],
+            "document_version": "sha256:dddddddddddd",
+            "canonical_url": first_w3c["canonical_url"],
+            "acquisition_url": first_w3c["acquisition_url"],
+            "redirect_chain": first_w3c["redirect_chain"],
+            "content_sha256": "d" * 64,
+            "byte_length": 12345,
+            "local_ref": "snapshots/w3c/micropub-cr-alias.html",
+        }
+    )
+    payload["sources"].append(third)
+
+    with pytest.raises(AcquisitionError, match="duplicate actual-source canonical_url"):
+        _load_actual_contract(tmp_path, payload)
+
+
+def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first = payload["sources"][0]
+    alias = deepcopy(first)
+    alias.update(
+        {
+            "source_id": "rfc-2246-alias",
+            "version_or_date": "2000-01",
+            "document_version": "sha256:eeeeeeeeeeee",
+            "canonical_url": "https://rfc-editor.org/rfc/rfc2246.txt",
+            "acquisition_url": "https://rfc-editor.org/rfc/rfc2246.txt",
+            "redirect_chain": ["https://rfc-editor.org/rfc/rfc2246.txt"],
+            "content_sha256": "e" * 64,
+            "byte_length": 12345,
+            "local_ref": "snapshots/rfc/rfc-2246-alias.txt",
+        }
+    )
+    payload["sources"].append(alias)
+
+    with pytest.raises(AcquisitionError, match="duplicate actual RFC standard_id"):
         _load_actual_contract(tmp_path, payload)
 
 

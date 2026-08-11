@@ -13,8 +13,11 @@ An actual-source manifest must:
 - bind `acceptance/m1_m2_prereg_v1.json` at exact SHA-256
   `0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773`;
 - contain at least two versions from each of RFC, W3C, and WHATWG;
-- give every source a `standard_id` and `version_or_date`, with two distinct
-  adapter document versions, hashes, and canonical URLs per family;
+- give every source a `standard_id` and `version_or_date`; every actual source
+  must have a globally unique hash, acquisition URL, and canonical URL; adapter
+  document versions must be unique within one family/standard lineage, each
+  family must provide at least two distinct `(standard_id, document_version)`
+  pairs, and RFC records must also name distinct RFC numbers;
 - use immutable family-authoritative URL forms: exact RFC Editor resources,
   dated W3C `/TR/` versions, or frozen WHATWG commit/review snapshots;
 - record the curator's prior retrieval assertion, ETag and Last-Modified (including
@@ -36,6 +39,23 @@ adapter/family/version through an M1-only identity gate (without changing the M0
 adapter contract). All sources pass before source bytes, metadata sidecars, and
 receipts are committed in one rollback-safe transaction. Portable path aliases,
 existing partial state, extra files/directories, symlinks, and junctions are rejected.
+Generated refs use a conservative ASCII segment grammar, a 255-byte segment cap,
+and a 1,024-byte relative-ref cap so invalid platform-specific names fail before
+any network fetch. The concrete final, temporary, and backup paths under the
+chosen snapshot root must also fit a conservative 240-byte transaction budget;
+choose a shorter dedicated root if that preflight rejects the location.
+
+After that transaction, `acquire` immediately runs the complete network-free
+inventory, provenance, byte, and adapter replay before it can report `ACQUIRED`.
+If this final replay fails, the command exits nonzero and the dedicated root is
+quarantined: later invocations re-verify the existing inventory and cannot refetch,
+repair, or report success. Discard and recreate that root before retrying. This is
+fail-closed quarantine, not an automatic rollback-to-empty guarantee.
+
+Custom fetch callbacks are restricted to explicitly enabled test-only contracts.
+Actual-source receipts can only be produced by the pinned HTTPS acquisition path;
+embedded snapshot import must use a separately attested delivery contract rather
+than impersonating an observed HTTP response.
 
 The receipt preserves `curator_retrieved_at_utc` as an assertion from the frozen
 manifest. This command performs pinned **reacquisition**; it does not claim to have

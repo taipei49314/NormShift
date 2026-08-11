@@ -230,6 +230,36 @@ def test_transaction_restores_first_output_when_second_replace_fails(tmp_path: P
     assert b.read_text(encoding="utf-8") == "ORIGINAL_B"
 
 
+def test_transaction_temp_and_backup_names_do_not_expand_final_name(
+    tmp_path: Path,
+) -> None:
+    final = tmp_path / ("a" * 100 + ".txt")
+    write_transaction({final: b"FIRST\n"})
+    assert final.read_bytes() == b"FIRST\n"
+
+    moves: list[tuple[str, str]] = []
+
+    def record_move(src: object, dst: object) -> None:
+        moves.append((Path(str(src)).name, Path(str(dst)).name))
+        os.replace(src, dst)
+
+    write_transaction({final: b"SECOND\n"}, replace_fn=record_move)
+    assert final.read_bytes() == b"SECOND\n"
+    assert sorted(path.name for path in tmp_path.iterdir()) == [final.name]
+    internal_names = {
+        name
+        for source, destination in moves
+        for name in (source, destination)
+        if name != final.name
+    }
+    assert internal_names
+    assert all(
+        name.startswith((".normshift-txn-", ".normshift-bak-"))
+        for name in internal_names
+    )
+    assert all(final.name not in name for name in internal_names)
+
+
 def test_transaction_removes_only_new_files_created_by_this_invocation(
     tmp_path: Path,
 ) -> None:
