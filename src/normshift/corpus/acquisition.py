@@ -566,7 +566,15 @@ def load_source_manifest(
 
     source_ids: set[str] = set()
     versions: set[tuple[DocumentFamily, str, str]] = set()
-    output_refs: dict[str, str] = {}
+    rfc_standard_ids: set[str] = set()
+    actual_identity_values: dict[str, dict[str, str]] = {
+        "content_sha256": {},
+        "document_version": {},
+        "canonical_url": {},
+        "acquisition_url": {},
+    }
+    exact_output_refs: dict[str, str] = {}
+    output_spellings: dict[str, str] = {}
     for record in records:
         if record.source_id in source_ids:
             raise AcquisitionError(f"duplicate source_id: {record.source_id}")
@@ -580,21 +588,58 @@ def load_source_manifest(
         versions.add(version_key)
         if corpus_kind == "ACTUAL_STANDARDS_SOURCE_CONTRACT":
             _validate_actual_source_identity(record)
+            if record.family == DocumentFamily.RFC:
+                if record.standard_id in rfc_standard_ids:
+                    raise AcquisitionError(
+                        f"duplicate actual RFC standard_id: {record.standard_id!r}"
+                    )
+                rfc_standard_ids.add(record.standard_id)
+            for field, value in (
+                ("content_sha256", record.content_sha256),
+                ("document_version", record.document_version),
+                ("canonical_url", record.canonical_url),
+                ("acquisition_url", record.acquisition_url),
+            ):
+                previous_source = actual_identity_values[field].get(value)
+                if previous_source is not None:
+                    raise AcquisitionError(
+                        f"duplicate actual-source {field}: {value!r} "
+                        f"for {record.source_id!r} and {previous_source!r}"
+                    )
+                actual_identity_values[field][value] = record.source_id
         for output_ref in (record.local_ref, record.metadata_ref, record.receipt_ref):
             _validate_portable_output_ref(
                 output_ref,
                 label=f"{record.source_id} output",
             )
+            previous_exact = exact_output_refs.get(output_ref)
+            if previous_exact is not None:
+                raise AcquisitionError(
+                    f"duplicate portable output ref: {output_ref!r} "
+                    f"for {record.source_id!r} and {previous_exact!r}"
+                )
+            exact_output_refs[output_ref] = record.source_id
+
             parts = output_ref.split("/")
             for end in range(1, len(parts) + 1):
                 spelling = "/".join(parts[:end])
                 alias_key = unicodedata.normalize("NFKC", spelling).casefold()
-                previous = output_refs.get(alias_key)
+                previous = output_spellings.get(alias_key)
                 if previous is not None and previous != spelling:
                     raise AcquisitionError(
                         f"portable output spelling collision: {spelling!r} vs {previous!r}"
                     )
-                output_refs[alias_key] = spelling
+                output_spellings[alias_key] = spelling
+
+    for output_ref in exact_output_refs:
+        parts = output_ref.split("/")
+        for end in range(1, len(parts)):
+            parent_ref = "/".join(parts[:end])
+            if parent_ref in exact_output_refs:
+                raise AcquisitionError(
+                    f"portable output file/directory collision: {parent_ref!r} "
+                    f"is an ancestor of {output_ref!r}"
+                )
 
     if corpus_kind == "ACTUAL_STANDARDS_SOURCE_CONTRACT":
         for family in (DocumentFamily.RFC, DocumentFamily.W3C, DocumentFamily.WHATWG):
@@ -842,12 +887,24 @@ def _artifact_bytes(
 ) -> dict[str, bytes]:
     artifacts: dict[str, bytes] = {}
     for record in manifest.sources:
-        artifacts[record.local_ref] = fetched[record.source_id].data
-        artifacts[record.metadata_ref] = _canonical_json(
-            _metadata_payload(record, manifest.manifest_sha256)
-        )
-        artifacts[record.receipt_ref] = _canonical_json(
-            _receipt_payload(record, manifest.manifest_sha256)
+        record_artifacts = {
+            record.local_ref: fetched[record.source_id].data,
+            record.metadata_ref: _canonical_json(
+                _metadata_payload(record, manifest.manifest_sha256)
+            ),
+            record.receipt_ref: _canonical_json(
+                _receipt_payload(record, manifest.manifest_sha256)
+            ),
+        }
+        for ref, data in record_artifacts.items():
+            if ref in artifacts:
+                raise AcquisitionError(f"duplicate generated artifact ref: {ref!r}")
+            artifacts[ref] = data
+    expected_count = 3 * len(manifest.sources)
+    if len(artifacts) != expected_count:
+        raise AcquisitionError(
+            f"generated artifact count mismatch: expected {expected_count}, "
+            f"got {len(artifacts)}"
         )
     return artifacts
 
@@ -933,6 +990,13 @@ def acquire_corpus(
     )
     root = _root_path(snapshot_root)
 
+    if fetcher is not None and (
+        manifest.corpus_kind != "SOURCE_CONTRACT_TEST" or not allow_test_contract
+    ):
+        raise AcquisitionError(
+            "custom fetchers are restricted to explicitly enabled source-contract tests"
+        )
+
     refs = [
         ref
         for record in manifest.sources
@@ -980,6 +1044,13 @@ def acquire_corpus(
             destination: artifacts[ref]
             for destination, ref in zip(destinations, artifacts, strict=True)
         }
+    )
+    verify_corpus_offline(
+        manifest_path,
+        root,
+        manifest_sha256=manifest.manifest_sha256,
+        acceptance_policy_path=acceptance_policy_path,
+        allow_test_contract=allow_test_contract,
     )
     return _result(manifest, mode="ACQUIRED")
 
