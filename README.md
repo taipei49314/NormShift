@@ -109,6 +109,14 @@ source/provenance/adapter check succeeds, and replays those source bindings offl
 It does **not** include labels, inspect holdouts, run M1 quality measurement, or claim
 M1 acceptance.
 
+The synthetic-tested labeling and blind-split governance primitive is documented in
+`docs/M1_M2_GOVERNANCE_CONTRACT.md`. It verifies neutral reviewer packets, independent
+submissions, retained adjudication history, whole-document/whole-lineage split rules,
+candidate-freeze/pre-prediction ordering, source-scope binding, independent reviewer
+authority, and portable exact-root custody. V1 fails closed on post-result corrections
+until a separate evaluation-attempt trust anchor exists. It contains no actual labels or
+holdout membership and cannot grant M1/M2 acceptance.
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
