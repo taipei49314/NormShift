@@ -63,9 +63,12 @@ MAX_SOURCE_COUNT: Final = 24
 MAX_SOURCE_BYTES: Final = 64 * 1024 * 1024
 MAX_TOTAL_SOURCE_BYTES: Final = 256 * 1024 * 1024
 MAX_REDIRECTS: Final = 5
+MAX_OUTPUT_REF_BYTES: Final = 1024
+MAX_OUTPUT_SEGMENT_BYTES: Final = 255
 _SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 _ID_RE: Final = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _MEDIA_TYPE_RE: Final = re.compile(r"^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$")
+_OUTPUT_SEGMENT_RE: Final = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 class AcquisitionError(ValueError):
@@ -281,14 +284,27 @@ def _validate_portable_output_ref(value: str, *, label: str) -> str:
         ref = validate_portable_ref(value)
     except PortableRefError as exc:
         raise AcquisitionError(f"{label}: {exc}") from exc
+    if len(ref.encode("utf-8")) > MAX_OUTPUT_REF_BYTES:
+        raise AcquisitionError(
+            f"{label}: portable output ref exceeds {MAX_OUTPUT_REF_BYTES} UTF-8 bytes"
+        )
     reserved = {"CON", "PRN", "AUX", "NUL"} | {
         f"{prefix}{number}"
         for prefix in ("COM", "LPT")
         for number in range(1, 10)
     }
     for segment in ref.split("/"):
+        if len(segment.encode("utf-8")) > MAX_OUTPUT_SEGMENT_BYTES:
+            raise AcquisitionError(
+                f"{label}: path segment exceeds {MAX_OUTPUT_SEGMENT_BYTES} UTF-8 bytes"
+            )
         if unicodedata.normalize("NFC", segment) != segment:
             raise AcquisitionError(f"{label}: path segments must use Unicode NFC")
+        if not _OUTPUT_SEGMENT_RE.fullmatch(segment):
+            raise AcquisitionError(
+                f"{label}: path segment must use conservative portable ASCII spelling: "
+                f"{segment!r}"
+            )
         if segment.endswith((".", " ")) or ":" in segment:
             raise AcquisitionError(f"{label}: Windows-unsafe path segment {segment!r}")
         if any(ord(char) < 0x20 or ord(char) == 0x7F for char in segment):

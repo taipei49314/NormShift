@@ -550,7 +550,21 @@ def test_manifest_rejects_casefold_parent_directory_collision(tmp_path: Path) ->
         )
 
 
-@pytest.mark.parametrize("segment", ["CON", "aux.txt", "trailing.", "trailing "])
+@pytest.mark.parametrize(
+    "segment",
+    [
+        "CON",
+        "aux.txt",
+        "trailing.",
+        "trailing ",
+        "bad<.html",
+        "bad>.html",
+        'bad".html',
+        "bad|.html",
+        "bad?.html",
+        "bad*.html",
+    ],
+)
 def test_manifest_rejects_windows_unsafe_output_segments(
     tmp_path: Path,
     segment: str,
@@ -560,7 +574,22 @@ def test_manifest_rejects_windows_unsafe_output_segments(
     manifest_path = tmp_path / "sources.json"
     digest = _write_manifest(manifest_path, payload)
     policy_path = _write_policy(tmp_path)
-    with pytest.raises(AcquisitionError, match="Windows"):
+    with pytest.raises(AcquisitionError, match="Windows|portable ASCII"):
+        load_source_manifest(
+            manifest_path,
+            expected_sha256=digest,
+            acceptance_policy_path=policy_path,
+            allow_test_contract=True,
+        )
+
+
+def test_manifest_rejects_overlong_output_ref_segments_before_fetch(tmp_path: Path) -> None:
+    payload, _ = _manifest_payload()
+    payload["sources"][0]["local_ref"] = f"snapshots/rfc/{'a' * 256}.html"
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    with pytest.raises(AcquisitionError, match="path segment exceeds 255"):
         load_source_manifest(
             manifest_path,
             expected_sha256=digest,

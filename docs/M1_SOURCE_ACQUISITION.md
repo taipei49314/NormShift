@@ -37,6 +37,9 @@ adapter/family/version through an M1-only identity gate (without changing the M0
 adapter contract). All sources pass before source bytes, metadata sidecars, and
 receipts are committed in one rollback-safe transaction. Portable path aliases,
 existing partial state, extra files/directories, symlinks, and junctions are rejected.
+Generated refs use a conservative ASCII segment grammar, a 255-byte segment cap,
+and a 1,024-byte relative-ref cap so invalid platform-specific names fail before
+any network fetch.
 
 After that transaction, `acquire` immediately runs the complete network-free
 inventory, provenance, byte, and adapter replay before it can report `ACQUIRED`.
