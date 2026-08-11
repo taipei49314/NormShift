@@ -67,6 +67,49 @@ policy and manifest hashes, source bytes, canonical metadata/receipts, and adapt
 provenance replay. Local reads are size-checked before bounded allocation and reject
 stat/read races.
 
+## Repository development recipes
+
+`corpus/m1-development/source-manifest.json` materializes ten official
+development-only recipes: RFC 2246/4346/5246, three dated Micropub W3C TR
+versions, and four MIME Sniffing WHATWG Review Drafts including 2025-01. Every
+entry is `fetch_recipe_only`; no standards response body or license-page body is
+stored in Git. The repository retains 27 small, hash-linked sanitized HTTP
+header records and a canonical recipe-only license inventory as source-curation
+provenance. Sanitizer v1.0.0 retains only bounded field-specific
+Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified, and one
+exact frozen W3C Location. It drops unknown fields and every continuation line,
+including continuations of allowlisted fields. Link is not retained, and only
+the exact observed `HTTP/1.1 200 OK` and `HTTP/1.1 301 Moved Permanently`
+status forms are accepted. The canonical sanitizer report preserves the exact
+27 original staging hashes and byte lengths without preserving original
+response-header bytes or sensitive values; its complete SHA-256 is frozen.
+
+The exact evidence root uses a no-self-cycle inventory. `EVIDENCE.sha256` hashes
+every content file except itself and its digest sidecar; callers must supply its
+independently frozen SHA-256. The verifier checks that external anchor, the
+sidecar, all content hashes, the exact file and directory set, portable aliases,
+regular-file identity, the compact canonical source manifest/policy, exact
+agreement between the manifest and canonical license inventory, and the
+original-to-sanitized header identity map. It repeats the complete root
+verification after loading those JSON contracts. The strict canonical curation
+provenance additionally binds the exact copied curator inventory/report/license
+bytes and each source's original acquisition recipe to its manifest acquisition
+URL, `fetch_recipe_only` boundary, and explicit no-body-in-repository state.
+
+CI runs only this network-free gate:
+
+```bash
+uv run normshift corpus verify-recipe-evidence corpus/m1-development \
+  --inventory-sha256 0eb3e50d0c35eb091b181f8cfe2007cc88b6496d38147870570e0219d92b5938 \
+  --manifest-sha256 a2cfd4efa43fc2e90a76ded6e6c461bbf42ccd445cd674009cc083faa7102aaf \
+  --acceptance-policy acceptance/m1_m2_prereg_v1.json
+```
+
+The curator supplied subsecond timestamps while the manifest schema permits
+whole-second UTC. `curation-provenance.json` preserves every original value and
+documents deterministic truncation to the preceding second without rounding.
+The staging acquisition helper was not imported and has no authority.
+
 ```bash
 uv run normshift corpus acquire sources.json \
   --manifest-sha256 "$MANIFEST_SHA256" \
@@ -82,8 +125,9 @@ uv run normshift corpus verify-sources sources.json \
 ## Deliberate non-claims and remaining gates
 
 The schema and tests use a `SOURCE_CONTRACT_TEST` kind for local structure-faithful
-fixtures. Production CLI calls reject that kind. No actual-source manifest or source
-bytes are asserted by this change.
+fixtures. Production CLI calls reject that kind. The repository actual-source
+manifest asserts only frozen development acquisition recipes and prior curator
+header/hash facts; it does not embed, reacquire, or attest current source bytes.
 
 Source verification is not full M1 report replay. A later independently reviewed
 gate must still acquire legally distributable official bytes, freeze corpus labels

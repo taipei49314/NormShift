@@ -108,7 +108,11 @@ class RfcAdapter:
         head = raw[:8000].lower()
         if path.suffix.lower() == ".xml":
             return b"<rfc" in head or b"<middle>" in head
-        return b"rfc" in head and (b"<html" in head or b"internet engineering" in head)
+        return b"rfc" in head and (
+            b"<html" in head
+            or b"internet engineering" in head
+            or b"request for comments:" in head
+        )
 
     def load(self, path: Path, raw: bytes) -> AdaptedDocument:
         if not raw.strip():

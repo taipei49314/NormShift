@@ -1,0 +1,117 @@
+{
+  "schema_version": "normshift-m1-development-license-inventory/v1",
+  "status": "CURATOR_ASSERTIONS_FOR_FROZEN_DEVELOPMENT_RECIPES_ONLY",
+  "source_curation_license_inventory_sha256": "6d003272c1307bd08778e0951b76f70d0dd52d6f32d2c1388bfdf5b1238a0702",
+  "repository_distribution": "FETCH_RECIPE_ONLY_NO_RESPONSE_BODIES",
+  "entries": [
+    {
+      "source_id": "rfc-tls-1.0-rfc2246",
+      "document_or_license": "RFC 2026-era document-embedded Full Copyright Statement; IETF Trust TLP publication guidance",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+      "redistribution_basis": "The complete RFC says distribution is unlimited and grants copying and distribution when its copyright notice and grant paragraph are retained. The TLP FAQ confirms unmodified IETF Documents may be published for any purpose.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "rfc-tls-1.1-rfc4346",
+      "document_or_license": "BCP 78 document notice and IETF Trust Legal Provisions 5.0",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+      "redistribution_basis": "The complete RFC says distribution is unlimited, embeds its BCP 78 copyright notice, and the TLP grants publication and distribution of complete unmodified IETF Documents.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "rfc-tls-1.2-rfc5246",
+      "document_or_license": "BCP 78 document notice and IETF Trust Legal Provisions 5.0",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+      "redistribution_basis": "The complete RFC says distribution is unlimited, embeds its IETF Trust/BCP 78 copyright notice, and the TLP grants publication and distribution of complete unmodified IETF Documents.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "w3c-micropub-cr-20161018",
+      "document_or_license": "W3C Software and Document License, 2015 version",
+      "url": "https://www.w3.org/copyright/software-license-2015/",
+      "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "w3c-micropub-pr-20170413",
+      "document_or_license": "W3C Software and Document License, 2015 version",
+      "url": "https://www.w3.org/copyright/software-license-2015/",
+      "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "w3c-micropub-rec-20170523",
+      "document_or_license": "W3C Software and Document License, 2015 version",
+      "url": "https://www.w3.org/copyright/software-license-2015/",
+      "redistribution_basis": "The document links this license. It permits copying and distribution for any purpose, subject to retaining the full license notice, existing notices and disclaimers, and a notice of modifications (none here).",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2023-07",
+      "document_or_license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. If a later authorized acquisition is redistributed, full raw HTML would be distributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2024-07",
+      "document_or_license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. If a later authorized acquisition is redistributed, full raw HTML would be distributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2025-01",
+      "document_or_license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. If a later authorized acquisition is redistributed, full raw HTML would be distributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+      "snapshot_distribution": "fetch_recipe_only"
+    },
+    {
+      "source_id": "whatwg-mimesniff-review-2025-07",
+      "document_or_license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "redistribution_basis": "The Review Draft footer and WHATWG IPR Policy section 7.1.1 license Review Drafts under CC BY 4.0. If a later authorized acquisition is redistributed, full raw HTML would be distributed under CC BY; source-code portions have a separate BSD 3-Clause option.",
+      "snapshot_distribution": "fetch_recipe_only"
+    }
+  ],
+  "license_evidence": [
+    {
+      "evidence_id": "ietf-tlp-5",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+      "sha256": "9ae8dca17817e331cca993e80261c14ae6b73b0194ecb7a7055645839b67ef67",
+      "byte_length": 72616,
+      "body_in_repository": false
+    },
+    {
+      "evidence_id": "ietf-tlp-faq",
+      "url": "https://trustee.ietf.org/documents/trust-legal-provisions/copyright-policy-and-tlp-faq/",
+      "sha256": "610eaaa046b55b8df39456e6ed7dafd4d3ded19884500f9da8aded02c33151f9",
+      "byte_length": 76042,
+      "body_in_repository": false
+    },
+    {
+      "evidence_id": "w3c-software-document-license-2015",
+      "url": "https://www.w3.org/copyright/software-license-2015/",
+      "sha256": "d2f31d95646fcc5f3b6e61b39d44898e6d828d9259e87fa2bc1184452d5803df",
+      "byte_length": 26970,
+      "body_in_repository": false
+    },
+    {
+      "evidence_id": "whatwg-ipr-policy",
+      "url": "https://whatwg.org/ipr-policy",
+      "sha256": "7cc4d98fe3179995010bc00e64ec6b64dd782aae8c6de7dd9c7533b901107227",
+      "byte_length": 36038,
+      "body_in_repository": false
+    },
+    {
+      "evidence_id": "cc-by-4.0-legalcode",
+      "url": "https://creativecommons.org/licenses/by/4.0/legalcode.en",
+      "sha256": "6d55b998ed5c54f43426d059a8c549ed58a3321e5463e6a6af1c6b56ab78c333",
+      "byte_length": 48970,
+      "body_in_repository": false
+    }
+  ],
+  "future_sources_authorized": false,
+  "legal_advice": false
+}

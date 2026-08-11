@@ -196,6 +196,16 @@ jobs:
           '@ | uv run python -
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+      - name: M1 development source recipes (network-free only)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          uv run normshift corpus verify-recipe-evidence corpus/m1-development `
+            --inventory-sha256 0eb3e50d0c35eb091b181f8cfe2007cc88b6496d38147870570e0219d92b5938 `
+            --manifest-sha256 a2cfd4efa43fc2e90a76ded6e6c461bbf42ccd445cd674009cc083faa7102aaf `
+            --acceptance-policy acceptance/m1_m2_prereg_v1.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: M0 benchmark
         shell: pwsh
         run: |

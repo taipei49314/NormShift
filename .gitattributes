@@ -12,3 +12,8 @@
 *.txt text eol=lf
 *.sha256 text eol=lf
 *.lock text eol=lf
+
+# This exact-root evidence inventory hashes curator-captured CRLF header bytes.
+# Disable all checkout/index transformations for every file under this root.
+/corpus/m1-development/** -text -eol
+/corpus/m1-development/curation-headers/** -text whitespace=cr-at-eol,-blank-at-eof

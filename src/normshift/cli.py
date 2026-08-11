@@ -18,6 +18,11 @@ from normshift.corpus.acquisition import (
     acquire_corpus,
     verify_corpus_offline,
 )
+from normshift.corpus.evidence_inventory import (
+    EvidenceInventoryError,
+    SourceRecipeEvidenceResult,
+    verify_source_recipe_evidence,
+)
 from normshift.extract.extractor import extract_from_source
 from normshift.governance.verify import (
     GovernanceContractError,
@@ -216,6 +221,25 @@ def governance_verify_blind_split_cmd(
     _echo_governance_result(result)
 
 
+def _echo_recipe_evidence_result(result: SourceRecipeEvidenceResult) -> None:
+    typer.echo(
+        json.dumps(
+            {
+                "acceptance": "NOT_EVALUATED",
+                "corpus_id": result.corpus_id,
+                "families": list(result.families),
+                "inventory_sha256": result.inventory_sha256,
+                "manifest_sha256": result.manifest_sha256,
+                "mode": result.mode,
+                "source_count": result.source_count,
+                "status": "EXPERIMENTAL_NOT_ADJUDICATED",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+
+
 @corpus_app.command("acquire")
 def corpus_acquire_cmd(
     manifest: Path = typer.Argument(..., help="Strict M1 source manifest JSON"),
@@ -280,6 +304,45 @@ def corpus_verify_sources_cmd(
         typer.echo(f"error: M1 source replay failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     _echo_corpus_result(result)
+
+
+@corpus_app.command("verify-recipe-evidence")
+def corpus_verify_recipe_evidence_cmd(
+    evidence_root: Path = typer.Argument(
+        ...,
+        help="Dedicated exact-root directory containing source recipes only",
+    ),
+    inventory_sha256: str = typer.Option(
+        ...,
+        "--inventory-sha256",
+        help="Externally frozen SHA-256 of EVIDENCE.sha256",
+    ),
+    manifest_sha256: str = typer.Option(
+        ...,
+        "--manifest-sha256",
+        help="Externally frozen SHA-256 of source-manifest.json",
+    ),
+    acceptance_policy: Path = typer.Option(
+        Path("acceptance/m1_m2_prereg_v1.json"),
+        "--acceptance-policy",
+        help="Frozen pre-result acceptance policy bound by the manifest",
+    ),
+) -> None:
+    """Verify the development source-recipe evidence root without network access."""
+    try:
+        result = verify_source_recipe_evidence(
+            evidence_root,
+            expected_inventory_sha256=inventory_sha256,
+            expected_manifest_sha256=manifest_sha256,
+            acceptance_policy_path=acceptance_policy,
+        )
+    except (AcquisitionError, EvidenceInventoryError) as exc:
+        typer.echo(f"error: M1 source-recipe evidence rejected: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001 - fail-closed CLI boundary
+        typer.echo(f"error: M1 source-recipe evidence failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _echo_recipe_evidence_result(result)
 
 
 @app.command("extract")
