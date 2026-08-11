@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "VerifiedSourceBinding": {
+      "additionalProperties": false,
+      "description": "One portable source identity established by a FULL replay.",
+      "properties": {
+        "byte_length": {
+          "maximum": 100000000,
+          "minimum": 0,
+          "title": "Byte Length",
+          "type": "integer"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "minLength": 1,
+          "title": "Document Version",
+          "type": "string"
+        },
+        "source_ref": {
+          "minLength": 1,
+          "pattern": "^(?!/)(?![A-Za-z]:)(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*://)(?!.*\\\\)(?!.*//)(?!\\.{1,2}(?:/|$))(?!.*(?:/\\.{1,2})(?:/|$)).+$",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "source_ref_mode": {
+          "const": "source_root_relative",
+          "title": "Source Ref Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_ref",
+        "content_sha256",
+        "byte_length",
+        "document_version",
+        "source_ref_mode"
+      ],
+      "title": "VerifiedSourceBinding",
+      "type": "object"
+    }
+  },
+  "$id": "https://normshift.local/schemas/full_verification_receipt_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical deterministic receipt for an exact FULL report replay.",
+  "properties": {
+    "authority_kind": {
+      "const": "FULL_REPORT_REPLAY",
+      "title": "Authority Kind",
+      "type": "string"
+    },
+    "new_source": {
+      "$ref": "#/$defs/VerifiedSourceBinding"
+    },
+    "old_source": {
+      "$ref": "#/$defs/VerifiedSourceBinding"
+    },
+    "receipt_payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Receipt Payload Sha256",
+      "type": "string"
+    },
+    "report_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Report Content Sha256",
+      "type": "string"
+    },
+    "report_file_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Report File Sha256",
+      "type": "string"
+    },
+    "report_schema_version": {
+      "minLength": 1,
+      "title": "Report Schema Version",
+      "type": "string"
+    },
+    "report_tool_version": {
+      "minLength": 1,
+      "title": "Report Tool Version",
+      "type": "string"
+    },
+    "result": {
+      "const": "OK",
+      "title": "Result",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "normshift-full-report-verification-receipt/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verification_scope": {
+      "const": "FULL",
+      "title": "Verification Scope",
+      "type": "string"
+    },
+    "verifier_id": {
+      "const": "normshift.verify.verifier.verify_report_file",
+      "title": "Verifier Id",
+      "type": "string"
+    },
+    "verifier_version": {
+      "minLength": 1,
+      "title": "Verifier Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "authority_kind",
+    "verification_scope",
+    "result",
+    "verifier_id",
+    "verifier_version",
+    "report_file_sha256",
+    "report_content_sha256",
+    "report_schema_version",
+    "report_tool_version",
+    "old_source",
+    "new_source",
+    "receipt_payload_sha256"
+  ],
+  "title": "FullVerificationReceipt",
+  "type": "object"
+}

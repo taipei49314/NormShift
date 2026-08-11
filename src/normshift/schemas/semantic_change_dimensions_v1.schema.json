@@ -1,0 +1,475 @@
+{
+  "$defs": {
+    "ChangeClassification": {
+      "enum": [
+        "UNCHANGED",
+        "MOVED",
+        "EDITORIAL",
+        "ADDED",
+        "REMOVED",
+        "STRENGTHENED",
+        "WEAKENED",
+        "POLARITY_FLIP",
+        "CONDITION_ADDED",
+        "CONDITION_REMOVED",
+        "EXCEPTION_ADDED",
+        "EXCEPTION_REMOVED",
+        "SPLIT",
+        "MERGED",
+        "AMBIGUOUS"
+      ],
+      "title": "ChangeClassification",
+      "type": "string"
+    },
+    "DimensionDisposition": {
+      "description": "Evidence-aware state for one semantic dimension.",
+      "enum": [
+        "UNCHANGED",
+        "CHANGED",
+        "ADDED",
+        "REMOVED",
+        "UNKNOWN",
+        "AMBIGUOUS",
+        "NOT_APPLICABLE"
+      ],
+      "title": "DimensionDisposition",
+      "type": "string"
+    },
+    "ObservationOrigin": {
+      "enum": [
+        "REQUIREMENT_FIELD",
+        "NORMALIZED_TEXT_SPAN"
+      ],
+      "title": "ObservationOrigin",
+      "type": "string"
+    },
+    "ObservationVerification": {
+      "enum": [
+        "VERIFIED_REQUIREMENT_FIELD",
+        "ASSERTED_UNVERIFIED"
+      ],
+      "title": "ObservationVerification",
+      "type": "string"
+    },
+    "RequirementEvidenceRef": {
+      "additionalProperties": false,
+      "description": "Exact source identity for one old/new requirement side.",
+      "properties": {
+        "document_sha256": {
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "minLength": 1,
+          "title": "Document Version",
+          "type": "string"
+        },
+        "normalized_text_sha256": {
+          "title": "Normalized Text Sha256",
+          "type": "string"
+        },
+        "original_text_sha256": {
+          "title": "Original Text Sha256",
+          "type": "string"
+        },
+        "requirement_id": {
+          "minLength": 1,
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "requirement_payload_sha256": {
+          "title": "Requirement Payload Sha256",
+          "type": "string"
+        },
+        "section_path": {
+          "minLength": 1,
+          "title": "Section Path",
+          "type": "string"
+        },
+        "semantic_fingerprint": {
+          "minLength": 1,
+          "title": "Semantic Fingerprint",
+          "type": "string"
+        },
+        "source_locator": {
+          "minLength": 1,
+          "title": "Source Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "document_sha256",
+        "document_version",
+        "source_locator",
+        "section_path",
+        "original_text_sha256",
+        "normalized_text_sha256",
+        "semantic_fingerprint",
+        "requirement_payload_sha256"
+      ],
+      "title": "RequirementEvidenceRef",
+      "type": "object"
+    },
+    "SemanticChangeClass": {
+      "description": "Exact M2 change classes preregistered by the frozen acceptance policy.",
+      "enum": [
+        "MOVE_ONLY",
+        "REWRITE_ONLY",
+        "MOVED_AND_REWRITTEN",
+        "ACTOR_CHANGED",
+        "ACTION_CHANGED",
+        "OBJECT_CHANGED",
+        "SCOPE_CHANGED",
+        "MODALITY_CHANGED",
+        "POLARITY_CHANGED",
+        "CONDITION_ADDED",
+        "CONDITION_REMOVED",
+        "EXCEPTION_ADDED",
+        "EXCEPTION_REMOVED"
+      ],
+      "title": "SemanticChangeClass",
+      "type": "string"
+    },
+    "SemanticChangeDimensions": {
+      "additionalProperties": false,
+      "description": "Independent M2 dimensions for one unchanged primary M0 change event.",
+      "properties": {
+        "change_classes": {
+          "items": {
+            "$ref": "#/$defs/SemanticChangeClass"
+          },
+          "title": "Change Classes",
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/SemanticChangeEvidence"
+        },
+        "semantic_change_id": {
+          "title": "Semantic Change Id",
+          "type": "string"
+        },
+        "slots": {
+          "$ref": "#/$defs/SemanticDimensionSlots"
+        },
+        "structural_form": {
+          "$ref": "#/$defs/StructuralForm"
+        }
+      },
+      "required": [
+        "semantic_change_id",
+        "structural_form",
+        "change_classes",
+        "slots",
+        "evidence"
+      ],
+      "title": "SemanticChangeDimensions",
+      "type": "object"
+    },
+    "SemanticChangeEvidence": {
+      "additionalProperties": false,
+      "description": "Binding to the unchanged primary M0 ``Change`` and exact requirements.",
+      "properties": {
+        "authority_id": {
+          "minLength": 1,
+          "title": "Authority Id",
+          "type": "string"
+        },
+        "authority_kind": {
+          "const": "FULL_REPORT_REPLAY",
+          "title": "Authority Kind",
+          "type": "string"
+        },
+        "authority_report_sha256": {
+          "title": "Authority Report Sha256",
+          "type": "string"
+        },
+        "new_requirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RequirementEvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "old_requirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RequirementEvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "primary_change_id": {
+          "minLength": 1,
+          "title": "Primary Change Id",
+          "type": "string"
+        },
+        "primary_change_sha256": {
+          "title": "Primary Change Sha256",
+          "type": "string"
+        },
+        "primary_classification": {
+          "$ref": "#/$defs/ChangeClassification"
+        },
+        "primary_evidence_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Primary Evidence Hashes",
+          "type": "array"
+        },
+        "verification_receipt_payload_sha256": {
+          "title": "Verification Receipt Payload Sha256",
+          "type": "string"
+        },
+        "verification_receipt_sha256": {
+          "title": "Verification Receipt Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authority_kind",
+        "authority_id",
+        "authority_report_sha256",
+        "verification_receipt_sha256",
+        "verification_receipt_payload_sha256",
+        "primary_change_id",
+        "primary_classification",
+        "primary_change_sha256",
+        "primary_evidence_hashes",
+        "old_requirement",
+        "new_requirement"
+      ],
+      "title": "SemanticChangeEvidence",
+      "type": "object"
+    },
+    "SemanticDimension": {
+      "enum": [
+        "actor",
+        "action",
+        "object",
+        "scope",
+        "modality",
+        "polarity",
+        "condition",
+        "exception"
+      ],
+      "title": "SemanticDimension",
+      "type": "string"
+    },
+    "SemanticDimensionSlots": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "actor": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "condition": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "exception": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "modality": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "object": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "polarity": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        },
+        "scope": {
+          "$ref": "#/$defs/SemanticSlotChange"
+        }
+      },
+      "required": [
+        "actor",
+        "action",
+        "object",
+        "scope",
+        "modality",
+        "polarity",
+        "condition",
+        "exception"
+      ],
+      "title": "SemanticDimensionSlots",
+      "type": "object"
+    },
+    "SemanticSlotChange": {
+      "additionalProperties": false,
+      "description": "Typed comparison result for one fixed semantic dimension.",
+      "properties": {
+        "change_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SemanticChangeClass"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dimension": {
+          "$ref": "#/$defs/SemanticDimension"
+        },
+        "disposition": {
+          "$ref": "#/$defs/DimensionDisposition"
+        },
+        "new": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SemanticValueEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "old": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SemanticValueEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dimension",
+        "disposition",
+        "change_class",
+        "old",
+        "new",
+        "reason"
+      ],
+      "title": "SemanticSlotChange",
+      "type": "object"
+    },
+    "SemanticValueEvidence": {
+      "additionalProperties": false,
+      "description": "One normalized semantic value and its exact source binding.",
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/SemanticDimension"
+        },
+        "evidence_sha256": {
+          "title": "Evidence Sha256",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/ObservationOrigin"
+        },
+        "source_text_sha256": {
+          "title": "Source Text Sha256",
+          "type": "string"
+        },
+        "span_end": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Span End"
+        },
+        "span_start": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Span Start"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "value_sha256": {
+          "title": "Value Sha256",
+          "type": "string"
+        },
+        "verification_status": {
+          "$ref": "#/$defs/ObservationVerification"
+        }
+      },
+      "required": [
+        "dimension",
+        "value",
+        "value_sha256",
+        "origin",
+        "verification_status",
+        "source_text_sha256",
+        "evidence_sha256"
+      ],
+      "title": "SemanticValueEvidence",
+      "type": "object"
+    },
+    "StructuralForm": {
+      "description": "Orthogonal physical form of a paired requirement change.",
+      "enum": [
+        "NONE",
+        "MOVE_ONLY",
+        "REWRITE_ONLY",
+        "MOVED_AND_REWRITTEN"
+      ],
+      "title": "StructuralForm",
+      "type": "string"
+    }
+  },
+  "$id": "https://normshift.local/schemas/semantic_change_dimensions_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical versioned document with a self-consistency integrity digest.",
+  "properties": {
+    "change": {
+      "$ref": "#/$defs/SemanticChangeDimensions"
+    },
+    "integrity_sha256": {
+      "title": "Integrity Sha256",
+      "type": "string"
+    },
+    "kind": {
+      "const": "normshift-semantic-change-dimensions",
+      "title": "Kind",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "change",
+    "integrity_sha256"
+  ],
+  "title": "SemanticDimensionsDocument",
+  "type": "object"
+}

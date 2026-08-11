@@ -40,6 +40,17 @@ Combined score components exposed in the report:
 - actor/action similarity
 - structural proximity
 
+## Experimental M2 dimension document
+
+The separate semantic-dimensions `1.0.0` document records structural form and
+independent actor/action/object/scope/modality/polarity/condition/exception
+slots without changing the primary M0 classification. Its conservative
+evidence comes only from a report reproduced by FULL source replay and a typed
+canonical receipt; caller spans for object/scope remain unverified `UNKNOWN`
+candidates. The claims boundary is documented in
+`docs/M2_SEMANTIC_DIMENSIONS_FOUNDATION.md`. This is a model foundation, not an
+M2 quality or acceptance claim.
+
 ## Profiles
 
 - **rfc2119**: uppercase-oriented RFC 2119 keywords (MUST, SHOULD, MAY, …)
