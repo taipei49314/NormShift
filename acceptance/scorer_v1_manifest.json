@@ -1,0 +1,135 @@
+{
+  "files": [
+    {
+      "bytes": 2095,
+      "path": "acceptance/README.md",
+      "sha256": "ba767c6777bda6f41934fe95ce1be7d628af6f15ec8b2d90b2eb7d3083cb9d93"
+    },
+    {
+      "bytes": 15310,
+      "path": "acceptance/m1_m2_prereg_v1.json",
+      "sha256": "0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773"
+    },
+    {
+      "bytes": 1550,
+      "path": "pyproject.toml",
+      "sha256": "df6b09875f5aadf7a4e964f6ac37859b3a9ca601850d636691693fc0f2bcd5fc"
+    },
+    {
+      "bytes": 11601,
+      "path": "schemas/acceptance_gold_v1.schema.json",
+      "sha256": "f8f7149936262e499e2f2a01eed71a3f463c7f76fe6a8f0f7f3de6617fb79b6b"
+    },
+    {
+      "bytes": 4930,
+      "path": "schemas/acceptance_predictions_v1.schema.json",
+      "sha256": "59d6d5b4b2899833b71ddd3ce896be89a0f9b5ad588a18788a9d3940ef058fb3"
+    },
+    {
+      "bytes": 10123,
+      "path": "schemas/acceptance_result_v1.schema.json",
+      "sha256": "c61292eee430408b01d3b785bf52cf5a7281d80febb8ee00c9f1c85aae6657f4"
+    },
+    {
+      "bytes": 1662,
+      "path": "scripts/export_acceptance_schemas.py",
+      "sha256": "f8afe247ef81fa960765991f08e2c4678ce7276b71c4801158c01c4a12dec8ec"
+    },
+    {
+      "bytes": 2342,
+      "path": "scripts/freeze_acceptance_scorer.py",
+      "sha256": "6e9becf29470fbe1319e9b2bd3f26ea9b8bc4a221ba32895ab2bf8486c711a89"
+    },
+    {
+      "bytes": 3752,
+      "path": "scripts/score_acceptance.py",
+      "sha256": "808d4dbb688ad72605214e1813c6b9b481f532b75e618ac592a330b1f9ca31c1"
+    },
+    {
+      "bytes": 128,
+      "path": "src/normshift/__init__.py",
+      "sha256": "e119ea48f4145e5cabdacff001e2f69247cdb8d46a49396b0664ae0cee3ac9c2"
+    },
+    {
+      "bytes": 394,
+      "path": "src/normshift/acceptance/__init__.py",
+      "sha256": "8c64ba4499af96e1c09b45b9831d735faf210902aadefefa025a5b1692436792"
+    },
+    {
+      "bytes": 3597,
+      "path": "src/normshift/acceptance/item_key.py",
+      "sha256": "bde6b352c983c3ea9f8e998f0fe50736bb991acfbcbf63e3e85812cdb95fe69b"
+    },
+    {
+      "bytes": 24349,
+      "path": "src/normshift/acceptance/models.py",
+      "sha256": "989c1350128ad51b06e90dceea8e9cf1f414cc91fa20605d4f832d5cdd2e6393"
+    },
+    {
+      "bytes": 32582,
+      "path": "src/normshift/acceptance/scorer.py",
+      "sha256": "a1844e1e1934731579083820123e6df98ed7331d4e650c0907814f3e1e60cf05"
+    },
+    {
+      "bytes": 213,
+      "path": "src/normshift/evidence/__init__.py",
+      "sha256": "15e6309ba85a3a7055532105499f633d9c68c92347c2a49d923ea7aabf63fda6"
+    },
+    {
+      "bytes": 857,
+      "path": "src/normshift/evidence/hashing.py",
+      "sha256": "04e126ddfb38817c14fd5cfa7245ba4fbbb4cfe1a5bfb21c5673fdaaba937a10"
+    },
+    {
+      "bytes": 11068,
+      "path": "src/normshift/io_safety.py",
+      "sha256": "4b9e187a42da0c2d99460f34224edaa4e3a717893d1715f58b079255ac4f75a5"
+    },
+    {
+      "bytes": 3505,
+      "path": "src/normshift/portable_ref.py",
+      "sha256": "706a43412ffca5546cd6b2e135ce6c39bbcda009510168f676067bf014acc5aa"
+    },
+    {
+      "bytes": 11601,
+      "path": "src/normshift/schemas/acceptance_gold_v1.schema.json",
+      "sha256": "f8f7149936262e499e2f2a01eed71a3f463c7f76fe6a8f0f7f3de6617fb79b6b"
+    },
+    {
+      "bytes": 4930,
+      "path": "src/normshift/schemas/acceptance_predictions_v1.schema.json",
+      "sha256": "59d6d5b4b2899833b71ddd3ce896be89a0f9b5ad588a18788a9d3940ef058fb3"
+    },
+    {
+      "bytes": 10123,
+      "path": "src/normshift/schemas/acceptance_result_v1.schema.json",
+      "sha256": "c61292eee430408b01d3b785bf52cf5a7281d80febb8ee00c9f1c85aae6657f4"
+    },
+    {
+      "bytes": 2937,
+      "path": "src/normshift/strict_json.py",
+      "sha256": "3c2322530819efc918c18a88f79cb49493deea52db5e6f7edd4efa326f1fdf42"
+    },
+    {
+      "bytes": 27356,
+      "path": "tests/unit/test_acceptance_scorer.py",
+      "sha256": "1bd874dba1e977785cbd404a3484c9a5a762c0361b4fbf16110489c163afa1cc"
+    },
+    {
+      "bytes": 205858,
+      "path": "uv.lock",
+      "sha256": "ad366985a60bb3f73e604071593bfc8e2dec3fc4cc6dfab9a8c2fa5a0eb3857c"
+    }
+  ],
+  "frozen_before_blind_evaluation": true,
+  "kind": "normshift-acceptance-scorer-manifest",
+  "policy_id": "normshift-m1-m2-prereg-v1",
+  "policy_sha256": "0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773",
+  "runtime": {
+    "pydantic_version": "2.13.4",
+    "python_implementation": "CPython",
+    "python_version": "3.12"
+  },
+  "schema_version": "1.0.0",
+  "scorer_id": "normshift-m1-m2-exact-scorer-v1"
+}

@@ -1,0 +1,397 @@
+{
+  "$comment": "Structural interchange schema only. Arithmetic, canonical item-key, graph, timestamp, aggregate, and frozen-policy invariants require validation and recomputation by the exact hash-bound NormShift scorer/models; JSON Schema validation alone never grants acceptance.",
+  "$defs": {
+    "CandidateBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "bundle_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Bundle Sha256",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "sdist_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sdist Sha256",
+          "type": "string"
+        },
+        "source_zip_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Zip Sha256",
+          "type": "string"
+        },
+        "tree": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Tree",
+          "type": "string"
+        },
+        "wheel_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Wheel Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "tree",
+        "wheel_sha256",
+        "sdist_sha256",
+        "source_zip_sha256",
+        "bundle_sha256"
+      ],
+      "title": "CandidateBinding",
+      "type": "object"
+    },
+    "DatasetSplit": {
+      "enum": [
+        "DEVELOPMENT",
+        "BLIND_HOLDOUT"
+      ],
+      "title": "DatasetSplit",
+      "type": "string"
+    },
+    "EvaluationFamily": {
+      "enum": [
+        "RFC",
+        "W3C_TR",
+        "WHATWG"
+      ],
+      "title": "EvaluationFamily",
+      "type": "string"
+    },
+    "EvaluationTask": {
+      "enum": [
+        "M1_REQUIREMENT_EXTRACTION",
+        "M1_MODALITY",
+        "M1_REGION",
+        "M1_FAMILY_DETECTION",
+        "M2_IDENTITY",
+        "M2_RELATION",
+        "M2_CHANGE",
+        "M2_DEFINITION_XREF",
+        "M2_AMBIGUITY_ROUTING"
+      ],
+      "title": "EvaluationTask",
+      "type": "string"
+    },
+    "ExactRatio": {
+      "additionalProperties": false,
+      "properties": {
+        "denominator": {
+          "minimum": 0,
+          "title": "Denominator",
+          "type": "integer"
+        },
+        "numerator": {
+          "minimum": 0,
+          "title": "Numerator",
+          "type": "integer"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "threshold": {
+          "pattern": "^(0|1)\\.[0-9]{2}$",
+          "title": "Threshold",
+          "type": "string"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator",
+        "threshold",
+        "passed"
+      ],
+      "title": "ExactRatio",
+      "type": "object"
+    },
+    "ExternalGate": {
+      "enum": [
+        "SOURCE_MANIFEST_PROVENANCE",
+        "BLIND_SPLIT_CUSTODY",
+        "DECISION_LEDGER_AND_REVIEWER_AUTHORITY",
+        "ACTUAL_SOURCE_DOCUMENT_COVERAGE",
+        "CONSECUTIVE_LINEAGE_COVERAGE",
+        "EXACT_PASS_MATRICES",
+        "CLEAN_ROOM_REPLAY",
+        "EXTERNAL_AUDIT"
+      ],
+      "title": "ExternalGate",
+      "type": "string"
+    },
+    "MetricGateResult": {
+      "additionalProperties": false,
+      "properties": {
+        "class_name": {
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "title": "Class Name",
+          "type": "string"
+        },
+        "declared_actual_support_minimum": {
+          "minimum": 0,
+          "title": "Declared Actual Support Minimum",
+          "type": "integer"
+        },
+        "declared_actual_support_observed": {
+          "minimum": 0,
+          "title": "Declared Actual Support Observed",
+          "type": "integer"
+        },
+        "f1": {
+          "$ref": "#/$defs/ExactRatio"
+        },
+        "false_negatives": {
+          "minimum": 0,
+          "title": "False Negatives",
+          "type": "integer"
+        },
+        "false_positives": {
+          "minimum": 0,
+          "title": "False Positives",
+          "type": "integer"
+        },
+        "family": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvaluationFamily"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Gate Id",
+          "type": "string"
+        },
+        "metric_thresholds_passed": {
+          "title": "Metric Thresholds Passed",
+          "type": "boolean"
+        },
+        "modal_distractors_minimum": {
+          "minimum": 0,
+          "title": "Modal Distractors Minimum",
+          "type": "integer"
+        },
+        "modal_distractors_observed": {
+          "minimum": 0,
+          "title": "Modal Distractors Observed",
+          "type": "integer"
+        },
+        "phase": {
+          "enum": [
+            "M1",
+            "M2"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "precision": {
+          "$ref": "#/$defs/ExactRatio"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "recall": {
+          "$ref": "#/$defs/ExactRatio"
+        },
+        "support_evidence_scope": {
+          "const": "DECLARED_GOLD_METADATA_UNVERIFIED",
+          "title": "Support Evidence Scope",
+          "type": "string"
+        },
+        "support_minimum": {
+          "minimum": 0,
+          "title": "Support Minimum",
+          "type": "integer"
+        },
+        "support_observed": {
+          "minimum": 0,
+          "title": "Support Observed",
+          "type": "integer"
+        },
+        "task": {
+          "$ref": "#/$defs/EvaluationTask"
+        },
+        "true_positives": {
+          "minimum": 0,
+          "title": "True Positives",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "gate_id",
+        "phase",
+        "task",
+        "family",
+        "class_name",
+        "true_positives",
+        "false_positives",
+        "false_negatives",
+        "support_observed",
+        "support_minimum",
+        "declared_actual_support_observed",
+        "declared_actual_support_minimum",
+        "modal_distractors_observed",
+        "modal_distractors_minimum",
+        "support_evidence_scope",
+        "precision",
+        "recall",
+        "f1",
+        "metric_thresholds_passed",
+        "reasons"
+      ],
+      "title": "MetricGateResult",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "all_metric_thresholds_passed": {
+      "title": "All Metric Thresholds Passed",
+      "type": "boolean"
+    },
+    "candidate": {
+      "$ref": "#/$defs/CandidateBinding"
+    },
+    "dataset_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "dataset_version": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "decision_ledger_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Decision Ledger Sha256",
+      "type": "string"
+    },
+    "evaluation_scope": {
+      "const": "DECLARED_SUPPORT_METRICS_ONLY",
+      "title": "Evaluation Scope",
+      "type": "string"
+    },
+    "external_acceptance_granted": {
+      "const": false,
+      "title": "External Acceptance Granted",
+      "type": "boolean"
+    },
+    "external_gates_evaluated": {
+      "const": false,
+      "title": "External Gates Evaluated",
+      "type": "boolean"
+    },
+    "gold_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Gold Sha256",
+      "type": "string"
+    },
+    "kind": {
+      "const": "normshift-acceptance-metric-result",
+      "title": "Kind",
+      "type": "string"
+    },
+    "m1_metric_thresholds_passed": {
+      "title": "M1 Metric Thresholds Passed",
+      "type": "boolean"
+    },
+    "m2_metric_thresholds_passed": {
+      "title": "M2 Metric Thresholds Passed",
+      "type": "boolean"
+    },
+    "metric_gates": {
+      "items": {
+        "$ref": "#/$defs/MetricGateResult"
+      },
+      "minItems": 1,
+      "title": "Metric Gates",
+      "type": "array"
+    },
+    "policy_id": {
+      "const": "normshift-m1-m2-prereg-v1",
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "predictions_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Predictions Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scorer_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scorer Manifest Sha256",
+      "type": "string"
+    },
+    "source_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Manifest Sha256",
+      "type": "string"
+    },
+    "split": {
+      "$ref": "#/$defs/DatasetSplit"
+    },
+    "split_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Split Manifest Sha256",
+      "type": "string"
+    },
+    "unverified_external_gates": {
+      "items": {
+        "$ref": "#/$defs/ExternalGate"
+      },
+      "minItems": 1,
+      "title": "Unverified External Gates",
+      "type": "array"
+    }
+  },
+  "required": [
+    "kind",
+    "schema_version",
+    "policy_id",
+    "policy_sha256",
+    "scorer_manifest_sha256",
+    "gold_sha256",
+    "predictions_sha256",
+    "dataset_id",
+    "dataset_version",
+    "split",
+    "source_manifest_sha256",
+    "split_manifest_sha256",
+    "decision_ledger_sha256",
+    "candidate",
+    "metric_gates",
+    "m1_metric_thresholds_passed",
+    "m2_metric_thresholds_passed",
+    "all_metric_thresholds_passed",
+    "external_gates_evaluated",
+    "unverified_external_gates",
+    "external_acceptance_granted",
+    "evaluation_scope"
+  ],
+  "title": "AcceptanceResult",
+  "type": "object"
+}
