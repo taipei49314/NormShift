@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normshift.dev/schemas/external-audit-v1.schema.json",
+  "title": "NormShift detached combined M0-M2 external audit v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scope",
+    "package_commit",
+    "package_tree",
+    "package_version",
+    "run_id",
+    "manifest_sha256",
+    "execution_authority",
+    "verdict",
+    "findings",
+    "auditor",
+    "audited_at_utc",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "normshift-external-audit/v1"
+    },
+    "scope": {
+      "const": "M0_M1_M2_COMBINED"
+    },
+    "package_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "package_tree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "package_version": {
+      "type": "string",
+      "pattern": "^0\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:[A-Za-z0-9.-]+)?$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+    },
+    "manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "execution_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "filesystem",
+        "drive_type",
+        "local_volume",
+        "same_volume",
+        "lock_policy",
+        "authority_run_id",
+        "preflight_result",
+        "roots_inventory_sha256",
+        "approved_volume_binding_sha256"
+      ],
+      "properties": {
+        "platform": {
+          "const": "windows"
+        },
+        "filesystem": {
+          "const": "NTFS"
+        },
+        "drive_type": {
+          "const": "fixed"
+        },
+        "local_volume": {
+          "const": true
+        },
+        "same_volume": {
+          "const": true
+        },
+        "lock_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version"],
+          "properties": {
+            "id": {
+              "const": "normshift-windows-ntfs-share-deny"
+            },
+            "version": {
+              "const": "1.0.0"
+            }
+          }
+        },
+        "authority_run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+        },
+        "preflight_result": {
+          "const": "PASS"
+        },
+        "roots_inventory_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "approved_volume_binding_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "verdict": {
+      "const": "M0_M1_M2_COMBINED_EXTERNAL_AUDIT_PASS"
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p0", "p1", "p2"],
+      "properties": {
+        "p0": {
+          "const": 0
+        },
+        "p1": {
+          "const": 0
+        },
+        "p2": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "auditor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "independent_from_implementation"],
+      "properties": {
+        "reviewer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "independent_from_implementation": {
+          "const": true
+        }
+      }
+    },
+    "audited_at_utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    }
+  }
+}

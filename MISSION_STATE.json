@@ -1,41 +1,117 @@
 {
-  "current_objective": "Build and independently audit one exact-SHA M0 authoritative package",
-  "current_hypothesis": "Strict package tooling plus exact-SHA Linux, Windows, and macOS CI can close the remaining M0 trust gate without expanding M1/M2",
+  "schema_version": "2.0.0",
+  "current_objective": "Complete the bounded M0-M2 scope, freeze one combined exact-SHA subject, obtain detached external acceptance, and publish and reverify one final release",
+  "current_hypothesis": "The audited M0 trust core can be preserved while independently governed M1 and M2 evidence is completed, measured, packaged, and audited on one later frozen subject",
   "status": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
   "package_identity": "pending_external_attestation",
   "last_verified_commit": null,
+  "release_status": "BLOCKED",
+  "historical_external_audit": {
+    "scope": "M0_ONLY",
+    "verdict": "M0_EXTERNAL_AUDIT_PASS",
+    "commit": "b3af3dc26e64a3399545d179731222f6e87213c9",
+    "tree": "c629e2d51fc5219514d6068a90d3453725bd8010",
+    "package_version": "0.3.2",
+    "run_id": "20260809T132157Z-b3af3dc-m0",
+    "manifest_sha256": "7e95576f71fd061fc010c542b7f91dc67075cd2c7bd8bfd2b801f90c846625db",
+    "audit_sha256": "88127b2a0d5985e4e00f392f031fdce7c3cc8281bdec2fb118e7fe86d83f2aac",
+    "evidence_release": "https://github.com/taipei49314/NormShift/releases/tag/m0-audit-20260809-b3af3dc",
+    "m1": "NOT_ADJUDICATED",
+    "m2": "NOT_ADJUDICATED",
+    "release": "BLOCKED",
+    "inheritance": "NON_TRANSITIVE_TO_DESCENDANT_COMMITS"
+  },
+  "verified_ancestor_internal_baseline": {
+    "commit": "f6897f71834a50d2273fda033a72b31254c65935",
+    "tree": "34cde504fab42da8f9423cd1ca226fe492307c36",
+    "ci_run": "https://github.com/taipei49314/NormShift/actions/runs/31462052663",
+    "ci_conclusion": "success",
+    "subject_relationship": "ANCESTOR_DELIVERY_EVIDENCE_ONLY_NOT_CURRENT_EXACT_SUBJECT",
+    "ci_platforms": [
+      "ubuntu-latest",
+      "windows-latest",
+      "macos-latest"
+    ],
+    "delivery_foundation": {
+      "status": "INTERNAL_CI_PASS_NOT_EXTERNAL_ACCEPTANCE",
+      "pull_request": "https://github.com/taipei49314/NormShift/pull/14",
+      "canonical_wheel_sha256": "b5ebc295dadb63ab2969185551ca62409e9290d9f9fba41916d188e6a833886d",
+      "sdist_sha256": "fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760",
+      "artifact_count": 3,
+      "ci_job_ids": {
+        "macos-latest": 93687381841,
+        "ubuntu-latest": 93687381859,
+        "windows-latest": 93687381936,
+        "cross-platform-distribution-byte-equality": 93687745690
+      },
+      "authority": "DELIVERY_FOUNDATION_ONLY_NOT_COMBINED_AUDIT_OR_RELEASE"
+    },
+    "authority": "INTERNAL_CI_ONLY_NOT_EXTERNAL_ACCEPTANCE"
+  },
+  "milestones": {
+    "m0_current_combined_subject": "M0_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+    "m1": "EXPERIMENTAL_NOT_ADJUDICATED",
+    "m2": "EXPERIMENTAL_NOT_ADJUDICATED",
+    "final_combined_subject": "NOT_FROZEN",
+    "release": "BLOCKED"
+  },
+  "implemented_experimental_foundations": {
+    "m1": [
+      "independently approved pre-registration policy",
+      "frozen exact scorer and approval record",
+      "fail-closed source acquisition and offline replay",
+      "canonical development-only source recipes for RFC, W3C, and WHATWG",
+      "labeling, adjudication-history, and blind-split governance"
+    ],
+    "m2": [
+      "persistent lineage instance identity",
+      "lineage graph integrity and evidence validation",
+      "typed semantic change dimensions bound to FULL source-replay receipts"
+    ]
+  },
+  "implemented_delivery_foundations": [
+    "strict bounded canonical wheel ZIP validation and source-to-new-output normalization",
+    "byte-identical final wheel and sdist verification across Ubuntu, Windows, and macOS",
+    "exact-run retained distribution artifacts with canonical wheel re-verification"
+  ],
+  "working_branch_validation_authority": "LOCAL_IMPLEMENTATION_EVIDENCE_ONLY_NOT_EXACT_SHA_EXTERNAL_ACCEPTANCE",
   "commands_run": [
-    "uv run ruff check . #0",
-    "uv run mypy src #0",
-    "uv run pytest -q -ra #273 passed",
-    "uv run pytest tests/e2e/test_m0_repair_round4.py tests/e2e/test_m0_repair_round5.py #72 passed",
-    "uv run normshift benchmark #17/17",
-    "uv run normshift measure #15/15",
-    "uv run normshift diff --source-root . #0",
-    "uv run normshift verify --source-root . #0 verification_scope=FULL",
-    "uv build #wheel+sdist",
-    "uv export --frozen --no-dev --no-editable --format cyclonedx1.5 #strict schema PASS"
+    "uv run --frozen ruff check . # exit 0",
+    "uv run --frozen mypy --no-incremental src # exit 0, 71 source files",
+    "uv run --frozen pytest -q -ra --color=no # exit 0, 643 passed",
+    "uv run --frozen normshift benchmark --ground-truth benchmark/ground_truth.jsonl # exit 0, 17/17",
+    "uv run --frozen normshift measure --ground-truth benchmark/measure_suite.jsonl --out <external-path> # exit 0, 15/15, extraction/alignment/classification F1 1.0"
   ],
   "verified_artifacts": [
-    "docs/EXTERNAL_AUDIT_R4.md",
-    "docs/GROK_M0_REPAIR_ROUND5.md",
-    "docs/M0_REPAIR_ROUND5.md",
+    "acceptance/m1_m2_prereg_v1.json",
+    "acceptance/scorer_v1_manifest.json",
+    "corpus/m1-development/",
+    "docs/M1_SOURCE_ACQUISITION.md",
+    "docs/M1_M2_GOVERNANCE_CONTRACT.md",
+    "docs/M2_SEMANTIC_DIMENSIONS_FOUNDATION.md",
     "docs/M0_AUDIT_CONTRACT.md",
-    "evidence/m0-repair-round5/",
-    "schemas/package_manifest_v1.schema.json",
-    "schemas/command_log_v1.schema.json",
-    "scripts/build_authoritative_package.py",
-    "scripts/external_package_verify.py"
+    ".github/workflows/ci.yml",
+    "scripts/normalize_wheel.py",
+    "src/normshift/audit/wheel_normalize.py",
+    "schemas/external_audit_v1.schema.json",
+    "src/normshift/schemas/external_audit_v1.schema.json",
+    "scripts/verify_external_audit.py",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "RELEASE_CHECKLIST.md"
   ],
   "known_failures": [
-    "Candidate d755e27f invalidated before attestation after a raw ZIP backslash false-success; fixed by PR #3",
-    "Candidate 063cd7e7 invalidated before attestation because its exact commit had no required macOS CI job; fixed by PR #4",
-    "Candidate 02e9a74c invalidated before attestation because the verifier did not canonicalize the optional Git remote .git suffix; fixed by PR #5"
+    "Candidates before b3af3dc were invalidated by raw ZIP aliasing, missing macOS CI, and Git remote canonicalization defects; the b3af3dc M0 subject closed those defects",
+    "The historical M0 evidence release later replaced a transport ZIP whose member names used backslashes; the M0 subject, manifest, and detached audit verdict did not change",
+    "No current combined M0-M2 exact-SHA package or detached external audit exists",
+    "No real blind labels, holdout membership, predictions, or M1/M2 acceptance scores are committed or claimed"
   ],
   "unresolved_risks": [
-    "Awaiting three-platform CI on the exact merged SHA, a new authoritative package, and detached clean-room re-audit",
-    "Historical clause heuristics are not full NL understanding",
-    "M1/M2 experimental only"
+    "M1 actual-source blind evaluation, per-class support and metric gates, and independent external acceptance remain incomplete",
+    "M2 semantic dimensions, definitions and cross-references, split/merge and moved-and-rewritten coverage, blind per-class gates, and independent external acceptance remain incomplete",
+    "The canonical distribution and package-verifier work is an internal delivery foundation; the authoritative package must still bind and replay the final combined M0-M2 evidence rather than only the historical M0 subject",
+    "The final version, exact scorer freeze, authoritative package, detached audit, annotated tag, release assets, and download-only re-verification do not yet exist",
+    "Historical clause heuristics are deterministic but are not universal natural-language understanding"
   ],
-  "next_action": "Merge the cross-platform CI PR only after all three required jobs pass, then build a new exact-SHA package and run detached clean-room re-audit."
+  "next_action": "Finish and review the remaining M1 and M2 implementation without inspecting blind outcomes, complete the final version and scorer freeze, then freeze one merged default SHA for blind scoring, authoritative packaging, detached clean-room audit, release, and download-only re-verification."
 }
