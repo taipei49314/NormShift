@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +41,41 @@ def _edge_id(*parts: str) -> str:
 
 def _new_lineage_id(seed: str) -> str:
     return "L-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12]
+
+
+def _initial_lineage_ids(requirements: list[Requirement]) -> dict[str, str]:
+    """Bind every initial requirement occurrence to one stable lineage ID.
+
+    A semantic fingerprint is intentionally shared by identical obligations.  It
+    therefore cannot be the sole node key: two separately located occurrences
+    would overwrite one another.  Preserve the historical semantic ID for a
+    unique obligation and add the exact requirement ID only when a semantic
+    seed occurs more than once.
+    """
+    semantic_seeds = {
+        requirement.requirement_id: (
+            f"{requirement.fingerprint}|{requirement.normalized_text}|"
+            f"{requirement.modality.value}"
+        )
+        for requirement in requirements
+    }
+    if len(semantic_seeds) != len(requirements):
+        raise ValueError("initial document contains duplicate requirement IDs")
+
+    seed_counts = Counter(semantic_seeds.values())
+    lineage_ids: dict[str, str] = {}
+    owners: dict[str, str] = {}
+    for requirement in requirements:
+        seed = semantic_seeds[requirement.requirement_id]
+        if seed_counts[seed] > 1:
+            seed = f"{seed}|occurrence|{requirement.requirement_id}"
+        lineage_id = _new_lineage_id(seed)
+        prior_owner = owners.get(lineage_id)
+        if prior_owner is not None and prior_owner != requirement.requirement_id:
+            raise ValueError("initial lineage ID collision")
+        owners[lineage_id] = requirement.requirement_id
+        lineage_ids[requirement.requirement_id] = lineage_id
+    return lineage_ids
 
 
 def _to_instance(req: Requirement, lineage_id: str) -> RequirementInstanceRef:
@@ -119,8 +155,9 @@ def build_lineage_graph(
 
     prev_lineage: dict[str, str] = {}
 
+    initial_lineage_ids = _initial_lineage_ids(docs[0].requirements)
     for req in docs[0].requirements:
-        lid = _new_lineage_id(f"{req.fingerprint}|{req.normalized_text}|{req.modality.value}")
+        lid = initial_lineage_ids[req.requirement_id]
         prev_lineage[req.requirement_id] = lid
         nodes[lid] = LineageNode(
             lineage_id=lid,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from normshift.extract.extractor import extract_requirements
 from normshift.lineage.builder import build_lineage_graph, write_lineage_graph
 from normshift.model.types import AdapterName, LineageRelation, ProfileName
 
@@ -45,3 +46,48 @@ def test_lineage_not_only_add_remove() -> None:
     assert continues >= 1
     assert graph.summary.get("definition_count", 0) >= 1
     assert graph.summary.get("dependency_link_count", 0) >= 1
+
+
+def test_identical_requirement_occurrences_keep_distinct_lineages(tmp_path: Path) -> None:
+    first = tmp_path / "v1.html"
+    second = tmp_path / "v2.html"
+    first.write_text(
+        "<html><head><title>v1</title></head><body>"
+        "<h1>Requirements</h1>"
+        "<p>The client MUST store the session token.</p>"
+        "<p>The client MUST store the session token.</p>"
+        "</body></html>",
+        encoding="utf-8",
+    )
+    second.write_text(
+        "<html><head><title>v2</title></head><body>"
+        "<h1>Requirements</h1>"
+        "<p>The client MUST store the session token.</p>"
+        "<p>The client MUST store the session token.</p>"
+        "<p>The server MAY discard an expired token.</p>"
+        "</body></html>",
+        encoding="utf-8",
+    )
+
+    first_doc = extract_requirements(
+        first,
+        ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+    assert len(first_doc.requirements) == 2
+    graph = build_lineage_graph(
+        [first, second],
+        profile=ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+
+    expected_ids = {requirement.requirement_id for requirement in first_doc.requirements}
+    first_instances = [
+        instance
+        for node in graph.nodes
+        for instance in node.instances
+        if instance.document_sha256 == first_doc.document_sha256
+    ]
+    assert {instance.requirement_id for instance in first_instances} == expected_ids
+    assert len(first_instances) == len(expected_ids)
+    assert len({instance.lineage_id for instance in first_instances}) == len(expected_ids)
