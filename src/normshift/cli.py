@@ -19,6 +19,12 @@ from normshift.corpus.acquisition import (
     verify_corpus_offline,
 )
 from normshift.extract.extractor import extract_from_source
+from normshift.governance.verify import (
+    GovernanceContractError,
+    GovernanceVerificationResult,
+    verify_blind_split,
+    verify_labeling_governance,
+)
 from normshift.io_safety import PathSafetyError, assert_outputs_safe, atomic_write_text
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
@@ -38,6 +44,11 @@ corpus_app = typer.Typer(
     no_args_is_help=True,
 )
 app.add_typer(corpus_app, name="corpus")
+governance_app = typer.Typer(
+    help="Synthetic-tested labeling and blind-split governance checks (no acceptance claim).",
+    no_args_is_help=True,
+)
+app.add_typer(governance_app, name="governance")
 
 
 def _version_callback(value: bool) -> None:
@@ -95,6 +106,114 @@ def _echo_corpus_result(result: CorpusReplayResult) -> None:
             separators=(",", ":"),
         )
     )
+
+
+def _echo_governance_result(result: GovernanceVerificationResult) -> None:
+    typer.echo(json.dumps(result.to_dict(), sort_keys=True, separators=(",", ":")))
+
+
+@governance_app.command("verify-labeling")
+def governance_verify_labeling_cmd(
+    packet: Path = typer.Argument(..., help="Canonical neutral labeling packet JSON"),
+    packet_sha256: str = typer.Option(
+        ..., "--packet-sha256", help="Independently frozen packet SHA-256"
+    ),
+    source_manifest: Path = typer.Option(
+        ..., "--source-manifest", help="Canonical frozen M1 source manifest"
+    ),
+    submissions_root: Path = typer.Option(
+        ..., "--submissions-root", help="Dedicated exact-root independent submissions"
+    ),
+    ledger: Path = typer.Option(..., "--ledger", help="Canonical adjudication ledger JSON"),
+    ledger_sha256: str = typer.Option(
+        ..., "--ledger-sha256", help="Independently frozen ledger SHA-256"
+    ),
+    source_manifest_sha256: str = typer.Option(
+        ..., "--source-manifest-sha256", help="Independent source-manifest trust anchor"
+    ),
+    blind_split_manifest: Path = typer.Option(
+        ..., "--blind-split-manifest", help="Canonical frozen blind-split manifest"
+    ),
+    split_manifest_sha256: str = typer.Option(
+        ..., "--split-manifest-sha256", help="Independent blind-split trust anchor"
+    ),
+    prior_ledger: Path | None = typer.Option(
+        None,
+        "--prior-ledger",
+        help="Required exact prior ledger for a post-freeze correction",
+    ),
+    prior_ledger_sha256: str | None = typer.Option(
+        None,
+        "--prior-ledger-sha256",
+        help="Independent SHA-256 for --prior-ledger",
+    ),
+    acceptance_policy: Path = typer.Option(
+        Path("acceptance/m1_m2_prereg_v1.json"),
+        "--acceptance-policy",
+        help="Exact frozen M1/M2 policy",
+    ),
+) -> None:
+    """Verify neutral packets, independent submissions, and retained decisions."""
+
+    try:
+        result = verify_labeling_governance(
+            packet_path=packet,
+            expected_packet_sha256=packet_sha256,
+            source_manifest_path=source_manifest,
+            submissions_root=submissions_root,
+            ledger_path=ledger,
+            expected_ledger_sha256=ledger_sha256,
+            expected_source_manifest_sha256=source_manifest_sha256,
+            blind_split_manifest_path=blind_split_manifest,
+            expected_split_manifest_sha256=split_manifest_sha256,
+            acceptance_policy_path=acceptance_policy,
+            prior_ledger_path=prior_ledger,
+            expected_prior_ledger_sha256=prior_ledger_sha256,
+        )
+    except GovernanceContractError as exc:
+        typer.echo(f"error: labeling governance rejected: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001 - fail-closed CLI boundary
+        typer.echo(f"error: labeling governance failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _echo_governance_result(result)
+
+
+@governance_app.command("verify-blind-split")
+def governance_verify_blind_split_cmd(
+    manifest: Path = typer.Argument(..., help="Canonical blind-split manifest JSON"),
+    manifest_sha256: str = typer.Option(
+        ..., "--manifest-sha256", help="Independently frozen split-manifest SHA-256"
+    ),
+    source_manifest: Path = typer.Option(
+        ..., "--source-manifest", help="Canonical frozen M1 source manifest"
+    ),
+    source_manifest_sha256: str = typer.Option(
+        ..., "--source-manifest-sha256", help="Independent source-manifest trust anchor"
+    ),
+    acceptance_policy: Path = typer.Option(
+        Path("acceptance/m1_m2_prereg_v1.json"),
+        "--acceptance-policy",
+        help="Exact frozen M1/M2 policy",
+    ),
+) -> None:
+    """Verify whole-document and whole-lineage blind split governance."""
+
+    try:
+        result = verify_blind_split(
+            manifest_path=manifest,
+            expected_manifest_sha256=manifest_sha256,
+            source_manifest_path=source_manifest,
+            expected_source_manifest_sha256=source_manifest_sha256,
+            acceptance_policy_path=acceptance_policy,
+        )
+    except GovernanceContractError as exc:
+        typer.echo(f"error: blind-split governance rejected: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:  # noqa: BLE001 - fail-closed CLI boundary
+        typer.echo(f"error: blind-split governance failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _echo_governance_result(result)
 
 
 @corpus_app.command("acquire")

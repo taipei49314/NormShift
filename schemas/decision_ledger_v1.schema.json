@@ -1,0 +1,536 @@
+{
+  "$comment": "Structural JSON Schema validation alone does not verify canonical bytes, artifact hashes, reviewer independence, exact-root custody, blind-split invariants, or grant M1/M2 acceptance; use `normshift governance verify-*` with independent trust anchors.",
+  "$defs": {
+    "AdjudicationOutcome": {
+      "enum": [
+        "ACCEPTED",
+        "ABSTAINED",
+        "AMBIGUOUS",
+        "CONFLICT"
+      ],
+      "title": "AdjudicationOutcome",
+      "type": "string"
+    },
+    "DecisionEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "adjudicator_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Adjudicator Id",
+          "type": "string"
+        },
+        "decided_at_utc": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "title": "Decided At Utc",
+          "type": "string"
+        },
+        "decided_class": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decided Class"
+        },
+        "decision": {
+          "$ref": "#/$defs/AdjudicationOutcome"
+        },
+        "decision_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "evaluation_slot": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Evaluation Slot",
+          "type": "string"
+        },
+        "event_type": {
+          "$ref": "#/$defs/DecisionEventType"
+        },
+        "evidence_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Evidence Sha256",
+          "type": "string"
+        },
+        "item_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Item Key",
+          "type": "string"
+        },
+        "portable_locators": {
+          "items": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Portable Locators",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "review_round_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Review Round Id",
+          "type": "string"
+        },
+        "reviewer_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Reviewer Ids",
+          "type": "array"
+        },
+        "revision": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "source_sha256s": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Source Sha256S",
+          "type": "array"
+        },
+        "supersedes_decision_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Decision Id"
+        },
+        "task": {
+          "$ref": "#/$defs/EvaluationTask"
+        },
+        "votes": {
+          "items": {
+            "$ref": "#/$defs/VoteBinding"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Votes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "decision_id",
+        "review_round_id",
+        "revision",
+        "event_type",
+        "item_key",
+        "task",
+        "evaluation_slot",
+        "source_sha256s",
+        "portable_locators",
+        "evidence_sha256",
+        "reviewer_ids",
+        "adjudicator_id",
+        "votes",
+        "decision",
+        "reason",
+        "decided_at_utc"
+      ],
+      "title": "DecisionEvent",
+      "type": "object"
+    },
+    "DecisionEventType": {
+      "enum": [
+        "INITIAL",
+        "CORRECTION"
+      ],
+      "title": "DecisionEventType",
+      "type": "string"
+    },
+    "EvaluationTask": {
+      "enum": [
+        "M1_REQUIREMENT_EXTRACTION",
+        "M1_MODALITY",
+        "M1_REGION",
+        "M1_FAMILY_DETECTION",
+        "M2_IDENTITY",
+        "M2_RELATION",
+        "M2_CHANGE",
+        "M2_DEFINITION_XREF",
+        "M2_AMBIGUITY_ROUTING"
+      ],
+      "title": "EvaluationTask",
+      "type": "string"
+    },
+    "LedgerRevisionContext": {
+      "additionalProperties": false,
+      "properties": {
+        "correction_reason": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "invalidated_measurement_sha256s": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 100000,
+          "title": "Invalidated Measurement Sha256S",
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/LedgerRevisionKind"
+        },
+        "supersedes_ledger_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes Ledger Sha256"
+        }
+      },
+      "required": [
+        "kind",
+        "supersedes_ledger_sha256",
+        "invalidated_measurement_sha256s"
+      ],
+      "title": "LedgerRevisionContext",
+      "type": "object"
+    },
+    "LedgerRevisionKind": {
+      "enum": [
+        "INITIAL_FREEZE",
+        "POST_FREEZE_CORRECTION"
+      ],
+      "title": "LedgerRevisionKind",
+      "type": "string"
+    },
+    "ReviewRound": {
+      "additionalProperties": false,
+      "properties": {
+        "adjudicator_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Adjudicator Id",
+          "type": "string"
+        },
+        "adjudicator_implemented_evaluated_system": {
+          "const": false,
+          "title": "Adjudicator Implemented Evaluated System",
+          "type": "boolean"
+        },
+        "completed_at_utc": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "title": "Completed At Utc",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ReviewRoundKind"
+        },
+        "labeler_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Labeler Ids",
+          "type": "array"
+        },
+        "labelers_implemented_evaluated_system": {
+          "const": false,
+          "title": "Labelers Implemented Evaluated System",
+          "type": "boolean"
+        },
+        "opened_at_utc": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "title": "Opened At Utc",
+          "type": "string"
+        },
+        "review_round_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Review Round Id",
+          "type": "string"
+        },
+        "sequence": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "supersedes_review_round_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Review Round Id"
+        },
+        "viewed_candidate_predictions": {
+          "const": false,
+          "title": "Viewed Candidate Predictions",
+          "type": "boolean"
+        },
+        "viewed_prior_label_decisions": {
+          "const": false,
+          "title": "Viewed Prior Label Decisions",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "review_round_id",
+        "sequence",
+        "kind",
+        "labeler_ids",
+        "adjudicator_id",
+        "labelers_implemented_evaluated_system",
+        "adjudicator_implemented_evaluated_system",
+        "viewed_prior_label_decisions",
+        "viewed_candidate_predictions",
+        "opened_at_utc",
+        "completed_at_utc"
+      ],
+      "title": "ReviewRound",
+      "type": "object"
+    },
+    "ReviewRoundKind": {
+      "enum": [
+        "INITIAL",
+        "POST_FREEZE_CORRECTION"
+      ],
+      "title": "ReviewRoundKind",
+      "type": "string"
+    },
+    "SubmissionFile": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "maximum": 16777216,
+          "minimum": 1,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "labeler_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Labeler Id",
+          "type": "string"
+        },
+        "portable_ref": {
+          "maxLength": 768,
+          "minLength": 1,
+          "title": "Portable Ref",
+          "type": "string"
+        },
+        "review_round_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Review Round Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "submission_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Submission Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "submission_id",
+        "review_round_id",
+        "labeler_id",
+        "portable_ref",
+        "sha256",
+        "bytes"
+      ],
+      "title": "SubmissionFile",
+      "type": "object"
+    },
+    "VoteBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "labeler_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Labeler Id",
+          "type": "string"
+        },
+        "response_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Response Sha256",
+          "type": "string"
+        },
+        "submission_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Submission Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "labeler_id",
+        "submission_sha256",
+        "response_sha256"
+      ],
+      "title": "VoteBinding",
+      "type": "object"
+    }
+  },
+  "$id": "https://normshift.example/schemas/decision_ledger_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "active_decision_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 250000,
+      "minItems": 1,
+      "title": "Active Decision Ids",
+      "type": "array"
+    },
+    "active_review_round_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "title": "Active Review Round Id",
+      "type": "string"
+    },
+    "candidate_predictions_viewed_before_freeze": {
+      "const": false,
+      "title": "Candidate Predictions Viewed Before Freeze",
+      "type": "boolean"
+    },
+    "decisions": {
+      "items": {
+        "$ref": "#/$defs/DecisionEvent"
+      },
+      "maxItems": 1000000,
+      "minItems": 1,
+      "title": "Decisions",
+      "type": "array"
+    },
+    "frozen_at_utc": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "title": "Frozen At Utc",
+      "type": "string"
+    },
+    "kind": {
+      "const": "normshift-label-decision-ledger",
+      "title": "Kind",
+      "type": "string"
+    },
+    "labels_and_decisions_hash_frozen_before_predictions": {
+      "const": true,
+      "title": "Labels And Decisions Hash Frozen Before Predictions",
+      "type": "boolean"
+    },
+    "ledger_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "title": "Ledger Id",
+      "type": "string"
+    },
+    "ledger_version": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "title": "Ledger Version",
+      "type": "string"
+    },
+    "packet_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Packet Sha256",
+      "type": "string"
+    },
+    "policy_id": {
+      "const": "normshift-m1-m2-prereg-v1",
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "review_rounds": {
+      "items": {
+        "$ref": "#/$defs/ReviewRound"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Review Rounds",
+      "type": "array"
+    },
+    "revision_context": {
+      "$ref": "#/$defs/LedgerRevisionContext"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "submissions": {
+      "items": {
+        "$ref": "#/$defs/SubmissionFile"
+      },
+      "maxItems": 1024,
+      "minItems": 2,
+      "title": "Submissions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "kind",
+    "schema_version",
+    "policy_id",
+    "policy_sha256",
+    "ledger_id",
+    "ledger_version",
+    "packet_sha256",
+    "candidate_predictions_viewed_before_freeze",
+    "labels_and_decisions_hash_frozen_before_predictions",
+    "review_rounds",
+    "active_review_round_id",
+    "submissions",
+    "revision_context",
+    "decisions",
+    "active_decision_ids",
+    "frozen_at_utc"
+  ],
+  "title": "DecisionLedger",
+  "type": "object"
+}
