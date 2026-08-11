@@ -99,7 +99,10 @@ def _remove_section_from_heading(heading: etree._Element) -> None:
 def strip_chrome(raw_html: bytes, family: DocumentFamily) -> bytes:
     """Remove navigation/boilerplate chrome; return serialized HTML bytes."""
     try:
-        tree = html.fromstring(raw_html)
+        tree = html.fromstring(
+            raw_html,
+            parser=html.HTMLParser(encoding="utf-8"),
+        )
     except Exception:
         return raw_html
 

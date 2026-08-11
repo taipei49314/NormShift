@@ -280,7 +280,7 @@ def extract_block_text_with_spans(
 
 def normalize_html(raw: bytes) -> list[NormalizedBlock]:
     try:
-        tree = html.fromstring(raw)
+        tree = html.fromstring(raw, parser=html.HTMLParser(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
         raise ValueError(f"Failed to parse HTML: {exc}") from exc
 

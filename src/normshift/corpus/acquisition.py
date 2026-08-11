@@ -36,6 +36,7 @@ from normshift.adapters.base import (
     SourceAdapter,
 )
 from normshift.adapters.errors import AdapterError
+from normshift.adapters.ingress import validate_acquisition_terminal
 from normshift.adapters.rfc_adapter import RfcAdapter
 from normshift.adapters.w3c_adapter import W3cAdapter
 from normshift.adapters.whatwg_adapter import WhatwgAdapter
@@ -70,6 +71,16 @@ _SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 _ID_RE: Final = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _MEDIA_TYPE_RE: Final = re.compile(r"^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$")
 _OUTPUT_SEGMENT_RE: Final = re.compile(r"^[A-Za-z0-9._-]+$")
+_ACTUAL_RFC_URL_RE: Final = re.compile(
+    r"https://www\.rfc-editor\.org/rfc/rfc([1-9][0-9]*)\.html"
+)
+_ACTUAL_W3C_MICROPUB_URL_RE: Final = re.compile(
+    r"https://www\.w3\.org/TR/([0-9]{4})/(?:REC|PR|CR|WD)-micropub-([0-9]{8})/"
+)
+_ACTUAL_WHATWG_MIMESNIFF_URL_RE: Final = re.compile(
+    r"https://mimesniff\.spec\.whatwg\.org/"
+    r"review-drafts/([0-9]{4}-(?:0[1-9]|1[0-2]))/"
+)
 
 
 class AcquisitionError(ValueError):
@@ -317,14 +328,20 @@ def _validate_portable_output_ref(value: str, *, label: str) -> str:
 
 def _validate_actual_source_identity(record: SourceRecord) -> None:
     """Constrain actual sources to immutable, family-authoritative URL forms."""
-    parsed = urlsplit(record.canonical_url)
-    host = parsed.hostname or ""
-    path = parsed.path
+    if record.acquisition_url != record.canonical_url or any(
+        url != record.canonical_url for url in record.redirect_chain
+    ):
+        raise AcquisitionError(
+            f"{record.source_id}: actual-source acquisition URL and redirect chain "
+            "must equal canonical_url"
+        )
+
     if record.family == DocumentFamily.RFC:
-        match = re.fullmatch(r"/rfc/rfc([1-9][0-9]*)\.(?:html|xml|txt)", path)
-        if host not in {"rfc-editor.org", "www.rfc-editor.org"} or match is None:
+        match = _ACTUAL_RFC_URL_RE.fullmatch(record.canonical_url)
+        if match is None:
             raise AcquisitionError(
-                f"{record.source_id}: RFC source must be an exact RFC Editor resource"
+                f"{record.source_id}: RFC source must use the exact canonical "
+                "https://www.rfc-editor.org/rfc/rfcN.html form"
             )
         expected_standard_id = f"RFC {match.group(1)}"
         if record.standard_id != expected_standard_id:
@@ -333,29 +350,42 @@ def _validate_actual_source_identity(record: SourceRecord) -> None:
             )
         return
     if record.family == DocumentFamily.W3C:
-        match = re.fullmatch(
-            r"/TR/([0-9]{4})/(?:REC|PR|CR|WD)-[A-Za-z0-9._-]+-([0-9]{8})/",
-            path,
-        )
-        if host not in {"w3.org", "www.w3.org"} or match is None:
+        match = _ACTUAL_W3C_MICROPUB_URL_RE.fullmatch(record.canonical_url)
+        if match is None:
             raise AcquisitionError(
-                f"{record.source_id}: W3C source must be a dated W3C /TR/ version"
+                f"{record.source_id}: W3C source must use an exact dated "
+                "https://www.w3.org/TR/YYYY/STATUS-micropub-YYYYMMDD/ form"
             )
-        compact_date = record.version_or_date.replace("-", "")
-        if compact_date != match.group(2):
+        if record.standard_id != "Micropub":
+            raise AcquisitionError(f"{record.source_id}: standard_id must equal 'Micropub'")
+        compact_date = match.group(2)
+        try:
+            publication_date = datetime.strptime(compact_date, "%Y%m%d").date()
+        except ValueError as exc:
+            raise AcquisitionError(
+                f"{record.source_id}: W3C URL contains an invalid publication date"
+            ) from exc
+        if match.group(1) != compact_date[:4]:
+            raise AcquisitionError(
+                f"{record.source_id}: W3C /TR/ year must match its publication date"
+            )
+        if record.version_or_date != publication_date.isoformat():
             raise AcquisitionError(
                 f"{record.source_id}: version_or_date must match the dated W3C URL"
             )
         return
     if record.family == DocumentFamily.WHATWG:
-        commit = re.fullmatch(r"/commit-snapshots/([0-9a-f]{40})/", path)
-        review = re.fullmatch(r"/review-drafts/([0-9]{4}-[0-9]{2})/", path)
-        if not (host.endswith(".spec.whatwg.org") and (commit or review)):
+        match = _ACTUAL_WHATWG_MIMESNIFF_URL_RE.fullmatch(record.canonical_url)
+        if match is None:
             raise AcquisitionError(
-                f"{record.source_id}: WHATWG source must be a frozen commit or review draft"
+                f"{record.source_id}: WHATWG source must use the exact "
+                "https://mimesniff.spec.whatwg.org/review-drafts/YYYY-MM/ form"
             )
-        url_version = commit.group(1) if commit else cast(re.Match[str], review).group(1)
-        if record.version_or_date != url_version:
+        if record.standard_id != "MIME Sniffing":
+            raise AcquisitionError(
+                f"{record.source_id}: standard_id must equal 'MIME Sniffing'"
+            )
+        if record.version_or_date != match.group(1):
             raise AcquisitionError(
                 f"{record.source_id}: version_or_date must match the frozen WHATWG URL"
             )
@@ -842,7 +872,14 @@ def _adapt_source_bytes(record: SourceRecord, data: bytes) -> AdaptedDocument:
                 f"{record.source_id}: source identity preflight rejected forced "
                 f"{record.family.value} family"
             )
-        return adapter.load(synthetic_path, data)
+        adapted = adapter.load(synthetic_path, data)
+        validate_acquisition_terminal(
+            data,
+            path=synthetic_path,
+            family=record.family,
+            adapter_id=adapter.adapter_id,
+        )
+        return adapted
 
 
 def _metadata_payload(record: SourceRecord, manifest_sha256: str) -> dict[str, str]:

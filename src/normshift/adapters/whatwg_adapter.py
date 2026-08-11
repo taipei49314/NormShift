@@ -7,7 +7,9 @@ from pathlib import Path
 from lxml import html
 
 from normshift.adapters.base import AdaptedDocument, build_provenance
+from normshift.adapters.detect import can_handle_family, require_family
 from normshift.adapters.errors import AdapterParseError
+from normshift.adapters.ingress import canonicalize_supported_html, require_nonempty_normalized_body
 from normshift.adapters.strip import strip_chrome
 from normshift.adapters.versioning import version_from_html_bytes
 from normshift.model.types import DocumentFamily
@@ -20,19 +22,18 @@ class WhatwgAdapter:
     family = DocumentFamily.WHATWG
 
     def can_handle(self, path: Path, raw: bytes) -> bool:
-        head = raw[:20_000].lower()
-        return b"whatwg" in head or b"living standard" in head
+        return can_handle_family(path, raw, self.family)
 
     def load(self, path: Path, raw: bytes) -> AdaptedDocument:
-        if not raw.strip():
-            raise AdapterParseError(
-                f"Empty WHATWG document: {path}",
-                adapter_id=self.adapter_id,
-            )
         try:
-            html.fromstring(raw)
-            working = strip_chrome(raw, DocumentFamily.WHATWG)
-            version = version_from_html_bytes(raw)
+            require_family(path, raw, self.family, adapter_id=self.adapter_id)
+            canonical = canonicalize_supported_html(raw, path=path, adapter_id=self.adapter_id)
+            html.fromstring(canonical, parser=html.HTMLParser(encoding="utf-8"))
+            working = strip_chrome(canonical, DocumentFamily.WHATWG)
+            require_nonempty_normalized_body(working, path=path, adapter_id=self.adapter_id)
+            version = version_from_html_bytes(raw, parse_bytes=canonical)
+        except AdapterParseError:
+            raise
         except Exception as exc:  # noqa: BLE001
             raise AdapterParseError(
                 f"Failed to parse WHATWG HTML: {path}: {exc}",

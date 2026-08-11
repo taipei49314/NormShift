@@ -45,12 +45,35 @@ any network fetch. The concrete final, temporary, and backup paths under the
 chosen snapshot root must also fit a conservative 240-byte transaction budget;
 choose a shorter dedicated root if that preflight rejects the location.
 
+Adapter preflight decodes source bytes as strict UTF-8. Supported UTF-8 and
+US-ASCII declaration aliases are canonicalized only for parser input while raw
+snapshot bytes and provenance hashes remain unchanged; conflicting declarations,
+non-ASCII bytes under an ASCII declaration, decoding replacement, binary controls,
+and unsupported encodings fail closed. RFC XML is parsed without network or entity
+resolution and is identified from the namespace-local `rfc` root plus `middle`
+structure, so a legal declaration followed by a DOCTYPE, comment, or processing
+instruction does not require an unsafe second parse.
+
 After that transaction, `acquire` immediately runs the complete network-free
 inventory, provenance, byte, and adapter replay before it can report `ACQUIRED`.
 If this final replay fails, the command exits nonzero and the dedicated root is
 quarantined: later invocations re-verify the existing inventory and cannot refetch,
 repair, or report success. Discard and recreate that root before retrying. This is
 fail-closed quarantine, not an automatic rollback-to-empty guarantee.
+
+The externally frozen manifest byte length and SHA-256 remain the authority for
+snapshot completeness. As a separate defense-in-depth check, acquisition replay
+requires a reviewed terminal form for each currently frozen family format: an
+explicit HTML document terminal for complete RFC/W3C/WHATWG documents, terminal
+legal matter in the RFC Editor paginated format, or the reviewed terminal
+bibliography and bounded generation-profile structure in the frozen WHATWG Review
+Draft format. No exact generator hash or bibliography content identifier is treated
+as proof of completeness. This rejects the proper-prefix truncation matrix for all
+ten development recipes. It is not a claim that a byte-only parser can prove the
+semantic completeness of arbitrary HTML. A new publisher serialization or source
+family requires an independently reviewed terminal rule before it can enter the
+production acquisition contract; generic local adapter use promises strict UTF-8
+and lexical structure only.
 
 Custom fetch callbacks are restricted to explicitly enabled test-only contracts.
 Actual-source receipts can only be produced by the pinned HTTPS acquisition path;

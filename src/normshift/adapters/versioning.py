@@ -12,9 +12,13 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def version_from_html_bytes(raw: bytes) -> str:
+def version_from_html_bytes(raw: bytes, *, parse_bytes: bytes | None = None) -> str:
+    """Return HTML version metadata, retaining ``raw`` for hash fallback identity."""
     try:
-        tree = html.fromstring(raw)
+        tree = html.fromstring(
+            parse_bytes if parse_bytes is not None else raw,
+            parser=html.HTMLParser(encoding="utf-8"),
+        )
     except Exception:
         return f"sha256:{sha256_bytes(raw)[:12]}"
 
@@ -49,11 +53,8 @@ def version_from_html_bytes(raw: bytes) -> str:
     return f"sha256:{sha256_bytes(raw)[:12]}"
 
 
-def version_from_rfc_xml(raw: bytes) -> str:
-    try:
-        root = etree.fromstring(raw)
-    except Exception:
-        return f"sha256:{sha256_bytes(raw)[:12]}"
+def version_from_rfc_xml(root: etree._Element, raw: bytes) -> str:
+    """Return RFC XML version metadata from an already safely parsed root."""
     doc_name = root.get("docName") or root.get("number")
     if doc_name:
         return str(doc_name)
