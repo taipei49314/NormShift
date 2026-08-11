@@ -117,6 +117,16 @@ authority, and portable exact-root custody. V1 fails closed on post-result corre
 until a separate evaluation-attempt trust anchor exists. It contains no actual labels or
 holdout membership and cannot grant M1/M2 acceptance.
 
+## Experimental M2 semantic dimensions
+
+The versioned semantic-dimensions foundation is documented in
+`docs/M2_SEMANTIC_DIMENSIONS_FOUNDATION.md`. It can describe move/rewrite form
+and eight independent semantic slots while retaining exact requirement
+provenance from a typed-receipt FULL source replay and the unchanged primary M0
+classification. It is not wired into the M0 report/CLI; caller object/scope
+spans remain unverified `UNKNOWN` candidates and cannot emit classes. This
+foundation does not claim M2 acceptance.
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
