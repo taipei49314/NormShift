@@ -1,0 +1,329 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "normshift-m1-m2-prereg-v1",
+  "status": "FROZEN_BEFORE_BLIND_EVALUATION",
+  "baseline": {
+    "commit": "b3af3dc26e64a3399545d179731222f6e87213c9",
+    "tree": "c629e2d51fc5219514d6068a90d3453725bd8010",
+    "default_branch": "master",
+    "repository": "https://github.com/taipei49314/NormShift"
+  },
+  "authority": {
+    "implementation_authority_may_approve_policy": false,
+    "policy_reviewer_must_not_implement_evaluated_system": true,
+    "ground_truth_reviewers_must_not_view_system_predictions": true,
+    "final_external_auditor_must_be_separate_from_implementation_and_policy_review": true,
+    "github_actions_is_not_external_audit": true
+  },
+  "metric_contract": {
+    "precision": "TP/(TP+FP)",
+    "recall": "TP/(TP+FN)",
+    "f1": "2*TP/(2*TP+FP+FN)",
+    "support": "TP+FN",
+    "zero_denominator_value": "0",
+    "comparison": "exact integer cross-multiplication; no display rounding",
+    "matching": "one-to-one exact matching under the frozen scorer; duplicate predictions cannot share one gold item",
+    "unexpected_valid_prediction": "FP for every applicable class",
+    "unmatched_gold": "FN",
+    "duplicate_or_schema_invalid_prediction": "HARD_FAIL",
+    "missing_required_class_or_below_minimum_support": "HARD_FAIL",
+    "missing_or_nonfinite_metric": "HARD_FAIL",
+    "aggregate_scores_are_acceptance_authority": false,
+    "all_required_classes_must_pass_individually": true,
+    "scorer_rule": "freeze scorer source, schema, canonicalizer, tests, and SHA-256 before opening holdout predictions"
+  },
+  "ground_truth_contract": {
+    "minimum_independent_labelers": 2,
+    "independent_adjudicator_required": true,
+    "labelers_and_adjudicator_must_not_implement_system": true,
+    "predictions_hidden_until_labels_and_decisions_are_hash_frozen": true,
+    "every_decision_records": [
+      "label_id",
+      "source_sha256",
+      "portable_locator",
+      "evidence_sha256",
+      "class",
+      "reviewer_ids",
+      "decision",
+      "reason",
+      "decided_at_utc"
+    ],
+    "conflicts_and_abstentions_retained": true,
+    "ambiguous_is_explicit_label_not_forced_confident": true,
+    "post_freeze_correction": "requires independent evidence-backed correction record, new label version and hashes, retention of superseded labels, and invalidation of all prior affected measurements",
+    "thresholds_may_be_lowered_after_any_candidate_or_holdout_result": false
+  },
+  "blind_holdout": {
+    "split_unit_m1": "whole official document version",
+    "split_unit_m2": "whole standard lineage chain",
+    "minimum_holdout_fraction_by_document_count": "0.40",
+    "minimum_holdout_versions_per_m1_family": 1,
+    "development_and_holdout_raw_sha256_overlap_allowed": false,
+    "derived_excerpt_or_normalized_copy_overlap_allowed": false,
+    "m2_standard_lineage_overlap_between_development_and_holdout_allowed": false,
+    "holdout_gold_split_membership_predictions_and_per_case_outputs_visible_to_implementation_before_candidate_freeze": false,
+    "implementation_may_add_fixture_name_path_url_or_hash_special_cases": false,
+    "candidate_freeze_binding": [
+      "commit",
+      "tree",
+      "wheel_sha256",
+      "sdist_sha256",
+      "source_zip_sha256",
+      "bundle_sha256"
+    ],
+    "evaluation_owner": "independent reviewer in fresh checkout/environment",
+    "after_aggregate_pass_fail_reveal": "any revealed per-case holdout material is retired to development; any production-code change requires a new exact candidate and an untouched holdout meeting this policy",
+    "blind_split_manifest_and_gold_hashes_required_in_final_evidence": true
+  },
+  "real_source_contract": {
+    "families": [
+      "RFC",
+      "W3C_TR",
+      "WHATWG"
+    ],
+    "minimum_actual_versions_per_family_m1": 2,
+    "minimum_actual_consecutive_versions_per_family_m2": 3,
+    "sanitized_or_structure_faithful_excerpt_counts_as_actual_standard": false,
+    "required_per_source": [
+      "canonical_url",
+      "standard_id",
+      "version_or_date",
+      "retrieved_at_utc",
+      "raw_sha256",
+      "byte_length",
+      "etag_or_null",
+      "last_modified_or_null",
+      "media_type",
+      "charset_or_null",
+      "adapter_id",
+      "adapter_version",
+      "profile",
+      "portable_source_ref",
+      "license_name",
+      "license_url",
+      "redistribution_basis",
+      "acquisition_recipe_or_snapshot_ref"
+    ],
+    "generic_or_unknown_license_note_is_sufficient": false,
+    "invent_missing_http_headers": false,
+    "accepted_byte_delivery": [
+      "legally_redistributed_pinned_snapshot",
+      "reviewer_prefetch_from_official_recipe_then_network_disabled"
+    ],
+    "scoring_and_report_verification_requires_live_network": false,
+    "official_fetch_hash_or_length_mismatch": "BLOCKED_EXTERNAL",
+    "raw_and_derived_artifacts_stored_separately": true,
+    "all_measurement_and_replay_after_acquisition_network_disabled": true
+  },
+  "m1": {
+    "required_families": [
+      "RFC",
+      "W3C_TR",
+      "WHATWG"
+    ],
+    "requirement_extraction": [
+      {
+        "family": "RFC",
+        "minimum_gold_positive_support": 30,
+        "minimum_labeled_modal_distractors": 30,
+        "precision": "0.95",
+        "recall": "0.95",
+        "f1": "0.95"
+      },
+      {
+        "family": "W3C_TR",
+        "minimum_gold_positive_support": 30,
+        "minimum_labeled_modal_distractors": 30,
+        "precision": "0.95",
+        "recall": "0.95",
+        "f1": "0.95"
+      },
+      {
+        "family": "WHATWG",
+        "minimum_gold_positive_support": 30,
+        "minimum_labeled_modal_distractors": 30,
+        "precision": "0.95",
+        "recall": "0.95",
+        "f1": "0.95"
+      }
+    ],
+    "region_classification": [
+      {"family": "RFC", "class": "NORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "RFC", "class": "INFORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "RFC", "class": "EXCLUDED", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "W3C_TR", "class": "NORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "W3C_TR", "class": "INFORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "W3C_TR", "class": "EXCLUDED", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "WHATWG", "class": "NORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "WHATWG", "class": "INFORMATIVE", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"family": "WHATWG", "class": "EXCLUDED", "minimum_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"}
+    ],
+    "modality_classification": [
+      {"class": "MUST", "minimum_actual_support": 25, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "MUST_NOT", "minimum_actual_support": 8, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "SHOULD", "minimum_actual_support": 10, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "SHOULD_NOT", "minimum_actual_support": 8, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "MAY", "minimum_actual_support": 10, "precision": "0.95", "recall": "0.95", "f1": "0.95"}
+    ],
+    "family_detection": [
+      {"class": "RFC", "minimum_actual_documents": 2, "precision": "1.00", "recall": "1.00", "f1": "1.00"},
+      {"class": "W3C_TR", "minimum_actual_documents": 2, "precision": "1.00", "recall": "1.00", "f1": "1.00"},
+      {"class": "WHATWG", "minimum_actual_documents": 2, "precision": "1.00", "recall": "1.00", "f1": "1.00"}
+    ],
+    "exact_pass_gates": [
+      "all_required_provenance_fields_match_exact_source_bytes",
+      "offline_replay_for_every_family",
+      "two_runs_byte_identical",
+      "relocation_replay",
+      "wrong_family_and_ambiguous_auto_detection_fail_closed",
+      "malformed_or_truncated_document_fail_closed",
+      "unsupported_encoding_fail_closed",
+      "namespace_and_section_nesting_matrix",
+      "navigation_boilerplate_example_code_note_issue_box_exclusion_matrix",
+      "normative_adjacent_to_informative_matrix",
+      "duplicate_anchor_matrix",
+      "canonical_url_disagreement_rejected",
+      "stale_or_wrong_etag_rejected",
+      "source_mutation_and_checksum_mismatch_rejected",
+      "adapter_exception_empty_extraction_partial_output_and_output_collision_leave_no_success_artifact"
+    ]
+  },
+  "m2": {
+    "minimum_real_lineage_chains": 3,
+    "minimum_consecutive_versions_per_real_chain": 3,
+    "required_family_chain_coverage": [
+      "RFC",
+      "W3C_TR",
+      "WHATWG"
+    ],
+    "identity": [
+      {"class": "SAME_LINEAGE", "minimum_support": 40, "minimum_real_support": 25, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "DIFFERENT_LINEAGE", "minimum_support": 40, "minimum_real_support": 25, "precision": "0.95", "recall": "0.95", "f1": "0.95"}
+    ],
+    "relations": [
+      {"class": "CONTINUES", "minimum_support": 30, "minimum_real_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "SPLIT_INTO", "minimum_support": 6, "minimum_real_support": 1, "precision": "0.90", "recall": "0.90", "f1": "0.90"},
+      {"class": "MERGED_FROM", "minimum_support": 6, "minimum_real_support": 1, "precision": "0.90", "recall": "0.90", "f1": "0.90"},
+      {"class": "ADDED", "minimum_support": 10, "minimum_real_support": 5, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "REMOVED", "minimum_support": 10, "minimum_real_support": 5, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "AMBIGUOUS", "minimum_support": 8, "minimum_real_support": 3, "precision": "0.95", "recall": "0.95", "f1": "0.95"}
+    ],
+    "change_classes": [
+      {"class": "MOVE_ONLY", "minimum_support": 8, "minimum_real_support": 3},
+      {"class": "REWRITE_ONLY", "minimum_support": 8, "minimum_real_support": 3},
+      {"class": "MOVED_AND_REWRITTEN", "minimum_support": 8, "minimum_real_support": 3},
+      {"class": "ACTOR_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "ACTION_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "OBJECT_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "SCOPE_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "MODALITY_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "POLARITY_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "CONDITION_ADDED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "CONDITION_REMOVED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "EXCEPTION_ADDED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "EXCEPTION_REMOVED", "minimum_support": 6, "minimum_real_support": 2}
+    ],
+    "change_class_thresholds": {
+      "precision": "0.90",
+      "recall": "0.90",
+      "f1": "0.90"
+    },
+    "definition_and_xref_classes": [
+      {"class": "DEFINITION_ADDED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "DEFINITION_CHANGED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "DEFINITION_REMOVED", "minimum_support": 6, "minimum_real_support": 2},
+      {"class": "REFERENCES_DEFINITION", "minimum_support": 10, "minimum_real_support": 4},
+      {"class": "CROSS_REFERENCE", "minimum_support": 10, "minimum_real_support": 4},
+      {"class": "INDIRECT_IMPACT", "minimum_support": 6, "minimum_real_support": 2}
+    ],
+    "definition_and_xref_thresholds": {
+      "precision": "0.90",
+      "recall": "0.90",
+      "f1": "0.90"
+    },
+    "ambiguity_routing": [
+      {"class": "ROUTE_AMBIGUOUS", "minimum_support": 10, "minimum_real_support": 3, "precision": "0.95", "recall": "0.95", "f1": "0.95"},
+      {"class": "ROUTE_CONFIDENT", "minimum_support": 30, "minimum_real_support": 20, "precision": "0.95", "recall": "0.95", "f1": "0.95"}
+    ],
+    "exact_pass_gates": [
+      "all_frozen_synthetic_labels_exact_with_zero_unexpected_outputs",
+      "stable_continuation",
+      "move_only",
+      "rewrite_only",
+      "moved_and_rewritten",
+      "split",
+      "merge",
+      "add",
+      "remove",
+      "genuine_ambiguity",
+      "actor_action_object_scope_changes",
+      "definition_add_change_remove",
+      "cross_reference_and_indirect_impact",
+      "similar_text_not_same_obligation",
+      "every_node_instance_and_edge_traces_to_exact_source_sha256_and_locator",
+      "graph_integrity_recomputes",
+      "two_clean_locations_byte_identical",
+      "tampering_and_missing_provenance_fail_closed"
+    ]
+  },
+  "evidence_and_package": {
+    "required_artifacts": [
+      "policy_json",
+      "detached_policy_approval",
+      "source_manifest",
+      "license_inventory",
+      "raw_snapshot_inventory_or_official_prefetch_recipes",
+      "blind_split_manifest",
+      "label_decision_ledger",
+      "m1_gold",
+      "m2_gold",
+      "scorer_source_and_sha256",
+      "per_case_predictions",
+      "per_class_confusion_counts",
+      "per_class_metrics",
+      "minimum_support_results",
+      "synthetic_exact_pass_matrix",
+      "adversarial_fail_closed_matrix",
+      "offline_replay_logs",
+      "two_run_determinism_hashes",
+      "m0_regression_results",
+      "commands_and_exit_codes"
+    ],
+    "authoritative_manifest_must_hash_every_required_artifact": true,
+    "authoritative_manifest_must_embed_all_support_counts_thresholds_and_results": true,
+    "external_package_verifier_must_recompute_metrics_from_gold_and_predictions": true,
+    "absent_fields_may_default_to_success": false,
+    "unknown_critical_fields_allowed": false,
+    "pre_audit_status_cap_m1": "M1_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+    "pre_audit_status_cap_m2": "M2_IMPLEMENTED_PENDING_EXTERNAL_AUDIT",
+    "release_status_before_exact_subject_external_pass": "BLOCKED"
+  },
+  "ci": {
+    "m0_must_remain_fully_green": true,
+    "operating_systems": [
+      "ubuntu",
+      "windows",
+      "macos"
+    ],
+    "python": "3.12",
+    "frozen_dependencies": true,
+    "actual_family_offline_replay_required": true,
+    "all_adversarial_and_synthetic_exact_gates_required": true,
+    "no_continue_on_error": true,
+    "no_unexplained_skip_xfail_xpass": true,
+    "wheel_and_sdist_isolated_smoke": true,
+    "package_verifier_negative_tests": true,
+    "holdout_evaluation_runs_only_after_exact_candidate_freeze": true,
+    "ci_pass_alone_grants_external_acceptance": false
+  },
+  "revision_and_failure_policy": {
+    "threshold_lowering_or_support_reduction": "FORBIDDEN",
+    "required_class_removal_or_merge": "FORBIDDEN",
+    "failed_class_compensation_by_aggregate": "FORBIDDEN",
+    "fixture_specific_exception": "FORBIDDEN",
+    "label_change_after_output": "new independently reviewed label version and complete affected reevaluation",
+    "production_byte_change_after_evaluation": "new candidate identity and untouched holdout reevaluation",
+    "unavailable_license_source_support_or_review_authority": "BLOCKED_EXTERNAL",
+    "open_p0_or_p1_or_false_success": "FAIL"
+  }
+}
