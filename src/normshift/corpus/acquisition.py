@@ -65,6 +65,7 @@ MAX_TOTAL_SOURCE_BYTES: Final = 256 * 1024 * 1024
 MAX_REDIRECTS: Final = 5
 MAX_OUTPUT_REF_BYTES: Final = 1024
 MAX_OUTPUT_SEGMENT_BYTES: Final = 255
+MAX_TRANSACTION_PATH_BYTES: Final = 240
 _SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 _ID_RE: Final = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _MEDIA_TYPE_RE: Final = re.compile(r"^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$")
@@ -585,10 +586,10 @@ def load_source_manifest(
     rfc_standard_ids: set[str] = set()
     actual_identity_values: dict[str, dict[str, str]] = {
         "content_sha256": {},
-        "document_version": {},
         "canonical_url": {},
         "acquisition_url": {},
     }
+    actual_document_versions: dict[tuple[DocumentFamily, str, str], str] = {}
     exact_output_refs: dict[str, str] = {}
     output_spellings: dict[str, str] = {}
     for record in records:
@@ -612,7 +613,6 @@ def load_source_manifest(
                 rfc_standard_ids.add(record.standard_id)
             for field, value in (
                 ("content_sha256", record.content_sha256),
-                ("document_version", record.document_version),
                 ("canonical_url", record.canonical_url),
                 ("acquisition_url", record.acquisition_url),
             ):
@@ -623,6 +623,19 @@ def load_source_manifest(
                         f"for {record.source_id!r} and {previous_source!r}"
                     )
                 actual_identity_values[field][value] = record.source_id
+            document_version_key = (
+                record.family,
+                record.standard_id,
+                record.document_version,
+            )
+            previous_document_source = actual_document_versions.get(document_version_key)
+            if previous_document_source is not None:
+                raise AcquisitionError(
+                    "duplicate actual-source document_version within family/standard: "
+                    f"{record.document_version!r} for {record.source_id!r} and "
+                    f"{previous_document_source!r}"
+                )
+            actual_document_versions[document_version_key] = record.source_id
         for output_ref in (record.local_ref, record.metadata_ref, record.receipt_ref):
             _validate_portable_output_ref(
                 output_ref,
@@ -664,7 +677,10 @@ def load_source_manifest(
                 "standard/version": {
                     (record.standard_id, record.version_or_date) for record in family_records
                 },
-                "document_version": {record.document_version for record in family_records},
+                "standard/document_version": {
+                    (record.standard_id, record.document_version)
+                    for record in family_records
+                },
                 "content_sha256": {record.content_sha256 for record in family_records},
                 "canonical_url": {record.canonical_url for record in family_records},
             }
@@ -970,6 +986,26 @@ def _expected_inventory(refs: list[str]) -> set[str]:
     return inventory
 
 
+def _preflight_transaction_paths(root: Path, refs: list[str]) -> list[Path]:
+    destinations: list[Path] = []
+    for ref in refs:
+        destination = root / Path(ref)
+        candidates = (
+            destination,
+            destination.parent / ".normshift-txn-xxxxxxxx.tmp",
+            destination.parent / (".normshift-bak-" + "x" * 32),
+        )
+        for candidate in candidates:
+            path_bytes = os.fsencode(os.path.abspath(candidate))
+            if len(path_bytes) > MAX_TRANSACTION_PATH_BYTES:
+                raise AcquisitionError(
+                    f"{ref}: snapshot transaction path exceeds conservative "
+                    f"{MAX_TRANSACTION_PATH_BYTES}-byte budget"
+                )
+        destinations.append(destination)
+    return destinations
+
+
 def _result(manifest: SourceManifest, *, mode: str) -> CorpusReplayResult:
     return CorpusReplayResult(
         manifest_sha256=manifest.manifest_sha256,
@@ -1034,6 +1070,13 @@ def acquire_corpus(
             allow_test_contract=allow_test_contract,
         )
 
+    destinations = _preflight_transaction_paths(root, refs)
+    assert_outputs_safe(
+        inputs=[Path(manifest_path), Path(acceptance_policy_path)],
+        outputs=destinations,
+        labels=refs,
+    )
+
     actual_fetcher = fetcher or (
         lambda record: _fetch_https(record, timeout_seconds=timeout_seconds)
     )
@@ -1049,16 +1092,9 @@ def acquire_corpus(
         fetched[record.source_id] = result
 
     artifacts = _artifact_bytes(manifest, fetched)
-    destinations = [root / Path(ref) for ref in artifacts]
-    assert_outputs_safe(
-        inputs=[Path(manifest_path), Path(acceptance_policy_path)],
-        outputs=destinations,
-        labels=list(artifacts),
-    )
     write_transaction(
         {
-            destination: artifacts[ref]
-            for destination, ref in zip(destinations, artifacts, strict=True)
+            root / Path(ref): data for ref, data in artifacts.items()
         }
     )
     verify_corpus_offline(

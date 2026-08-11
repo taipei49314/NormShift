@@ -598,6 +598,65 @@ def test_manifest_rejects_overlong_output_ref_segments_before_fetch(tmp_path: Pa
         )
 
 
+def test_acquisition_rejects_long_concrete_transaction_path_before_fetch(
+    tmp_path: Path,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    payload["sources"][0]["local_ref"] = f"snapshots/rfc/{'a' * 237}.html"
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+
+    fetched = False
+
+    def forbidden_fetch(_record: SourceRecord) -> FetchResult:
+        nonlocal fetched
+        fetched = True
+        return _fetcher(raw_by_id)(_record)
+
+    with pytest.raises(AcquisitionError, match="transaction path exceeds"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=forbidden_fetch,
+            allow_test_contract=True,
+        )
+    assert fetched is False
+
+
+def test_derived_output_ref_over_total_cap_fails_before_fetch(tmp_path: Path) -> None:
+    payload, _ = _manifest_payload()
+    long_ref = "snapshots/" + "/".join([*(["a" * 100] * 9), "b" * 93])
+    assert len(long_ref.encode("ascii")) == 1012
+    payload["sources"][0]["local_ref"] = long_ref
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    policy_path = _write_policy(tmp_path)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    fetched = False
+
+    def forbidden_fetch(_record: SourceRecord) -> FetchResult:
+        nonlocal fetched
+        fetched = True
+        raise AssertionError("overlong derived refs must fail before fetch")
+
+    with pytest.raises(AcquisitionError, match="portable output ref exceeds 1024"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=forbidden_fetch,
+            allow_test_contract=True,
+        )
+    assert fetched is False
+
+
 def test_manifest_rejects_canonical_final_url_disagreement(tmp_path: Path) -> None:
     payload, _ = _manifest_payload()
     payload["sources"][0]["canonical_url"] = (
@@ -691,7 +750,7 @@ def test_actual_contract_rejects_renamed_duplicate_bytes_as_two_versions(
 
 @pytest.mark.parametrize(
     "duplicate_field",
-    ["content_sha256", "document_version", "acquisition_url"],
+    ["content_sha256", "acquisition_url"],
 )
 def test_actual_contract_rejects_duplicate_identity_among_three_records(
     tmp_path: Path,
@@ -726,6 +785,44 @@ def test_actual_contract_rejects_duplicate_identity_among_three_records(
         match=f"duplicate actual-source {duplicate_field}",
     ):
         _load_actual_contract(tmp_path, payload)
+
+
+def test_actual_contract_rejects_duplicate_document_version_within_standard(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first_w3c = payload["sources"][2]
+    third = deepcopy(payload["sources"][3])
+    third.update(
+        {
+            "source_id": "w3c-micropub-wd",
+            "version_or_date": "2015-01-01",
+            "document_version": first_w3c["document_version"],
+            "canonical_url": "https://www.w3.org/TR/2015/WD-micropub-20150101/",
+            "acquisition_url": "https://www.w3.org/TR/2015/WD-micropub-20150101/",
+            "redirect_chain": ["https://www.w3.org/TR/2015/WD-micropub-20150101/"],
+            "content_sha256": "c" * 64,
+            "byte_length": 12345,
+            "local_ref": "snapshots/w3c/micropub-wd.html",
+        }
+    )
+    payload["sources"].append(third)
+
+    with pytest.raises(AcquisitionError, match="within family/standard"):
+        _load_actual_contract(tmp_path, payload)
+
+
+def test_actual_contract_allows_same_document_version_for_different_standards(
+    tmp_path: Path,
+) -> None:
+    payload = _actual_contract_payload()
+    first_w3c = payload["sources"][2]
+    second_w3c = payload["sources"][3]
+    second_w3c["standard_id"] = "Other Standard"
+    second_w3c["document_version"] = first_w3c["document_version"]
+
+    manifest = _load_actual_contract(tmp_path, payload)
+    assert len(manifest.sources) == 6
 
 
 def test_actual_contract_rejects_duplicate_canonical_url_among_three_records(

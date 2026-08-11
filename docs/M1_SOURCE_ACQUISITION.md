@@ -14,8 +14,10 @@ An actual-source manifest must:
   `0265082c85b5e381cf30484774a8cba0d7fb11ab4d5dab8dd5aaa6fd6630f773`;
 - contain at least two versions from each of RFC, W3C, and WHATWG;
 - give every source a `standard_id` and `version_or_date`; every actual source
-  must have a globally unique hash, adapter document version, acquisition URL,
-  and canonical URL, and RFC records must also name distinct RFC numbers;
+  must have a globally unique hash, acquisition URL, and canonical URL; adapter
+  document versions must be unique within one family/standard lineage, each
+  family must provide at least two distinct `(standard_id, document_version)`
+  pairs, and RFC records must also name distinct RFC numbers;
 - use immutable family-authoritative URL forms: exact RFC Editor resources,
   dated W3C `/TR/` versions, or frozen WHATWG commit/review snapshots;
 - record the curator's prior retrieval assertion, ETag and Last-Modified (including
@@ -39,7 +41,9 @@ receipts are committed in one rollback-safe transaction. Portable path aliases,
 existing partial state, extra files/directories, symlinks, and junctions are rejected.
 Generated refs use a conservative ASCII segment grammar, a 255-byte segment cap,
 and a 1,024-byte relative-ref cap so invalid platform-specific names fail before
-any network fetch.
+any network fetch. The concrete final, temporary, and backup paths under the
+chosen snapshot root must also fit a conservative 240-byte transaction budget;
+choose a shorter dedicated root if that preflight rejects the location.
 
 After that transaction, `acquire` immediately runs the complete network-free
 inventory, provenance, byte, and adapter replay before it can report `ACQUIRED`.

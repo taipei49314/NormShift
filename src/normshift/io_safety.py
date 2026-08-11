@@ -246,7 +246,7 @@ def write_transaction(
             existed = kind == "file"
             _ensure_parents(final, created_dirs)
             fd, tmp_name = tempfile.mkstemp(
-                prefix=f".{final.name}.",
+                prefix=".normshift-txn-",
                 suffix=".tmp",
                 dir=str(final.parent),
             )
@@ -262,7 +262,7 @@ def write_transaction(
         for _tmp, final, existed in staged:
             if not existed:
                 continue
-            bak = final.parent / f".{final.name}.bak.{uuid.uuid4().hex}"
+            bak = final.parent / f".normshift-bak-{uuid.uuid4().hex}"
             replacer(final, bak)
             backups.append((bak, final))
             dirs_to_fsync.add(final.parent)
