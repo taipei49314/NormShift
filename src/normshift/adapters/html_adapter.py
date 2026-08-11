@@ -5,7 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from normshift.adapters.base import AdaptedDocument, build_provenance
+from normshift.adapters.detect import can_handle_family, require_family
 from normshift.adapters.errors import AdapterParseError
+from normshift.adapters.ingress import canonicalize_supported_html, require_nonempty_normalized_body
 from normshift.adapters.strip import strip_chrome
 from normshift.adapters.versioning import version_from_html_bytes
 from normshift.model.types import DocumentFamily
@@ -18,17 +20,17 @@ class HtmlAdapter:
     family = DocumentFamily.GENERIC_HTML
 
     def can_handle(self, path: Path, raw: bytes) -> bool:
-        if path.suffix.lower() in {".html", ".htm", ".xhtml"}:
-            return True
-        head = raw[:2000].lower()
-        return b"<html" in head or b"<!doctype html" in head
+        return can_handle_family(path, raw, self.family)
 
     def load(self, path: Path, raw: bytes) -> AdaptedDocument:
-        if not raw.strip():
-            raise AdapterParseError(f"Empty HTML document: {path}", adapter_id=self.adapter_id)
         try:
-            working = strip_chrome(raw, DocumentFamily.GENERIC_HTML)
-            version = version_from_html_bytes(raw)
+            require_family(path, raw, self.family, adapter_id=self.adapter_id)
+            canonical = canonicalize_supported_html(raw, path=path, adapter_id=self.adapter_id)
+            working = strip_chrome(canonical, DocumentFamily.GENERIC_HTML)
+            require_nonempty_normalized_body(working, path=path, adapter_id=self.adapter_id)
+            version = version_from_html_bytes(raw, parse_bytes=canonical)
+        except AdapterParseError:
+            raise
         except Exception as exc:  # noqa: BLE001
             raise AdapterParseError(
                 f"Failed to parse HTML: {path}: {exc}",

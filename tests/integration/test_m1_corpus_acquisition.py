@@ -270,6 +270,24 @@ def _fetcher(raw_by_id: dict[str, bytes]):
     return fetch
 
 
+def _bind_replacement_source(
+    payload: dict[str, Any],
+    raw_by_id: dict[str, bytes],
+    *,
+    target_id: str,
+    replacement: bytes,
+    tmp_path: Path,
+) -> None:
+    target = next(source for source in payload["sources"] if source["source_id"] == target_id)
+    probe = tmp_path / f"{target_id}-identity.html"
+    probe.write_bytes(replacement)
+    document = load_document(probe, AdapterName(target["adapter"]))
+    target["content_sha256"] = _sha256(replacement)
+    target["byte_length"] = len(replacement)
+    target["document_version"] = document.document_version
+    raw_by_id[target_id] = replacement
+
+
 def _acquire_valid(tmp_path: Path) -> tuple[Path, Path, Path, str, dict[str, bytes]]:
     payload, raw_by_id = _manifest_payload()
     manifest_path = tmp_path / "sources.json"
@@ -748,13 +766,8 @@ def test_actual_contract_rejects_renamed_duplicate_bytes_as_two_versions(
         _load_actual_contract(tmp_path, payload)
 
 
-@pytest.mark.parametrize(
-    "duplicate_field",
-    ["content_sha256", "acquisition_url"],
-)
-def test_actual_contract_rejects_duplicate_identity_among_three_records(
+def test_actual_contract_rejects_duplicate_content_identity_among_three_records(
     tmp_path: Path,
-    duplicate_field: str,
 ) -> None:
     payload = _actual_contract_payload()
     first = payload["sources"][0]
@@ -773,16 +786,12 @@ def test_actual_contract_rejects_duplicate_identity_among_three_records(
             "local_ref": "snapshots/rfc/rfc-5246.html",
         }
     )
-    if duplicate_field == "acquisition_url":
-        third["acquisition_url"] = first["acquisition_url"]
-        third["redirect_chain"] = [first["acquisition_url"], third["canonical_url"]]
-    else:
-        third[duplicate_field] = first[duplicate_field]
+    third["content_sha256"] = first["content_sha256"]
     payload["sources"].append(third)
 
     with pytest.raises(
         AcquisitionError,
-        match=f"duplicate actual-source {duplicate_field}",
+        match="duplicate actual-source content_sha256",
     ):
         _load_actual_contract(tmp_path, payload)
 
@@ -812,42 +821,24 @@ def test_actual_contract_rejects_duplicate_document_version_within_standard(
         _load_actual_contract(tmp_path, payload)
 
 
-def test_actual_contract_allows_same_document_version_for_different_standards(
+def test_actual_contract_rejects_non_micropub_w3c_standard_identity(
     tmp_path: Path,
 ) -> None:
     payload = _actual_contract_payload()
-    first_w3c = payload["sources"][2]
     second_w3c = payload["sources"][3]
     second_w3c["standard_id"] = "Other Standard"
-    second_w3c["document_version"] = first_w3c["document_version"]
 
-    manifest = _load_actual_contract(tmp_path, payload)
-    assert len(manifest.sources) == 6
+    with pytest.raises(AcquisitionError, match="standard_id must equal 'Micropub'"):
+        _load_actual_contract(tmp_path, payload)
 
 
-def test_actual_contract_rejects_duplicate_canonical_url_among_three_records(
+def test_actual_contract_rejects_w3c_canonical_url_relabeling(
     tmp_path: Path,
 ) -> None:
     payload = _actual_contract_payload()
-    first_w3c = payload["sources"][2]
-    third = deepcopy(payload["sources"][3])
-    third.update(
-        {
-            "source_id": "w3c-micropub-cr-alias",
-            "standard_id": "Micropub alternate identity",
-            "version_or_date": first_w3c["version_or_date"],
-            "document_version": "sha256:dddddddddddd",
-            "canonical_url": first_w3c["canonical_url"],
-            "acquisition_url": first_w3c["acquisition_url"],
-            "redirect_chain": first_w3c["redirect_chain"],
-            "content_sha256": "d" * 64,
-            "byte_length": 12345,
-            "local_ref": "snapshots/w3c/micropub-cr-alias.html",
-        }
-    )
-    payload["sources"].append(third)
+    payload["sources"][2]["standard_id"] = "Micropub alternate identity"
 
-    with pytest.raises(AcquisitionError, match="duplicate actual-source canonical_url"):
+    with pytest.raises(AcquisitionError, match="standard_id must equal 'Micropub'"):
         _load_actual_contract(tmp_path, payload)
 
 
@@ -872,7 +863,7 @@ def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
     )
     payload["sources"].append(alias)
 
-    with pytest.raises(AcquisitionError, match="duplicate actual RFC standard_id"):
+    with pytest.raises(AcquisitionError, match="exact canonical"):
         _load_actual_contract(tmp_path, payload)
 
 
@@ -884,7 +875,7 @@ def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
             "https://www.rfc-editor.org/about/",
             "1999-01",
             "RFC 2246",
-            "exact RFC Editor resource",
+            "exact canonical",
         ),
         (
             0,
@@ -898,7 +889,7 @@ def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
             "https://www.w3.org/TR/micropub/",
             "2016-08-16",
             "Micropub",
-            "dated W3C /TR/ version",
+            "exact dated",
         ),
         (
             2,
@@ -912,7 +903,7 @@ def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
             "https://mimesniff.spec.whatwg.org/",
             "2023-07",
             "MIME Sniffing",
-            "frozen commit or review draft",
+            "exact https://mimesniff",
         ),
         (
             4,
@@ -920,6 +911,41 @@ def test_actual_contract_rejects_rfc_host_and_format_alias_as_a_second_version(
             "2023-08",
             "MIME Sniffing",
             "version_or_date must match",
+        ),
+        (
+            2,
+            "https://www.w3.org/TR/2016/CR-micropub-20160816/",
+            "2016-08-16",
+            "Other Standard",
+            "standard_id must equal 'Micropub'",
+        ),
+        (
+            4,
+            "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/",
+            "2023-07",
+            "Other Standard",
+            "standard_id must equal 'MIME Sniffing'",
+        ),
+        (
+            2,
+            "https://www.w3.org/TR/2015/CR-micropub-20160816/",
+            "2016-08-16",
+            "Micropub",
+            "year must match",
+        ),
+        (
+            2,
+            "https://www.w3.org/TR/2016/CR-micropub-20160231/",
+            "2016-02-31",
+            "Micropub",
+            "invalid publication date",
+        ),
+        (
+            4,
+            "https://mimesniff.spec.whatwg.org/review-drafts/2023-13/",
+            "2023-13",
+            "MIME Sniffing",
+            "exact https://mimesniff",
         ),
     ],
 )
@@ -939,6 +965,122 @@ def test_actual_contract_rejects_non_authoritative_or_mismatched_identity(
     source["version_or_date"] = version_or_date
     source["standard_id"] = standard_id
     with pytest.raises(AcquisitionError, match=error):
+        _load_actual_contract(tmp_path, payload)
+
+
+@pytest.mark.parametrize(
+    ("source_index", "url", "error"),
+    [
+        (
+            0,
+            "https://rfc-editor.org/rfc/rfc2246.html",
+            "exact canonical",
+        ),
+        (
+            0,
+            "https://www.rfc-editor.org/rfc/rfc2246.txt",
+            "exact canonical",
+        ),
+        (
+            0,
+            "https://www.rfc-editor.org.evil.test/rfc/rfc2246.html",
+            "exact canonical",
+        ),
+        (
+            2,
+            "https://w3.org/TR/2016/CR-micropub-20160816/",
+            "exact dated",
+        ),
+        (
+            2,
+            "https://www.w3.org/TR/2016/CR-other-20160816/",
+            "exact dated",
+        ),
+        (
+            2,
+            "https://www.w3.org/TR/2016/CR-micropub-20160816/extra",
+            "exact dated",
+        ),
+        (
+            4,
+            "https://html.spec.whatwg.org/review-drafts/2023-07/",
+            "exact https://mimesniff",
+        ),
+        (
+            4,
+            "https://mimesniff.spec.whatwg.org/commit-snapshots/"
+            "0123456789abcdef0123456789abcdef01234567/",
+            "exact https://mimesniff",
+        ),
+        (
+            4,
+            "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/extra",
+            "exact https://mimesniff",
+        ),
+    ],
+)
+def test_actual_contract_rejects_host_and_path_identity_laundering(
+    tmp_path: Path,
+    source_index: int,
+    url: str,
+    error: str,
+) -> None:
+    payload = _actual_contract_payload()
+    source = payload["sources"][source_index]
+    source["canonical_url"] = url
+    source["acquisition_url"] = url
+    source["redirect_chain"] = [url]
+
+    with pytest.raises(AcquisitionError, match=error):
+        _load_actual_contract(tmp_path, payload)
+
+
+@pytest.mark.parametrize(
+    ("source_index", "acquisition_url"),
+    [
+        (0, "https://evil.example.test/rfc/rfc2246.html"),
+        (2, "https://www.w3.org/TR/2016/CR-other-20160816/"),
+        (4, "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/extra"),
+    ],
+)
+def test_actual_contract_rejects_acquisition_and_redirect_alias_laundering(
+    tmp_path: Path,
+    source_index: int,
+    acquisition_url: str,
+) -> None:
+    payload = _actual_contract_payload()
+    source = payload["sources"][source_index]
+    source["acquisition_url"] = acquisition_url
+    source["redirect_chain"] = [acquisition_url, source["canonical_url"]]
+
+    with pytest.raises(AcquisitionError, match="must equal canonical_url"):
+        _load_actual_contract(tmp_path, payload)
+
+
+@pytest.mark.parametrize(
+    ("source_index", "url"),
+    [
+        (0, "https://user@www.rfc-editor.org/rfc/rfc2246.html"),
+        (2, "https://www.w3.org:443/TR/2016/CR-micropub-20160816/"),
+        (
+            4,
+            "https://mimesniff.spec.whatwg.org/review-drafts/2023-07/?view=1",
+        ),
+        (4, "/review-drafts/2023-07/"),
+    ],
+)
+def test_actual_contract_rejects_url_parser_laundering(
+    tmp_path: Path,
+    source_index: int,
+    url: str,
+) -> None:
+    payload = _actual_contract_payload()
+    source = payload["sources"][source_index]
+    source["canonical_url"] = url
+    source["acquisition_url"] = url
+    source["redirect_chain"] = [url]
+
+    with pytest.raises(AcquisitionError):
         _load_actual_contract(tmp_path, payload)
 
 
@@ -1042,13 +1184,28 @@ def test_later_fetch_failure_leaves_no_partial_outputs(tmp_path: Path) -> None:
     assert list(snapshot_root.rglob("*")) == []
 
 
-def test_adapter_wrong_family_fails_before_any_output(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    ("target_id", "replacement_id"),
+    [
+        ("rfc-source", "w3c-source"),
+        ("rfc-source", "whatwg-source"),
+        ("w3c-source", "rfc-source"),
+        ("w3c-source", "whatwg-source"),
+        ("whatwg-source", "rfc-source"),
+        ("whatwg-source", "w3c-source"),
+    ],
+)
+def test_adapter_wrong_family_fails_before_any_output(
+    tmp_path: Path,
+    target_id: str,
+    replacement_id: str,
+) -> None:
     payload, raw_by_id = _manifest_payload()
-    rfc = payload["sources"][0]
-    w3c_bytes = raw_by_id["w3c-source"]
-    rfc["content_sha256"] = _sha256(w3c_bytes)
-    rfc["byte_length"] = len(w3c_bytes)
-    raw_by_id["rfc-source"] = w3c_bytes
+    target = next(source for source in payload["sources"] if source["source_id"] == target_id)
+    replacement = raw_by_id[replacement_id]
+    target["content_sha256"] = _sha256(replacement)
+    target["byte_length"] = len(replacement)
+    raw_by_id[target_id] = replacement
     manifest_path = tmp_path / "sources.json"
     digest = _write_manifest(manifest_path, payload)
     snapshot_root = tmp_path / "corpus"
@@ -1056,6 +1213,146 @@ def test_adapter_wrong_family_fails_before_any_output(tmp_path: Path) -> None:
     policy_path = _write_policy(tmp_path)
 
     with pytest.raises(AcquisitionError, match="source identity preflight rejected"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=_fetcher(raw_by_id),
+            allow_test_contract=True,
+        )
+    assert list(snapshot_root.rglob("*")) == []
+
+
+@pytest.mark.parametrize("target_id", ["rfc-source", "w3c-source", "whatwg-source"])
+@pytest.mark.parametrize(
+    "mutation",
+    ["half", "middle_nul", "utf16", "ascii_nonascii", "conflicting_declarations"],
+)
+def test_adapter_ingress_mutation_fails_before_any_output(
+    tmp_path: Path,
+    target_id: str,
+    mutation: str,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    original = raw_by_id[target_id]
+    if mutation == "half":
+        mutated = original[: len(original) // 2]
+    elif mutation == "middle_nul":
+        midpoint = len(original) // 2
+        mutated = original[:midpoint] + b"\x00" + original[midpoint + 1 :]
+    elif mutation == "utf16":
+        mutated = original.decode("utf-8").encode("utf-16")
+    elif mutation == "ascii_nonascii":
+        mutated = original.replace(
+            b'<meta charset="utf-8"/>',
+            b'<meta charset="us-ascii"/>',
+            1,
+        ).replace(b"<body>", "<body><p>Caf\N{LATIN SMALL LETTER E WITH ACUTE}</p>".encode(), 1)
+    else:
+        mutated = original.replace(
+            b'<meta charset="utf-8"/>',
+            b'<meta charset="utf-8"/><meta charset="US-ASCII"/>',
+            1,
+        )
+
+    target = next(source for source in payload["sources"] if source["source_id"] == target_id)
+    target["content_sha256"] = _sha256(mutated)
+    target["byte_length"] = len(mutated)
+    raw_by_id[target_id] = mutated
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    policy_path = _write_policy(tmp_path)
+
+    with pytest.raises(AcquisitionError, match="source identity preflight rejected"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=_fetcher(raw_by_id),
+            allow_test_contract=True,
+        )
+    assert list(snapshot_root.rglob("*")) == []
+
+
+@pytest.mark.parametrize("target_id", ["rfc-source", "w3c-source", "whatwg-source"])
+def test_balanced_html_prefix_fails_terminal_gate_before_any_output(
+    tmp_path: Path,
+    target_id: str,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    original = raw_by_id[target_id]
+    terminal_start = original.lower().rfind(b"</body>")
+    assert terminal_start > 0
+    truncated = original[:terminal_start].rstrip()
+    assert truncated.endswith(b">")
+    _bind_replacement_source(
+        payload,
+        raw_by_id,
+        target_id=target_id,
+        replacement=truncated,
+        tmp_path=tmp_path,
+    )
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    policy_path = _write_policy(tmp_path)
+
+    with pytest.raises(AcquisitionError, match="terminal"):
+        acquire_corpus(
+            manifest_path,
+            snapshot_root,
+            manifest_sha256=digest,
+            acceptance_policy_path=policy_path,
+            fetcher=_fetcher(raw_by_id),
+            allow_test_contract=True,
+        )
+    assert list(snapshot_root.rglob("*")) == []
+
+
+def test_paginated_rfc_first_page_prefix_fails_terminal_gate_before_any_output(
+    tmp_path: Path,
+) -> None:
+    payload, raw_by_id = _manifest_payload()
+    full_source = b"""<pre>Network Working Group                         Example Author
+Request for Comments: 9999
+
+<span class="h1">Example Protocol</span>
+
+Clients MUST validate input.
+
+Full Copyright Statement                                             2
+
+<span class="grey">Example Author  Standards Track  [Page 1]</span>
+</pre><hr><pre><span class="grey">RFC 9999  Example Protocol  January 2026</span>
+
+<span class="h1">Full Copyright Statement</span>
+
+Copyright Notice. This terminal page is retained.
+
+<span class="grey">Example Author  Standards Track  [Page 2]</span>
+</pre>"""
+    first_end = full_source.lower().find(b"</pre>") + len(b"</pre>")
+    assert first_end > len(b"</pre>")
+    first_page = full_source[:first_end]
+    _bind_replacement_source(
+        payload,
+        raw_by_id,
+        target_id="rfc-source",
+        replacement=first_page,
+        tmp_path=tmp_path,
+    )
+    manifest_path = tmp_path / "sources.json"
+    digest = _write_manifest(manifest_path, payload)
+    snapshot_root = tmp_path / "corpus"
+    snapshot_root.mkdir()
+    policy_path = _write_policy(tmp_path)
+
+    with pytest.raises(AcquisitionError, match="terminal"):
         acquire_corpus(
             manifest_path,
             snapshot_root,

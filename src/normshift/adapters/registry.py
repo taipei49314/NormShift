@@ -52,19 +52,7 @@ def load_document(path: Path, adapter: AdapterName = AdapterName.AUTO) -> Adapte
     family = detect_family(path, raw) if forced is None else forced
 
     impl = _ADAPTERS[family]
-    # Always attempt load for the selected/detected family. `can_handle` is a
-    # soft hint for tooling; load() is the fail-closed gate.
-    try:
-        return impl.load(path, raw)
-    except AdapterError:
-        # If auto-detection picked a specialized family but parse fails, fall
-        # back to generic HTML when the bytes look like HTML.
-        if forced is None and family != DocumentFamily.GENERIC_HTML:
-            head = raw[:2000].lower()
-            if b"<html" in head or b"<!doctype html" in head or path.suffix.lower() in {
-                ".html",
-                ".htm",
-                ".xhtml",
-            }:
-                return _ADAPTERS[DocumentFamily.GENERIC_HTML].load(path, raw)
-        raise
+    # The selected implementation owns the final fail-closed identity and
+    # normalized-body gates. Auto-detected specialized input never falls back
+    # to generic HTML after a parse failure.
+    return impl.load(path, raw)

@@ -40,7 +40,10 @@ def extract_definitions_from_html(
 ) -> list[DefinitionRecord]:
     """Extract definitions from <dfn>, data-term, and 'X is defined as' sentences."""
     try:
-        tree = html.fromstring(raw_html)
+        tree = html.fromstring(
+            raw_html,
+            parser=html.HTMLParser(encoding="utf-8"),
+        )
     except Exception:
         return []
 

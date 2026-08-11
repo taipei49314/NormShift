@@ -2,18 +2,28 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from xml.sax.saxutils import escape
 
 from lxml import etree, html
 
 from normshift.adapters.base import AdaptedDocument, build_provenance
+from normshift.adapters.detect import can_handle_family, require_family
 from normshift.adapters.errors import AdapterParseError
+from normshift.adapters.ingress import (
+    canonicalize_supported_html,
+    is_rfc_xml_candidate,
+    require_nonempty_normalized_body,
+    validate_rfc_xml,
+)
 from normshift.adapters.strip import strip_chrome
 from normshift.adapters.versioning import version_from_html_bytes, version_from_rfc_xml
 from normshift.model.types import DocumentFamily
 
 ADAPTER_ID = "normshift.adapters.rfc"
+_RFC_EDITOR_HEADING_CLASSES = frozenset({f"h{level}" for level in range(1, 7)})
+_PARAGRAPH_BREAK_RE = re.compile(r"(?:\r?\n)[ \t]*(?:\r?\n)+")
 
 
 def _local(tag: object) -> str:
@@ -22,20 +32,15 @@ def _local(tag: object) -> str:
     return tag.rsplit("}", 1)[-1].lower() if "}" in tag else tag.lower()
 
 
-def rfc_xml_to_html(raw: bytes) -> bytes:
+def rfc_xml_to_html(root: etree._Element) -> bytes:
     """Convert a minimal subset of RFC XML into HTML for the shared normalizer."""
-    try:
-        root = etree.fromstring(raw)
-    except Exception as exc:  # noqa: BLE001
-        raise AdapterParseError(f"Invalid RFC XML: {exc}", adapter_id=ADAPTER_ID) from exc
-
     has_middle = (
         root.find("middle") is not None
         or root.find("{*}middle") is not None
         or root.find(".//middle") is not None
         or root.find(".//{*}middle") is not None
     )
-    if _local(root.tag) != "rfc" and not has_middle:
+    if _local(root.tag) != "rfc" or not has_middle:
         raise AdapterParseError("XML root is not RFC format", adapter_id=ADAPTER_ID)
 
     parts: list[str] = ["<!DOCTYPE html><html><head><meta charset='utf-8'/>"]
@@ -100,46 +105,105 @@ def rfc_xml_to_html(raw: bytes) -> bytes:
     return "".join(parts).encode("utf-8")
 
 
+def _paragraphs_from_pre_text(value: str) -> list[str]:
+    paragraphs: list[str] = []
+    for chunk in _PARAGRAPH_BREAK_RE.split(value):
+        paragraph = " ".join(chunk.split())
+        if paragraph:
+            paragraphs.append(paragraph)
+    return paragraphs
+
+
+def _flush_pre_text(pending: list[str], parts: list[str]) -> None:
+    combined = "".join(pending)
+    pending.clear()
+    for paragraph in _paragraphs_from_pre_text(combined):
+        parts.append(f"<p>{escape(paragraph)}</p>")
+
+
+def rfc_editor_pre_to_html(raw: bytes) -> bytes:
+    """Convert RFC Editor paginated ``pre`` HTML into shared-normalizer blocks."""
+    try:
+        tree = html.fromstring(raw, parser=html.HTMLParser(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        raise AdapterParseError(
+            f"Invalid RFC Editor HTML: {exc}",
+            adapter_id=ADAPTER_ID,
+        ) from exc
+    pre_nodes = tree.xpath("//pre")
+    if not pre_nodes:
+        raise AdapterParseError(
+            "RFC Editor HTML has no paginated preformatted body",
+            adapter_id=ADAPTER_ID,
+        )
+
+    parts: list[str] = [
+        "<!DOCTYPE html><html><head><meta charset='utf-8'/>",
+        "<title>RFC Editor document</title></head><body>",
+    ]
+    for pre in pre_nodes:
+        pending: list[str] = [pre.text or ""]
+
+        for child in pre:
+            class_tokens = {
+                token for token in str(child.get("class") or "").lower().split() if token
+            }
+            heading_classes = sorted(class_tokens & _RFC_EDITOR_HEADING_CLASSES)
+            if "grey" in class_tokens:
+                # RFC Editor page headers/footers are presentational duplicates.
+                _flush_pre_text(pending, parts)
+            elif heading_classes:
+                _flush_pre_text(pending, parts)
+                level = int(heading_classes[0][1])
+                heading = " ".join("".join(child.itertext()).split())
+                if heading:
+                    parts.append(f"<h{level}>{escape(heading)}</h{level}>")
+            else:
+                pending.append("".join(child.itertext()))
+            if child.tail:
+                pending.append(child.tail)
+        _flush_pre_text(pending, parts)
+
+    parts.append("</body></html>")
+    return "".join(parts).encode("utf-8")
+
+
 class RfcAdapter:
     adapter_id = ADAPTER_ID
     family = DocumentFamily.RFC
 
     def can_handle(self, path: Path, raw: bytes) -> bool:
-        head = raw[:8000].lower()
-        if path.suffix.lower() == ".xml":
-            return b"<rfc" in head or b"<middle>" in head
-        return b"rfc" in head and (
-            b"<html" in head
-            or b"internet engineering" in head
-            or b"request for comments:" in head
-        )
+        return can_handle_family(path, raw, self.family)
 
     def load(self, path: Path, raw: bytes) -> AdaptedDocument:
-        if not raw.strip():
-            raise AdapterParseError(f"Empty RFC document: {path}", adapter_id=self.adapter_id)
-
         try:
-            is_xml_like = (
-                path.suffix.lower() == ".xml"
-                or raw.lstrip().startswith(b"<?xml")
-                or b"<rfc" in raw[:2000]
-            )
-            if is_xml_like and b"<html" not in raw[:500].lower():
-                working_src = rfc_xml_to_html(raw)
-                version = version_from_rfc_xml(raw)
+            require_family(path, raw, self.family, adapter_id=self.adapter_id)
+            prefix = raw.lstrip()
+            if prefix.startswith(b"\xef\xbb\xbf"):
+                prefix = prefix[3:].lstrip()
+            prefix = prefix.lower()
+            if is_rfc_xml_candidate(raw):
+                root = validate_rfc_xml(raw, path=path, adapter_id=self.adapter_id)
+                working_src = rfc_xml_to_html(root)
+                version = version_from_rfc_xml(root, raw)
                 content_type = "application/rfc+xml"
-            elif is_xml_like:
-                working_src = raw
-                version = version_from_html_bytes(raw)
+            elif prefix.startswith(b"<pre"):
+                canonical = canonicalize_supported_html(raw, path=path, adapter_id=self.adapter_id)
+                working_src = rfc_editor_pre_to_html(canonical)
+                version = version_from_html_bytes(raw, parse_bytes=canonical)
                 content_type = "text/html"
             else:
-                # Validate parseable HTML
-                html.fromstring(raw)
-                working_src = raw
-                version = version_from_html_bytes(raw)
+                canonical = canonicalize_supported_html(
+                    raw,
+                    path=path,
+                    adapter_id=self.adapter_id,
+                )
+                working_src = canonical
+                version = version_from_html_bytes(raw, parse_bytes=canonical)
                 content_type = "text/html"
 
             working = strip_chrome(working_src, DocumentFamily.RFC)
+            require_nonempty_normalized_body(working, path=path, adapter_id=self.adapter_id)
         except AdapterParseError:
             raise
         except Exception as exc:  # noqa: BLE001
