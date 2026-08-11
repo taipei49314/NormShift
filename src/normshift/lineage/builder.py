@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -84,6 +85,10 @@ def _validate_documents(documents: list[RequirementsDocument]) -> None:
     document_versions: set[str] = set()
     requirement_ids: set[str] = set()
     for document in documents:
+        if not document.requirements:
+            raise ValueError(
+                f"document {document.document_version} contains no requirements"
+            )
         if document.document_sha256 in document_hashes:
             raise ValueError("lineage contains a duplicate document hash")
         if document.document_version in document_versions:
@@ -148,6 +153,159 @@ def _validate_mapping(
         raise ValueError("lineage mapping does not cover the exact document requirements")
     for requirement_id in sorted(expected):
         _require_lineage(mapping, nodes, requirement_id)
+
+
+def _validate_graph_evidence(
+    documents: list[RequirementsDocument],
+    nodes: list[LineageNode],
+    edges: list[LineageEdge],
+    definitions: list[DefinitionRecord],
+    dependency_links: list[DependencyLink],
+    ambiguity_items: list[AmbiguityItem],
+) -> None:
+    """Prove that every emitted graph record traces to the exact input versions."""
+    versions = [document.document_version for document in documents]
+    version_positions = {version: index for index, version in enumerate(versions)}
+    documents_by_version = {document.document_version: document for document in documents}
+    requirements = {
+        requirement.requirement_id: requirement
+        for document in documents
+        for requirement in document.requirements
+    }
+
+    node_ids = [node.lineage_id for node in nodes]
+    if len(node_ids) != len(set(node_ids)):
+        raise ValueError("lineage graph contains duplicate node IDs")
+    node_id_set = set(node_ids)
+    requirement_lineages: dict[str, str] = {}
+    for node in nodes:
+        if not node.instances:
+            raise ValueError(f"lineage node {node.lineage_id} has no source instances")
+        positions: list[int] = []
+        for instance in node.instances:
+            if instance.lineage_id != node.lineage_id:
+                raise ValueError("lineage instance names a different owning node")
+            requirement = requirements.get(instance.requirement_id)
+            if requirement is None:
+                raise ValueError("lineage instance references an unknown requirement")
+            if instance != _to_instance(requirement, node.lineage_id):
+                raise ValueError("lineage instance differs from exact requirement evidence")
+            if instance.requirement_id in requirement_lineages:
+                raise ValueError("requirement instance appears in more than one lineage node")
+            requirement_lineages[instance.requirement_id] = node.lineage_id
+            positions.append(version_positions[instance.document_version])
+        if positions != sorted(positions) or len(positions) != len(set(positions)):
+            raise ValueError("lineage instances must contain at most one ordered item per version")
+        if node.first_version != node.instances[0].document_version:
+            raise ValueError("lineage first_version differs from its first source instance")
+        if node.last_version != node.instances[-1].document_version:
+            raise ValueError("lineage last_version differs from its last source instance")
+    if set(requirement_lineages) != set(requirements):
+        raise ValueError("lineage nodes do not exactly cover every source requirement")
+
+    edge_ids = [edge.edge_id for edge in edges]
+    if len(edge_ids) != len(set(edge_ids)):
+        raise ValueError("lineage graph contains duplicate edge IDs")
+    edge_bindings: set[tuple[object, ...]] = set()
+    for edge in edges:
+        if edge.from_version not in version_positions or edge.to_version not in version_positions:
+            raise ValueError("lineage edge references an unknown document version")
+        if version_positions[edge.from_version] > version_positions[edge.to_version]:
+            raise ValueError("lineage edge moves backwards across document versions")
+        for side, requirement_id, lineage_id, version in (
+            ("from", edge.from_requirement_id, edge.from_lineage_id, edge.from_version),
+            ("to", edge.to_requirement_id, edge.to_lineage_id, edge.to_version),
+        ):
+            if (requirement_id is None) != (lineage_id is None):
+                raise ValueError(
+                    f"lineage edge {side} requirement and node must be present together"
+                )
+            if lineage_id is not None and lineage_id not in node_id_set:
+                raise ValueError(f"lineage edge {side} references an unknown node")
+            if requirement_id is None:
+                continue
+            requirement = requirements.get(requirement_id)
+            if requirement is None:
+                raise ValueError(f"lineage edge {side} references an unknown requirement")
+            if requirement.document_version != version:
+                raise ValueError(f"lineage edge {side} requirement has the wrong version")
+            if (
+                lineage_id is not None
+                and requirement_lineages[requirement_id] != lineage_id
+            ):
+                raise ValueError(f"lineage edge {side} requirement has the wrong node")
+        for label, score in (
+            ("confidence", edge.confidence),
+            ("alignment", edge.alignment_combined),
+        ):
+            if score is not None and (not math.isfinite(score) or not 0.0 <= score <= 1.0):
+                raise ValueError(f"lineage edge {label} score is outside [0, 1]")
+        binding = (
+            edge.relation,
+            edge.from_lineage_id,
+            edge.to_lineage_id,
+            edge.from_requirement_id,
+            edge.to_requirement_id,
+            edge.from_version,
+            edge.to_version,
+            edge.change_classification,
+            edge.confidence,
+            tuple(edge.reasons),
+            edge.alignment_combined,
+        )
+        if binding in edge_bindings:
+            raise ValueError(f"lineage graph contains a duplicate semantic edge: {binding}")
+        edge_bindings.add(binding)
+
+    definition_ids = [definition.definition_id for definition in definitions]
+    if len(definition_ids) != len(set(definition_ids)):
+        raise ValueError("lineage graph contains duplicate definition IDs")
+    definitions_by_id = {definition.definition_id: definition for definition in definitions}
+    for definition in definitions:
+        document = documents_by_version.get(definition.document_version)
+        if document is None or definition.document_sha256 != document.document_sha256:
+            raise ValueError("definition does not bind an exact input document")
+
+    link_ids = [link.link_id for link in dependency_links]
+    if len(link_ids) != len(set(link_ids)):
+        raise ValueError("lineage graph contains duplicate dependency-link IDs")
+    for link in dependency_links:
+        requirement = requirements.get(link.requirement_id)
+        linked_definition = definitions_by_id.get(link.definition_id)
+        if requirement is None or linked_definition is None:
+            raise ValueError("dependency link references missing evidence")
+        if (
+            link.document_version != requirement.document_version
+            or link.document_version != linked_definition.document_version
+        ):
+            raise ValueError("dependency link crosses unrelated document versions")
+        if link.term.casefold() != linked_definition.term.casefold():
+            raise ValueError("dependency link term differs from its definition")
+
+    ambiguity_ids = [item.item_id for item in ambiguity_items]
+    if len(ambiguity_ids) != len(set(ambiguity_ids)):
+        raise ValueError("lineage graph contains duplicate ambiguity IDs")
+    version_pairs: dict[str, tuple[str, str]] = {}
+    for old_version, new_version in zip(versions, versions[1:], strict=False):
+        pair_key = f"{old_version}->{new_version}"
+        if pair_key in version_pairs:
+            raise ValueError("document versions produce an ambiguous version-pair key")
+        version_pairs[pair_key] = (old_version, new_version)
+    for item in ambiguity_items:
+        pair = version_pairs.get(item.version_pair)
+        if pair is None:
+            raise ValueError("ambiguity item has an invalid version pair")
+        old_version, new_version = pair
+        for requirement_id in item.old_requirement_ids:
+            requirement = requirements.get(requirement_id)
+            if requirement is None or requirement.document_version != old_version:
+                raise ValueError("ambiguity item has invalid old requirement evidence")
+        for requirement_id in item.new_requirement_ids:
+            requirement = requirements.get(requirement_id)
+            if requirement is None or requirement.document_version != new_version:
+                raise ValueError("ambiguity item has invalid new requirement evidence")
+        if any(not math.isfinite(score) or not 0.0 <= score <= 1.0 for score in item.scores):
+            raise ValueError("ambiguity score is outside [0, 1]")
 
 
 def _to_instance(req: Requirement, lineage_id: str) -> RequirementInstanceRef:
@@ -505,6 +663,14 @@ def build_lineage_graph(
                         nodes,
                         link.requirement_id,
                     )
+                    prior_instances = [
+                        instance
+                        for instance in nodes[dep_lid].instances
+                        if instance.document_version == v_old
+                    ]
+                    if not prior_instances:
+                        continue
+                    prior_requirement_id = prior_instances[0].requirement_id
                     edges.append(
                         LineageEdge(
                             edge_id=_edge_id(
@@ -513,7 +679,7 @@ def build_lineage_graph(
                             relation=LineageRelation.DEPENDS_ON,
                             from_lineage_id=dep_lid,
                             to_lineage_id=dep_lid,
-                            from_requirement_id=link.requirement_id,
+                            from_requirement_id=prior_requirement_id,
                             to_requirement_id=link.requirement_id,
                             from_version=v_old,
                             to_version=v_new,
@@ -554,6 +720,14 @@ def build_lineage_graph(
     ambiguity = _collect_ambiguity(docs)
     node_list = sorted(nodes.values(), key=lambda n: n.lineage_id)
     edge_list = sorted(edges, key=lambda e: (e.from_version, e.to_version, e.edge_id))
+    _validate_graph_evidence(
+        docs,
+        node_list,
+        edge_list,
+        all_definitions,
+        all_dep_links,
+        ambiguity,
+    )
     summary: dict[str, Any] = {
         "version_count": len(versions),
         "lineage_count": len(node_list),

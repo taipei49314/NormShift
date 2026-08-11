@@ -178,3 +178,150 @@ def test_later_lineage_hash_collision_fails_closed(
             profile=ProfileName.RFC2119,
             adapter=AdapterName.HTML,
         )
+
+
+def test_empty_requirement_version_fails_closed(tmp_path: Path) -> None:
+    first = tmp_path / "v1.html"
+    second = tmp_path / "v2.html"
+    first.write_text("<p>The client MUST retain a token.</p>", encoding="utf-8")
+    second.write_text("<p>This version contains background prose only.</p>", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="contains no requirements"):
+        build_lineage_graph(
+            [first, second],
+            profile=ProfileName.RFC2119,
+            adapter=AdapterName.HTML,
+        )
+
+
+def test_graph_edge_id_collision_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = [LIN / "v1.html", LIN / "v2.html", LIN / "v3.html"]
+    monkeypatch.setattr(lineage_builder, "_edge_id", lambda *_parts: "edge-collision")
+
+    with pytest.raises(ValueError, match="duplicate edge IDs"):
+        build_lineage_graph(
+            paths,
+            profile=ProfileName.RFC2119,
+            adapter=AdapterName.HTML,
+        )
+
+
+def test_graph_evidence_validation_rejects_tampered_instance() -> None:
+    paths = [LIN / "v1.html", LIN / "v2.html", LIN / "v3.html"]
+    documents = [
+        extract_requirements(
+            path,
+            ProfileName.RFC2119,
+            adapter=AdapterName.HTML,
+        )
+        for path in paths
+    ]
+    graph = build_lineage_graph(
+        paths,
+        profile=ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+    nodes = [node.model_copy(deep=True) for node in graph.nodes]
+    nodes[0].instances[0] = nodes[0].instances[0].model_copy(
+        update={"source_locator": "id:tampered"}
+    )
+
+    with pytest.raises(ValueError, match="differs from exact requirement evidence"):
+        lineage_builder._validate_graph_evidence(
+            documents,
+            nodes,
+            graph.edges,
+            graph.definitions,
+            graph.dependency_links,
+            graph.ambiguity_queue,
+        )
+
+
+def test_definition_dependency_edges_trace_consecutive_instances() -> None:
+    paths = [LIN / "v1.html", LIN / "v2.html", LIN / "v3.html"]
+    graph = build_lineage_graph(
+        paths,
+        profile=ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+    instances = {
+        instance.requirement_id: instance
+        for node in graph.nodes
+        for instance in node.instances
+    }
+    dependency_edges = [
+        edge for edge in graph.edges if edge.relation == LineageRelation.DEPENDS_ON
+    ]
+    assert dependency_edges
+    for edge in dependency_edges:
+        assert edge.from_requirement_id is not None
+        assert edge.to_requirement_id is not None
+        old_instance = instances[edge.from_requirement_id]
+        new_instance = instances[edge.to_requirement_id]
+        assert old_instance.document_version == edge.from_version
+        assert new_instance.document_version == edge.to_version
+        assert old_instance.lineage_id == edge.from_lineage_id
+        assert new_instance.lineage_id == edge.to_lineage_id
+
+
+@pytest.mark.parametrize("missing_field", ["from_lineage_id", "from_requirement_id"])
+def test_graph_evidence_rejects_half_bound_edge_side(missing_field: str) -> None:
+    paths = [LIN / "v1.html", LIN / "v2.html", LIN / "v3.html"]
+    documents = [
+        extract_requirements(
+            path,
+            ProfileName.RFC2119,
+            adapter=AdapterName.HTML,
+        )
+        for path in paths
+    ]
+    graph = build_lineage_graph(
+        paths,
+        profile=ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+    edge_index = next(
+        index
+        for index, edge in enumerate(graph.edges)
+        if edge.from_lineage_id is not None and edge.from_requirement_id is not None
+    )
+    edges = [edge.model_copy(deep=True) for edge in graph.edges]
+    edges[edge_index] = edges[edge_index].model_copy(update={missing_field: None})
+
+    with pytest.raises(ValueError, match="requirement and node must be present together"):
+        lineage_builder._validate_graph_evidence(
+            documents,
+            graph.nodes,
+            edges,
+            graph.definitions,
+            graph.dependency_links,
+            graph.ambiguity_queue,
+        )
+
+
+def test_valid_merge_retains_each_parent_edge(tmp_path: Path) -> None:
+    first = tmp_path / "v1.html"
+    second = tmp_path / "v2.html"
+    first.write_text(
+        "<p>The client MUST validate the token signature.</p>"
+        "<p>The client MUST validate the token expiration.</p>",
+        encoding="utf-8",
+    )
+    second.write_text(
+        "<p>The client MUST validate the token signature and token expiration.</p>",
+        encoding="utf-8",
+    )
+    graph = build_lineage_graph(
+        [first, second],
+        profile=ProfileName.RFC2119,
+        adapter=AdapterName.HTML,
+    )
+
+    merge_edges = [
+        edge for edge in graph.edges if edge.relation == LineageRelation.MERGED_FROM
+    ]
+    assert len(merge_edges) == 2
+    assert len({edge.from_requirement_id for edge in merge_edges}) == 2
+    assert len({edge.to_requirement_id for edge in merge_edges}) == 1
