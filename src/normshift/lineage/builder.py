@@ -78,6 +78,78 @@ def _initial_lineage_ids(requirements: list[Requirement]) -> dict[str, str]:
     return lineage_ids
 
 
+def _validate_documents(documents: list[RequirementsDocument]) -> None:
+    """Reject ambiguous or internally inconsistent version inputs."""
+    document_hashes: set[str] = set()
+    document_versions: set[str] = set()
+    requirement_ids: set[str] = set()
+    for document in documents:
+        if document.document_sha256 in document_hashes:
+            raise ValueError("lineage contains a duplicate document hash")
+        if document.document_version in document_versions:
+            raise ValueError("lineage contains a duplicate document version")
+        document_hashes.add(document.document_sha256)
+        document_versions.add(document.document_version)
+
+        local_ids: set[str] = set()
+        for requirement in document.requirements:
+            if requirement.requirement_id in local_ids:
+                raise ValueError(
+                    f"document {document.document_version} contains duplicate requirement IDs"
+                )
+            if requirement.requirement_id in requirement_ids:
+                raise ValueError("lineage contains a repeated requirement ID")
+            if requirement.document_sha256 != document.document_sha256:
+                raise ValueError("requirement document hash differs from its document")
+            if requirement.document_version != document.document_version:
+                raise ValueError("requirement version differs from its document")
+            local_ids.add(requirement.requirement_id)
+            requirement_ids.add(requirement.requirement_id)
+
+
+def _create_node(
+    nodes: dict[str, LineageNode],
+    lineage_id: str,
+    requirement: Requirement,
+    version: str,
+) -> None:
+    if lineage_id in nodes:
+        raise ValueError("lineage ID collision while allocating a new node")
+    nodes[lineage_id] = LineageNode(
+        lineage_id=lineage_id,
+        instances=[_to_instance(requirement, lineage_id)],
+        first_version=version,
+        last_version=version,
+    )
+
+
+def _require_lineage(
+    mapping: dict[str, str],
+    nodes: dict[str, LineageNode],
+    requirement_id: str,
+) -> str:
+    lineage_id = mapping.get(requirement_id)
+    if lineage_id is None:
+        raise ValueError(f"requirement {requirement_id} has no lineage mapping")
+    if lineage_id not in nodes:
+        raise ValueError(f"lineage mapping references missing node {lineage_id}")
+    return lineage_id
+
+
+def _validate_mapping(
+    requirements: list[Requirement],
+    mapping: dict[str, str],
+    nodes: dict[str, LineageNode],
+) -> None:
+    expected = {requirement.requirement_id for requirement in requirements}
+    if len(expected) != len(requirements):
+        raise ValueError("document contains duplicate requirement IDs")
+    if set(mapping) != expected:
+        raise ValueError("lineage mapping does not cover the exact document requirements")
+    for requirement_id in sorted(expected):
+        _require_lineage(mapping, nodes, requirement_id)
+
+
 def _to_instance(req: Requirement, lineage_id: str) -> RequirementInstanceRef:
     return RequirementInstanceRef(
         lineage_id=lineage_id,
@@ -104,12 +176,7 @@ def _append_instance(
     version: str,
 ) -> None:
     if lid not in nodes:
-        nodes[lid] = LineageNode(
-            lineage_id=lid,
-            instances=[],
-            first_version=version,
-            last_version=version,
-        )
+        raise ValueError(f"cannot append to missing lineage node {lid}")
     node = nodes[lid]
     inst = _to_instance(req, lid)
     if any(i.requirement_id == inst.requirement_id for i in node.instances):
@@ -133,6 +200,7 @@ def build_lineage_graph(
         extract_requirements(p, profile, adapter=adapter, source=s)
         for p, s in zip(paths, sources, strict=True)
     ]
+    _validate_documents(docs)
     versions = [d.document_version for d in docs]
     sha256s = [d.document_sha256 for d in docs]
 
@@ -159,15 +227,12 @@ def build_lineage_graph(
     for req in docs[0].requirements:
         lid = initial_lineage_ids[req.requirement_id]
         prev_lineage[req.requirement_id] = lid
-        nodes[lid] = LineageNode(
-            lineage_id=lid,
-            instances=[_to_instance(req, lid)],
-            first_version=req.document_version,
-            last_version=req.document_version,
-        )
+        _create_node(nodes, lid, req, req.document_version)
+    _validate_mapping(docs[0].requirements, prev_lineage, nodes)
 
     for i in range(len(docs) - 1):
         old_doc, new_doc = docs[i], docs[i + 1]
+        _validate_mapping(old_doc.requirements, prev_lineage, nodes)
         multi = align_with_multiplicity(old_doc.requirements, new_doc.requirements)
         v_old, v_new = old_doc.document_version, new_doc.document_version
 
@@ -182,25 +247,17 @@ def build_lineage_graph(
         for oid, children in multi.splits.items():
             if len(children) < 2:
                 continue
-            parent_lid = prev_lineage.get(oid) or _new_lineage_id(oid)
+            parent_lid = _require_lineage(prev_lineage, nodes, oid)
             claimed_old.add(oid)
             for idx, (nreq, sc) in enumerate(children):
                 if nreq.requirement_id in claimed_new:
                     continue
                 if idx == 0:
                     child_lid = parent_lid
+                    _append_instance(nodes, child_lid, nreq, v_new)
                 else:
                     child_lid = _new_lineage_id(f"split|{oid}|{nreq.requirement_id}")
-                    nodes.setdefault(
-                        child_lid,
-                        LineageNode(
-                            lineage_id=child_lid,
-                            instances=[],
-                            first_version=v_new,
-                            last_version=v_new,
-                        ),
-                    )
-                _append_instance(nodes, child_lid, nreq, v_new)
+                    _create_node(nodes, child_lid, nreq, v_new)
                 next_lineage[nreq.requirement_id] = child_lid
                 claimed_new.add(nreq.requirement_id)
                 edges.append(
@@ -229,17 +286,17 @@ def build_lineage_graph(
             nreq = next(r for r in new_doc.requirements if r.requirement_id == nid)
             parents_sorted = sorted(parents, key=lambda t: (-t[1], t[0].requirement_id))
             primary_old, primary_sc = parents_sorted[0]
-            primary_lid = prev_lineage.get(primary_old.requirement_id) or _new_lineage_id(
-                primary_old.requirement_id
+            primary_lid = _require_lineage(
+                prev_lineage,
+                nodes,
+                primary_old.requirement_id,
             )
             _append_instance(nodes, primary_lid, nreq, v_new)
             next_lineage[nid] = primary_lid
             claimed_new.add(nid)
             for oreq, sc in parents_sorted:
                 claimed_old.add(oreq.requirement_id)
-                olid = prev_lineage.get(oreq.requirement_id) or _new_lineage_id(
-                    oreq.requirement_id
-                )
+                olid = _require_lineage(prev_lineage, nodes, oreq.requirement_id)
                 edges.append(
                     LineageEdge(
                         edge_id=_edge_id("merge", oreq.requirement_id, nid, v_old, v_new),
@@ -265,7 +322,7 @@ def build_lineage_graph(
                     continue
                 if oid in claimed_old or nid in claimed_new:
                     continue
-                lid = prev_lineage.get(oid) or _new_lineage_id(oid)
+                lid = _require_lineage(prev_lineage, nodes, oid)
                 ch = classify_pair(pair)
                 _append_instance(nodes, lid, pair.new, v_new)
                 next_lineage[nid] = lid
@@ -291,7 +348,7 @@ def build_lineage_graph(
                 oid = pair.old.requirement_id
                 if oid in claimed_old or oid in split_old_ids:
                     continue
-                from_lid: str | None = prev_lineage.get(oid)
+                from_lid = _require_lineage(prev_lineage, nodes, oid)
                 claimed_old.add(oid)
                 edges.append(
                     LineageEdge(
@@ -314,12 +371,7 @@ def build_lineage_graph(
                     continue
                 nreq = pair.new
                 lid = _new_lineage_id(f"add|{nreq.fingerprint}|{nid}")
-                nodes[lid] = LineageNode(
-                    lineage_id=lid,
-                    instances=[_to_instance(nreq, lid)],
-                    first_version=v_new,
-                    last_version=v_new,
-                )
+                _create_node(nodes, lid, nreq, v_new)
                 next_lineage[nid] = lid
                 claimed_new.add(nid)
                 edges.append(
@@ -342,7 +394,11 @@ def build_lineage_graph(
         for oreq in old_doc.requirements:
             if oreq.requirement_id in claimed_old:
                 continue
-            from_lid2: str | None = prev_lineage.get(oreq.requirement_id)
+            from_lid2 = _require_lineage(
+                prev_lineage,
+                nodes,
+                oreq.requirement_id,
+            )
             edges.append(
                 LineageEdge(
                     edge_id=_edge_id("rem2", oreq.requirement_id, v_old, v_new),
@@ -390,12 +446,7 @@ def build_lineage_graph(
                 )
             else:
                 lid = _new_lineage_id(f"add2|{nreq.fingerprint}|{nreq.requirement_id}")
-                nodes[lid] = LineageNode(
-                    lineage_id=lid,
-                    instances=[_to_instance(nreq, lid)],
-                    first_version=v_new,
-                    last_version=v_new,
-                )
+                _create_node(nodes, lid, nreq, v_new)
                 next_lineage[nreq.requirement_id] = lid
                 edges.append(
                     LineageEdge(
@@ -413,6 +464,7 @@ def build_lineage_graph(
                     )
                 )
 
+        _validate_mapping(new_doc.requirements, next_lineage, nodes)
         prev_lineage = next_lineage
 
         # Definition change edges between consecutive versions
@@ -448,7 +500,11 @@ def build_lineage_graph(
                         continue
                     if link.term.lower() != term.lower():
                         continue
-                    dep_lid: str | None = next_lineage.get(link.requirement_id)
+                    dep_lid = _require_lineage(
+                        next_lineage,
+                        nodes,
+                        link.requirement_id,
+                    )
                     edges.append(
                         LineageEdge(
                             edge_id=_edge_id(
@@ -474,7 +530,11 @@ def build_lineage_graph(
         for link in all_dep_links:
             if link.document_version != v_new:
                 continue
-            ref_lid: str | None = next_lineage.get(link.requirement_id)
+            ref_lid = _require_lineage(
+                next_lineage,
+                nodes,
+                link.requirement_id,
+            )
             edges.append(
                 LineageEdge(
                     edge_id=_edge_id("refdef", link.link_id, v_new),
