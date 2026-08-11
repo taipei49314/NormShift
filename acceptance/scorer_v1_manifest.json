@@ -81,9 +81,9 @@
       "sha256": "04e126ddfb38817c14fd5cfa7245ba4fbbb4cfe1a5bfb21c5673fdaaba937a10"
     },
     {
-      "bytes": 11068,
+      "bytes": 11065,
       "path": "src/normshift/io_safety.py",
-      "sha256": "4b9e187a42da0c2d99460f34224edaa4e3a717893d1715f58b079255ac4f75a5"
+      "sha256": "f1bd28854673cd64cfdcdcb0b20462131779d3be36327d1576dd5bdbd6c7fbbc"
     },
     {
       "bytes": 3505,
