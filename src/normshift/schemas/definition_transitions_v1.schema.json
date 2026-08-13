@@ -1,0 +1,192 @@
+{
+  "$defs": {
+    "DefinitionAnchor": {
+      "additionalProperties": false,
+      "description": "One extracted definition as bound by an exact LineageGraph replay.",
+      "properties": {
+        "definition_id": {
+          "minLength": 1,
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "document_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "minLength": 1,
+          "title": "Document Version",
+          "type": "string"
+        },
+        "normalized_body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Normalized Body Sha256",
+          "type": "string"
+        },
+        "normalized_term_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Normalized Term Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "document_sha256",
+        "document_version",
+        "normalized_body_sha256",
+        "normalized_term_sha256"
+      ],
+      "title": "DefinitionAnchor",
+      "type": "object"
+    },
+    "DefinitionTransition": {
+      "additionalProperties": false,
+      "description": "One adjacent-version lexical definition transition; no impact inference.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/DefinitionTransitionKind"
+        },
+        "lexical_normalized_term": {
+          "minLength": 1,
+          "title": "Lexical Normalized Term",
+          "type": "string"
+        },
+        "new_definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionAnchor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "old_definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionAnchor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transition_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Transition Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "lexical_normalized_term",
+        "new_definition",
+        "old_definition",
+        "transition_id"
+      ],
+      "title": "DefinitionTransition",
+      "type": "object"
+    },
+    "DefinitionTransitionKind": {
+      "enum": [
+        "DEFINITION_ADDED",
+        "DEFINITION_CHANGED",
+        "DEFINITION_REMOVED"
+      ],
+      "title": "DefinitionTransitionKind",
+      "type": "string"
+    },
+    "DefinitionTransitionsIntegrity": {
+      "additionalProperties": false,
+      "properties": {
+        "alg": {
+          "const": "sha256",
+          "title": "Alg",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alg",
+        "content_sha256"
+      ],
+      "title": "DefinitionTransitionsIntegrity",
+      "type": "object"
+    }
+  },
+  "$id": "https://normshift.local/schemas/definition_transitions_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical replay-only transition sidecar, independent of M2 adjudication.",
+  "properties": {
+    "authority_kind": {
+      "const": "LINEAGE_GRAPH_REPLAY_ONLY",
+      "title": "Authority Kind",
+      "type": "string"
+    },
+    "external_acceptance": {
+      "const": false,
+      "title": "External Acceptance",
+      "type": "boolean"
+    },
+    "graph_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graph Content Sha256",
+      "type": "string"
+    },
+    "graph_file_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graph File Sha256",
+      "type": "string"
+    },
+    "graph_schema_version": {
+      "const": "1.0.0",
+      "title": "Graph Schema Version",
+      "type": "string"
+    },
+    "graph_tool_version": {
+      "minLength": 1,
+      "title": "Graph Tool Version",
+      "type": "string"
+    },
+    "integrity": {
+      "$ref": "#/$defs/DefinitionTransitionsIntegrity"
+    },
+    "profile": {
+      "minLength": 1,
+      "title": "Profile",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "normshift-definition-transitions/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "transitions": {
+      "items": {
+        "$ref": "#/$defs/DefinitionTransition"
+      },
+      "title": "Transitions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "authority_kind",
+    "external_acceptance",
+    "graph_content_sha256",
+    "graph_file_sha256",
+    "graph_schema_version",
+    "graph_tool_version",
+    "integrity",
+    "profile",
+    "schema_version",
+    "transitions"
+  ],
+  "title": "DefinitionTransitionsDocument",
+  "type": "object"
+}

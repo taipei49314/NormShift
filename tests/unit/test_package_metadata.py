@@ -41,6 +41,7 @@ def test_m1_source_manifest_schema_is_packaged() -> None:
 def test_semantic_dimension_schemas_are_packaged() -> None:
     for name in (
         "full_verification_receipt_v1.schema.json",
+        "definition_transitions_v1.schema.json",
         "lineage_graph_v1.schema.json",
         "semantic_change_dimensions_v1.schema.json",
     ):

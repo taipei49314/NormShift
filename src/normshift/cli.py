@@ -25,6 +25,12 @@ from normshift.corpus.evidence_inventory import (
     SourceRecipeEvidenceResult,
     verify_source_recipe_evidence,
 )
+from normshift.definition_transitions import (
+    DefinitionTransitionError,
+    build_definition_transitions,
+    definition_transitions_json_bytes,
+    verify_definition_transitions_file,
+)
 from normshift.extract.extractor import extract_from_source
 from normshift.governance.verify import (
     GovernanceContractError,
@@ -75,6 +81,14 @@ semantic_dimensions_app = typer.Typer(
     no_args_is_help=True,
 )
 app.add_typer(semantic_dimensions_app, name="semantic-dimensions")
+definition_transitions_app = typer.Typer(
+    help=(
+        "Experimental replay-only adjacent definition transitions "
+        "(not M2 acceptance or adjudication)."
+    ),
+    no_args_is_help=True,
+)
+app.add_typer(definition_transitions_app, name="definition-transitions")
 
 
 def _version_callback(value: bool) -> None:
@@ -134,6 +148,72 @@ def _write_all_binary_stdout(raw: bytes) -> None:
             raise SemanticDimensionsError("binary stdout made invalid write progress")
         offset += written
     stream.flush()
+
+
+@definition_transitions_app.command("build")
+def definition_transitions_build_cmd(
+    graph_path: Path = typer.Argument(..., help="Canonical LineageGraph v1 JSON"),
+    documents: list[Path] = typer.Argument(..., help="Ordered source document versions (2+)"),
+    graph_sha256: str = typer.Option(
+        ..., "--graph-sha256", help="Independently held SHA-256 of exact graph bytes"
+    ),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Write exact canonical transition bytes to binary stdout on success only."""
+    try:
+        graph = verify_lineage_graph_file(
+            graph_path,
+            graph_sha256=graph_sha256,
+            documents=documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+        document = build_definition_transitions(graph, graph_file_sha256=graph_sha256)
+        _write_all_binary_stdout(definition_transitions_json_bytes(document))
+    except (
+        OSError,
+        DefinitionTransitionError,
+        LineageContractError,
+        SemanticDimensionsError,
+    ) as exc:
+        typer.echo(f"error: lineage graph replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+
+@definition_transitions_app.command("verify")
+def definition_transitions_verify_cmd(
+    transitions_path: Path = typer.Argument(..., help="Canonical DefinitionTransition v1 JSON"),
+    graph_path: Path = typer.Argument(..., help="Canonical LineageGraph v1 JSON"),
+    documents: list[Path] = typer.Argument(..., help="Ordered source document versions (2+)"),
+    transitions_sha256: str = typer.Option(
+        ..., "--transitions-sha256", help="Independently held SHA-256 of exact transition bytes"
+    ),
+    graph_sha256: str = typer.Option(
+        ..., "--graph-sha256", help="Independently held SHA-256 of exact graph bytes"
+    ),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Verify an experimental transition sidecar by exact graph replay only."""
+    try:
+        document = verify_definition_transitions_file(
+            transitions_path,
+            transitions_sha256=transitions_sha256,
+            graph_path=graph_path,
+            graph_sha256=graph_sha256,
+            documents=documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+    except (OSError, DefinitionTransitionError) as exc:
+        typer.echo(f"error: lineage graph replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        "OK DEFINITION_TRANSITIONS_REPLAY_ONLY external_acceptance=false "
+        "no source custody, adjudication, cross-reference, or indirect-impact claim "
+        f"integrity_sha256={document.integrity.content_sha256}"
+    )
 
 
 @semantic_dimensions_app.command("build")
