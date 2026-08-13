@@ -149,6 +149,15 @@ receipts and caller-provided report, receipt, and sidecar SHA-256 anchors as
 applicable, but those anchors do not prove independent custody or adjudication.
 Neither command claims M2 acceptance.
 
+`normshift verify-lineage GRAPH DOC... --graph-sha256 SHA --profile PROFILE
+--adapter ADAPTER` is a separate opt-in LineageGraph v1 check. It reads the graph
+and each ordered document through bounded descriptor-stable snapshots, rejects a
+bad external graph digest, strict/canonical/schema/integrity failure before any
+source replay, and compares a fresh isolated replay byte-for-byte. A success is
+explicitly `LINEAGE_GRAPH_REPLAY_ONLY external_acceptance=false`: it binds only
+the caller-supplied ordered source bytes, profile, and adapter. It deliberately
+does not assert source custody, official identity, adjudication, or M2 acceptance.
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages

@@ -1,0 +1,617 @@
+{
+  "$defs": {
+    "AmbiguityItem": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "item_id": {
+          "title": "Item Id",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "new_requirement_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "New Requirement Ids",
+          "type": "array"
+        },
+        "old_requirement_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Old Requirement Ids",
+          "type": "array"
+        },
+        "scores": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Scores",
+          "type": "array"
+        },
+        "version_pair": {
+          "title": "Version Pair",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "item_id",
+        "kind",
+        "new_requirement_ids",
+        "old_requirement_ids",
+        "scores",
+        "version_pair"
+      ],
+      "title": "AmbiguityItem",
+      "type": "object"
+    },
+    "DefinitionRecord": {
+      "additionalProperties": false,
+      "description": "A definition extracted from a document snapshot.",
+      "properties": {
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "definition_id": {
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "document_sha256": {
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "title": "Document Version",
+          "type": "string"
+        },
+        "normalized_body": {
+          "title": "Normalized Body",
+          "type": "string"
+        },
+        "source_locator": {
+          "title": "Source Locator",
+          "type": "string"
+        },
+        "term": {
+          "title": "Term",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "definition_id",
+        "document_sha256",
+        "document_version",
+        "normalized_body",
+        "source_locator",
+        "term"
+      ],
+      "title": "DefinitionRecord",
+      "type": "object"
+    },
+    "DependencyLink": {
+      "additionalProperties": false,
+      "description": "Requirement → definition/xref dependency within a version.",
+      "properties": {
+        "definition_id": {
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "document_version": {
+          "title": "Document Version",
+          "type": "string"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "link_id": {
+          "title": "Link Id",
+          "type": "string"
+        },
+        "requirement_id": {
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "term": {
+          "title": "Term",
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "document_version",
+        "evidence",
+        "link_id",
+        "requirement_id",
+        "term"
+      ],
+      "title": "DependencyLink",
+      "type": "object"
+    },
+    "LineageEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment_combined": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alignment Combined"
+        },
+        "change_classification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Change Classification"
+        },
+        "confidence": {
+          "default": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "edge_id": {
+          "title": "Edge Id",
+          "type": "string"
+        },
+        "from_lineage_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "From Lineage Id"
+        },
+        "from_requirement_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "From Requirement Id"
+        },
+        "from_version": {
+          "title": "From Version",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "relation": {
+          "$ref": "#/$defs/LineageRelation"
+        },
+        "to_lineage_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "To Lineage Id"
+        },
+        "to_requirement_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "To Requirement Id"
+        },
+        "to_version": {
+          "title": "To Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alignment_combined",
+        "change_classification",
+        "confidence",
+        "edge_id",
+        "from_lineage_id",
+        "from_requirement_id",
+        "from_version",
+        "reasons",
+        "relation",
+        "to_lineage_id",
+        "to_requirement_id",
+        "to_version"
+      ],
+      "title": "LineageEdge",
+      "type": "object"
+    },
+    "LineageNode": {
+      "additionalProperties": false,
+      "properties": {
+        "first_version": {
+          "title": "First Version",
+          "type": "string"
+        },
+        "instances": {
+          "items": {
+            "$ref": "#/$defs/RequirementInstanceRef"
+          },
+          "title": "Instances",
+          "type": "array"
+        },
+        "last_version": {
+          "title": "Last Version",
+          "type": "string"
+        },
+        "lineage_id": {
+          "title": "Lineage Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_version",
+        "instances",
+        "last_version",
+        "lineage_id"
+      ],
+      "title": "LineageNode",
+      "type": "object"
+    },
+    "LineageRelation": {
+      "enum": [
+        "CONTINUES",
+        "SPLIT_INTO",
+        "MERGED_FROM",
+        "SUPERSEDES",
+        "ADDED",
+        "REMOVED",
+        "AMBIGUOUS",
+        "DEPENDS_ON",
+        "REFERENCES_DEFINITION",
+        "DEFINITION_CHANGED"
+      ],
+      "title": "LineageRelation",
+      "type": "string"
+    },
+    "Modality": {
+      "enum": [
+        "MUST",
+        "MUST_NOT",
+        "SHOULD",
+        "SHOULD_NOT",
+        "MAY"
+      ],
+      "title": "Modality",
+      "type": "string"
+    },
+    "ProfileName": {
+      "enum": [
+        "rfc2119",
+        "whatwg"
+      ],
+      "title": "ProfileName",
+      "type": "string"
+    },
+    "RequirementInstanceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "actor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actor"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Condition"
+        },
+        "document_sha256": {
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "title": "Document Version",
+          "type": "string"
+        },
+        "exception": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exception"
+        },
+        "fingerprint": {
+          "title": "Fingerprint",
+          "type": "string"
+        },
+        "lineage_id": {
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "modality": {
+          "$ref": "#/$defs/Modality"
+        },
+        "normalized_text": {
+          "title": "Normalized Text",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "requirement_id": {
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "section_path": {
+          "title": "Section Path",
+          "type": "string"
+        },
+        "source_locator": {
+          "title": "Source Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "actor",
+        "condition",
+        "document_sha256",
+        "document_version",
+        "exception",
+        "fingerprint",
+        "lineage_id",
+        "modality",
+        "normalized_text",
+        "original_text",
+        "requirement_id",
+        "section_path",
+        "source_locator"
+      ],
+      "title": "RequirementInstanceRef",
+      "type": "object"
+    }
+  },
+  "$id": "https://normshift.local/schemas/lineage_graph_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ambiguity_queue": {
+      "items": {
+        "$ref": "#/$defs/AmbiguityItem"
+      },
+      "title": "Ambiguity Queue",
+      "type": "array"
+    },
+    "definitions": {
+      "items": {
+        "$ref": "#/$defs/DefinitionRecord"
+      },
+      "title": "Definitions",
+      "type": "array"
+    },
+    "dependency_links": {
+      "items": {
+        "$ref": "#/$defs/DependencyLink"
+      },
+      "title": "Dependency Links",
+      "type": "array"
+    },
+    "document_sha256s": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Document Sha256S",
+      "type": "array"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/LineageEdge"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "integrity": {
+      "additionalProperties": false,
+      "properties": {
+        "alg": {
+          "const": "sha256"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alg",
+        "content_sha256"
+      ],
+      "type": "object"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/LineageNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "profile": {
+      "$ref": "#/$defs/ProfileName"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguity_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "definition_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "dependency_link_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "edge_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "lineage_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "relation_counts": {
+          "additionalProperties": false,
+          "properties": {
+            "ADDED": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "AMBIGUOUS": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "CONTINUES": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "DEFINITION_CHANGED": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "DEPENDS_ON": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "MERGED_FROM": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "REFERENCES_DEFINITION": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "REMOVED": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "SPLIT_INTO": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "SUPERSEDES": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "version_count": {
+          "minimum": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "version_count",
+        "lineage_count",
+        "edge_count",
+        "ambiguity_count",
+        "definition_count",
+        "dependency_link_count",
+        "relation_counts"
+      ],
+      "type": "object"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "versions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "ambiguity_queue",
+    "definitions",
+    "dependency_links",
+    "document_sha256s",
+    "edges",
+    "integrity",
+    "nodes",
+    "profile",
+    "schema_version",
+    "summary",
+    "tool_version",
+    "versions"
+  ],
+  "title": "LineageGraph",
+  "type": "object"
+}

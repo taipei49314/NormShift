@@ -67,6 +67,28 @@ requires all three externally held lowercase digests, parses canonical bytes,
 and reconstructs the exact sidecar through the same FULL source-replay binding. It has no
 source override, content-only mode, spans, or semantic-role option.
 
+## Experimental LineageGraph v1 replay contract
+
+`normshift verify-lineage GRAPH DOC... --graph-sha256 SHA --profile PROFILE
+--adapter ADAPTER` verifies a separately stored LineageGraph v1. The graph must
+have a caller-provided lowercase SHA-256 and be bounded, duplicate-free,
+canonical JSON that passes the root/package-identical strict schema and its exact
+SHA-256 integrity envelope. Those checks run before any document or adapter is
+opened. Each ordered source is then read through a bounded descriptor-stable
+snapshot and replayed from an isolated temporary root; the canonical replay bytes
+must equal the graph bytes exactly. Source filesystem references intentionally do
+not enter the graph, so equal source bytes can relocate without changing it.
+Only each declared document's bounded snapshot bytes enter that replay: adjacent
+`.meta.json` files are neither read nor copied, and cannot become undeclared
+authority inputs. Before the isolated root is removed, every original declared
+path is read again through the same descriptor guard and must retain the exact
+initial identity, bytes, and SHA-256; a same-byte inode replacement is rejected.
+
+The sole success meaning is `LINEAGE_GRAPH_REPLAY_ONLY
+external_acceptance=false`: an exact replay of caller-supplied ordered document
+bytes with the explicit profile and adapter. This is not source custody, official
+identity, independent review, adjudication, a blind result, or M2 acceptance.
+
 ## Conservative boundary
 
 - Object and scope are not extracted or adjudicated by this foundation. A

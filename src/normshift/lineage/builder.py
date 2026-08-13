@@ -12,13 +12,13 @@ from normshift import __version__
 from normshift.align.aligner import score_pair
 from normshift.align.multi import align_with_multiplicity
 from normshift.classify.classifier import classify_pair
-from normshift.evidence.hashing import canonical_json_bytes, integrity_payload_hash
+from normshift.evidence.hashing import integrity_payload_hash
 from normshift.extract.definitions import (
     definition_change_edges,
     extract_definitions_from_html,
     link_requirements_to_definitions,
 )
-from normshift.extract.extractor import extract_requirements
+from normshift.extract.extractor import extract_from_source
 from normshift.model.types import (
     AdapterName,
     AmbiguityItem,
@@ -33,7 +33,7 @@ from normshift.model.types import (
     RequirementInstanceRef,
     RequirementsDocument,
 )
-from normshift.source import load_immutable_source
+from normshift.source import ImmutableSource, load_immutable_source
 
 
 def _edge_id(*parts: str) -> str:
@@ -351,13 +351,19 @@ def build_lineage_graph(
 ) -> LineageGraph:
     if len(paths) < 2:
         raise ValueError("lineage requires at least two document versions")
-
     # Single immutable load per path — extract + definitions share the same bytes
     sources = [load_immutable_source(p, adapter=adapter) for p in paths]
-    docs = [
-        extract_requirements(p, profile, adapter=adapter, source=s)
-        for p, s in zip(paths, sources, strict=True)
-    ]
+    return build_lineage_graph_from_sources(sources, profile=profile)
+
+
+def build_lineage_graph_from_sources(
+    sources: list[ImmutableSource], *, profile: ProfileName
+) -> LineageGraph:
+    """Build from preloaded immutable sources without reopening authority inputs."""
+    if len(sources) < 2:
+        raise ValueError("lineage requires at least two document versions")
+
+    docs = [extract_from_source(source, profile) for source in sources]
     _validate_documents(docs)
     versions = [d.document_version for d in docs]
     sha256s = [d.document_sha256 for d in docs]
@@ -807,10 +813,8 @@ def _collect_ambiguity(docs: list[RequirementsDocument]) -> list[AmbiguityItem]:
 
 def write_lineage_graph(graph: LineageGraph, path: Path) -> str:
     from normshift.io_safety import atomic_write_bytes
+    from normshift.lineage.serialization import lineage_graph_json_bytes
 
-    data = graph.model_dump(mode="json")
-    digest = integrity_payload_hash(data)
-    data["integrity"] = {"alg": "sha256", "content_sha256": digest}
-    raw = canonical_json_bytes(data)
+    raw = lineage_graph_json_bytes(graph)
     atomic_write_bytes(path, raw)
     return hashlib.sha256(raw).hexdigest()

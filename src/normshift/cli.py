@@ -37,6 +37,7 @@ from normshift.io_safety import (
     assert_outputs_safe,
     atomic_write_text,
 )
+from normshift.lineage import LineageContractError, verify_lineage_graph_file
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
 from normshift.paths_root import SourceRootError
@@ -652,6 +653,35 @@ def lineage_cmd(
     typer.echo(
         f"lineage: {len(graph.versions)} versions, {len(graph.nodes)} lineages, "
         f"{len(graph.edges)} edges, {len(graph.ambiguity_queue)} ambiguities -> {json_out}"
+    )
+
+
+@app.command("verify-lineage")
+def verify_lineage_cmd(
+    graph_path: Path = typer.Argument(..., help="Canonical LineageGraph v1 JSON"),
+    documents: list[Path] = typer.Argument(..., help="Ordered source document versions (2+)"),
+    graph_sha256: str = typer.Option(
+        ..., "--graph-sha256", help="Independently held SHA-256 of exact graph bytes"
+    ),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Verify an experimental LineageGraph through an anchored ordered-source replay."""
+    try:
+        graph = verify_lineage_graph_file(
+            graph_path,
+            graph_sha256=graph_sha256,
+            documents=documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+    except (OSError, LineageContractError) as exc:
+        typer.echo(f"error: lineage source-replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        "OK LINEAGE_GRAPH_REPLAY_ONLY external_acceptance=false "
+        "exact caller-supplied ordered-source/profile/adapter replay "
+        f"integrity_sha256={graph.integrity['content_sha256']}"
     )
 
 
