@@ -1,0 +1,189 @@
+{
+  "$defs": {
+    "DefinitionAnchor": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "minLength": 1,
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "document_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "minLength": 1,
+          "title": "Document Version",
+          "type": "string"
+        },
+        "normalized_term_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Normalized Term Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "document_sha256",
+        "document_version",
+        "normalized_term_sha256"
+      ],
+      "title": "DefinitionAnchor",
+      "type": "object"
+    },
+    "DefinitionReferenceCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "definition": {
+          "$ref": "#/$defs/DefinitionAnchor"
+        },
+        "link_id": {
+          "minLength": 1,
+          "title": "Link Id",
+          "type": "string"
+        },
+        "method": {
+          "const": "LEXICAL_TERM_OCCURRENCE_CANDIDATE",
+          "title": "Method",
+          "type": "string"
+        },
+        "requirement": {
+          "$ref": "#/$defs/RequirementAnchor"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "definition",
+        "link_id",
+        "method",
+        "requirement"
+      ],
+      "title": "DefinitionReferenceCandidate",
+      "type": "object"
+    },
+    "Integrity": {
+      "additionalProperties": false,
+      "properties": {
+        "alg": {
+          "const": "sha256",
+          "title": "Alg",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alg",
+        "content_sha256"
+      ],
+      "title": "Integrity",
+      "type": "object"
+    },
+    "RequirementAnchor": {
+      "additionalProperties": false,
+      "properties": {
+        "document_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "document_version": {
+          "minLength": 1,
+          "title": "Document Version",
+          "type": "string"
+        },
+        "requirement_id": {
+          "minLength": 1,
+          "title": "Requirement Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_sha256",
+        "document_version",
+        "requirement_id"
+      ],
+      "title": "RequirementAnchor",
+      "type": "object"
+    }
+  },
+  "$id": "https://normshift.local/schemas/definition_reference_candidates_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_kind": {
+      "const": "LINEAGE_GRAPH_REPLAY_ONLY",
+      "title": "Authority Kind",
+      "type": "string"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/DefinitionReferenceCandidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "external_acceptance": {
+      "const": false,
+      "title": "External Acceptance",
+      "type": "boolean"
+    },
+    "graph_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graph Content Sha256",
+      "type": "string"
+    },
+    "graph_file_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Graph File Sha256",
+      "type": "string"
+    },
+    "graph_schema_version": {
+      "const": "1.0.0",
+      "title": "Graph Schema Version",
+      "type": "string"
+    },
+    "graph_tool_version": {
+      "minLength": 1,
+      "title": "Graph Tool Version",
+      "type": "string"
+    },
+    "integrity": {
+      "$ref": "#/$defs/Integrity"
+    },
+    "profile": {
+      "minLength": 1,
+      "title": "Profile",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "normshift-definition-reference-candidates/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "authority_kind",
+    "candidates",
+    "external_acceptance",
+    "graph_content_sha256",
+    "graph_file_sha256",
+    "graph_schema_version",
+    "graph_tool_version",
+    "integrity",
+    "profile",
+    "schema_version"
+  ],
+  "title": "DefinitionReferenceCandidatesDocument",
+  "type": "object"
+}

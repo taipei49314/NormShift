@@ -167,6 +167,12 @@ only adjacent lexical `DEFINITION_ADDED`, `DEFINITION_CHANGED`, or
 impacts, and make no source-custody, adjudication, or M2-acceptance claim. See
 [`docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md`](docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md).
 
+`normshift definition-reference-candidates build` and `verify` produce only
+replay-bound lexical definition-reference candidates. They are not semantic
+cross-reference or indirect-impact verdicts, and do not claim custody,
+adjudication, or M2 acceptance. See
+[`docs/M2_DEFINITION_REFERENCE_CANDIDATES.md`](docs/M2_DEFINITION_REFERENCE_CANDIDATES.md).
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
