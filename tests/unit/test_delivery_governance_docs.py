@@ -151,6 +151,21 @@ def test_mission_state_separates_historical_audit_from_current_subject() -> None
     assert milestones["final_combined_subject"] == "NOT_FROZEN"
     assert milestones["release"] == "BLOCKED"
 
+    m2_foundations = state["implemented_experimental_foundations"]["m2"]
+    assert any("LineageGraph v1 exact replay" in item for item in m2_foundations)
+    assert any("DefinitionTransition v1" in item for item in m2_foundations)
+    assert any("DefinitionReferenceCandidate v1" in item for item in m2_foundations)
+    assert any(
+        "do not assert semantic cross-references or indirect impact" in item
+        for item in m2_foundations
+    )
+    assert "external authorities" in state["next_action"]
+    assert "Stop general semantic feature expansion" in state["next_action"]
+    assert {
+        "docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md",
+        "docs/M2_DEFINITION_REFERENCE_CANDIDATES.md",
+    }.issubset(state["verified_artifacts"])
+
 
 def test_public_status_documents_share_the_subject_boundary() -> None:
     claims = _text("CLAIMS.md")
