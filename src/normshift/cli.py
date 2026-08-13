@@ -25,6 +25,12 @@ from normshift.corpus.evidence_inventory import (
     SourceRecipeEvidenceResult,
     verify_source_recipe_evidence,
 )
+from normshift.definition_reference_candidates import (
+    DefinitionReferenceCandidateError,
+    build_definition_reference_candidates,
+    definition_reference_candidates_json_bytes,
+    verify_definition_reference_candidates_file,
+)
 from normshift.definition_transitions import (
     DefinitionTransitionError,
     build_definition_transitions,
@@ -89,6 +95,11 @@ definition_transitions_app = typer.Typer(
     no_args_is_help=True,
 )
 app.add_typer(definition_transitions_app, name="definition-transitions")
+definition_reference_candidates_app = typer.Typer(
+    help="Experimental lexical definition-reference candidates (not semantic verdicts).",
+    no_args_is_help=True,
+)
+app.add_typer(definition_reference_candidates_app, name="definition-reference-candidates")
 
 
 def _version_callback(value: bool) -> None:
@@ -148,6 +159,68 @@ def _write_all_binary_stdout(raw: bytes) -> None:
             raise SemanticDimensionsError("binary stdout made invalid write progress")
         offset += written
     stream.flush()
+
+
+@definition_reference_candidates_app.command("build")
+def definition_reference_candidates_build_cmd(
+    graph_path: Path = typer.Argument(...),
+    documents: list[Path] = typer.Argument(...),
+    graph_sha256: str = typer.Option(..., "--graph-sha256"),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Write canonical lexical candidate bytes to binary stdout on success only."""
+    try:
+        graph = verify_lineage_graph_file(
+            graph_path,
+            graph_sha256=graph_sha256,
+            documents=documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+        _write_all_binary_stdout(
+            definition_reference_candidates_json_bytes(
+                build_definition_reference_candidates(graph, graph_file_sha256=graph_sha256)
+            )
+        )
+    except (
+        OSError,
+        DefinitionReferenceCandidateError,
+        LineageContractError,
+        SemanticDimensionsError,
+    ) as exc:
+        typer.echo(f"error: lineage graph replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+
+@definition_reference_candidates_app.command("verify")
+def definition_reference_candidates_verify_cmd(
+    candidates_path: Path = typer.Argument(...),
+    graph_path: Path = typer.Argument(...),
+    documents: list[Path] = typer.Argument(...),
+    candidates_sha256: str = typer.Option(..., "--candidates-sha256"),
+    graph_sha256: str = typer.Option(..., "--graph-sha256"),
+    profile: ProfileOpt = typer.Option(ProfileOpt.rfc2119, "--profile"),
+    adapter: AdapterOpt = typer.Option(AdapterOpt.auto, "--adapter"),
+) -> None:
+    """Verify lexical candidates through exact graph replay only."""
+    try:
+        document = verify_definition_reference_candidates_file(
+            candidates_path,
+            candidates_sha256=candidates_sha256,
+            graph_path=graph_path,
+            graph_sha256=graph_sha256,
+            documents=documents,
+            profile=_to_profile(profile),
+            adapter=_to_adapter(adapter),
+        )
+    except (OSError, DefinitionReferenceCandidateError) as exc:
+        typer.echo(f"error: lineage graph replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        "OK DEFINITION_REFERENCE_CANDIDATES_REPLAY_ONLY external_acceptance=false "
+        f"integrity_sha256={document.integrity.content_sha256}"
+    )
 
 
 @definition_transitions_app.command("build")
@@ -257,6 +330,7 @@ def semantic_dimensions_build_cmd(
     except (OSError, SemanticDimensionsError) as exc:
         typer.echo(f"error: FULL source-replay binding failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
+
 
 @semantic_dimensions_app.command("verify")
 def semantic_dimensions_verify_cmd(
@@ -680,9 +754,7 @@ def ingest_cmd(
         "document_version": adapted.document_version,
         "family": adapted.family.value,
         "provenance": adapted.provenance.model_dump(mode="json"),
-        "working_html_sha256": __import__("hashlib")
-        .sha256(adapted.working_html)
-        .hexdigest(),
+        "working_html_sha256": __import__("hashlib").sha256(adapted.working_html).hexdigest(),
     }
     atomic_write_text(
         out,
