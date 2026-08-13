@@ -3,16 +3,26 @@
 Evidence-backed **semantic diff** for technical standards (local HTML M0 core).
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-M0%20repair-orange.svg)](docs/EXTERNAL_AUDIT_R4.md)
+[![Status](https://img.shields.io/badge/status-M1%2FM2%20experimental-orange.svg)](CLAIMS.md)
 
 NormShift extracts normative statements from standards documents, diffs them
 across versions with portable source identity, and verifies that a report still
 matches the source bytes it claims. Built for **adjudicable** change analysis —
 not "LLM said these paragraphs look similar."
 
-> **Status:** M0 trust-core repair (round 5). Production/release **BLOCKED**.  
-> M1/M2 code may exist as **EXPERIMENTAL_NOT_ADJUDICATED** only.  
-> See `docs/EXTERNAL_AUDIT_R4.md` and `docs/GROK_M0_REPAIR_ROUND5.md`.
+> **Status:** The exact M0 package at `b3af3dc...` has a detached historical
+> `M0_EXTERNAL_AUDIT_PASS`; that verdict applies only to that package. Current
+> master adds M1 policy/acquisition/scorer/development-recipe/governance work and
+> M2 graph and typed semantic-dimensions foundations, all
+> **EXPERIMENTAL_NOT_ADJUDICATED**. It also includes the
+> strict canonical-wheel and three-OS distribution-equality delivery foundation
+> from [#14](https://github.com/taipei49314/NormShift/pull/14), verified internally
+> on ancestor master commit `f6897f71834a50d2273fda033a72b31254c65935`; that
+> CI evidence is not an
+> external verdict. The combined
+> exact-subject audit and final software release remain **BLOCKED**. See
+> [`CLAIMS.md`](CLAIMS.md), [`CHANGELOG.md`](CHANGELOG.md), and
+> [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md).
 
 ## Why this exists
 
@@ -53,7 +63,8 @@ uv run normshift verify report.json --source-root .
 
 Typical markdown report fragments look like requirement-level adds/removes/changes
 with source refs, not a free-form essay. Treat metrics as **local evidence**, not
-a published precision claim, until M0 is unblocked.
+a published M1/M2 precision or acceptance claim, until the combined exact subject
+passes its independent gates.
 
 ## CLI
 
@@ -130,7 +141,7 @@ foundation does not claim M2 acceptance.
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
-- Not production-ready standards tooling (M0 still blocked)
+- Not production-ready standards tooling (the combined M0-M2 release is blocked)
 - Not an LLM summarizer of RFCs
 
 ## License

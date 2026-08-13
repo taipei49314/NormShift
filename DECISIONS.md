@@ -1,5 +1,47 @@
 # Design Decisions
 
+## D022 — Cross-platform distribution equality is delivery evidence (2026-08-11)
+
+**Decision:** Strict wheel validation normalizes only supported platform metadata
+from a raw build into a new exclusive output. Exact master commit
+`f6897f71834a50d2273fda033a72b31254c65935`, tree
+`34cde504fab42da8f9423cd1ca226fe492307c36`, and push CI
+[run 31462052663](https://github.com/taipei49314/NormShift/actions/runs/31462052663)
+proved canonical, byte-identical final wheels and sdists across Ubuntu, Windows, and
+macOS. Their SHA-256 values are respectively
+`b5ebc295dadb63ab2969185551ca62409e9290d9f9fba41916d188e6a833886d` and
+`fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760`.
+This is an internal delivery foundation. It does not grant M1/M2 acceptance,
+transplant the historical M0 verdict, satisfy the final combined audit, or authorize
+a software release.
+
+## D021 — Final release evidence is fail-closed and subject-bound (2026-08-11)
+
+**Decision:** `RELEASE_CHECKLIST.md` is the operational release gate. A missing,
+skipped, unavailable, non-zero, mismatched, or unrecorded required result leaves the
+corresponding item unchecked and release `BLOCKED`. CI, package preflight, external
+audit, tag, release, and download-only verification must all name the same final
+commit/tree and immutable artifact digests. Release custody uses canonical physical
+file identities, bounded singly linked assets, one sealed audited publication root,
+before/after identity-size-hash checks, and independent manifest/audit digest anchors;
+the detached audit is strict-schema validated before tagging and after download.
+
+## D020 — M1/M2 foundations do not grant milestone acceptance (2026-08-11)
+
+**Decision:** Policy, scorer, source acquisition, development recipes, labeling and
+blind-split governance, lineage graph foundations, and typed semantic-change
+dimensions remain
+`EXPERIMENTAL_NOT_ADJUDICATED`. M1/M2 acceptance requires independently controlled
+blind inputs, pre-frozen thresholds and scorer bytes, minimum support and per-class
+metrics, retained evidence, and a detached exact-subject external verdict.
+
+## D019 — External verdicts are non-transitive across commits (2026-08-11)
+
+**Decision:** A detached audit applies only to its recorded commit, tree, manifest,
+and artifact bytes. Descendant commits may cite that verdict as history but cannot
+inherit it. The final combined M0-M2 subject requires a new authoritative manifest
+and detached audit.
+
 ## D016 — Portable source_ref for external verify (2026-08-07 r3)
 
 **Decision:** Reports store POSIX relative `source_ref` paths. Verify resolves under
@@ -31,8 +73,19 @@ restores all on any commit-phase failure. Not globally atomic visibility.
 
 **Decision:** No new feature work (M1/M2 expansion, adapters, lineage features,
 dashboard, crawler, DB, LLM) until M0 is externally re-accepted.  
-**Status:** M0_PARTIAL. Existing M1/M2 code remains as experimental slices only.  
-**Trigger:** External audit `EXTERNAL_AUDIT.md` (package 20260807-105717).
+**Status:** **Feature-freeze prerequisite satisfied** by the detached
+`M0_EXTERNAL_AUDIT_PASS` for exact commit
+`b3af3dc26e64a3399545d179731222f6e87213c9`, tree
+`c629e2d51fc5219514d6068a90d3453725bd8010`, and manifest SHA-256
+`7e95576f71fd061fc010c542b7f91dc67075cd2c7bd8bfd2b801f90c846625db`.
+This permitted bounded M1/M2 feature work to resume. It does **not** transplant the
+M0 verdict to any descendant/current SHA or satisfy the final combined release gate.
+
+**Historical trigger:** External rejection `EXTERNAL_AUDIT.md` (package
+20260807-105717).
+
+**Closure evidence:**
+[`m0-audit-20260809-b3af3dc`](https://github.com/taipei49314/NormShift/releases/tag/m0-audit-20260809-b3af3dc).
 
 ## D011 — Strict evidence verification is mandatory for M0
 
