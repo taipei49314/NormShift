@@ -4,8 +4,9 @@ Status: **experimental foundation only; not an M2 acceptance result**.
 
 This module adds a versioned, typed document for dimensions that can occur at
 the same time. It is deliberately separate from the primary M0 `Change` model
-and does not change `ChangeClassification`, report schema `1.0.0`, the CLI, or
-the frozen acceptance scorer.
+and does not change `ChangeClassification`, report schema `1.0.0`, or the
+frozen acceptance scorer. Its opt-in CLI creates separate sidecars; it never
+changes an M0 report's canonical bytes.
 
 ## Version 1.0.0 contract
 
@@ -40,6 +41,31 @@ custody the expected report-file and receipt SHA-256 values outside the report
 being verified. A literal string or arbitrary 64-hex value is not a receipt,
 and a self-resealed report cannot create a FULL receipt unless exact source
 replay reproduces it.
+
+## Experimental CLI sidecars
+
+`normshift semantic-dimensions build REPORT CHANGE_ID --source-root ROOT
+--receipt RECEIPT --report-sha256 SHA --receipt-sha256 SHA`
+requires a pre-existing receipt. It accepts no source override and will not
+write bytes until the receipt matches the caller-provided digest and a fresh
+FULL replay reproduces every bound input. On success it writes only exact
+canonical semantic-document bytes to binary standard output; an external
+custodian must capture, persist, and hash that stream. Standard output is not
+custody or atomic-file authority. Capture must be byte-preserving: Windows
+PowerShell text pipelines or text redirection can transcode Unicode. Discard a
+capture after any nonzero exit, then externally hash a successful capture before
+using `verify`. Caller-provided digest anchors are binding inputs only: they do
+not prove independent custody, approval, adjudication, or M2 acceptance. The
+sidecar contains only the existing conservative builder output: object and
+scope remain `UNKNOWN`, and no caller span or M2 acceptance result is introduced
+by this command.
+
+`normshift semantic-dimensions verify SIDECAR CHANGE_ID --semantic-sha256 SHA
+--receipt RECEIPT --report REPORT --report-sha256 SHA --receipt-sha256 SHA
+--source-root ROOT` accepts only bounded regular receipt/sidecar files,
+requires all three externally held lowercase digests, parses canonical bytes,
+and reconstructs the exact sidecar through the same FULL source-replay binding. It has no
+source override, content-only mode, spans, or semantic-role option.
 
 ## Conservative boundary
 

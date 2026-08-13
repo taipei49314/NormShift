@@ -371,7 +371,7 @@ _FileIdentity = tuple[int, int, int, int, int, int, int]
 
 
 @dataclass(frozen=True)
-class _BoundedFileRead:
+class BoundedFileRead:
     path: Path
     label: str
     raw: bytes
@@ -387,11 +387,11 @@ class _BoundedFileRead:
 
 @dataclass(frozen=True)
 class _AuthorityInputs:
-    report_file: _BoundedFileRead
+    report_file: BoundedFileRead
     report: Report
-    old_source_file: _BoundedFileRead
+    old_source_file: BoundedFileRead
     old_source: VerifiedSourceBinding
-    new_source_file: _BoundedFileRead
+    new_source_file: BoundedFileRead
     new_source: VerifiedSourceBinding
 
 
@@ -435,14 +435,14 @@ def _validate_regular_identity(
         raise SemanticDimensionsError(f"{label} byte length differs from report")
 
 
-def _bounded_read_regular_file(
+def read_bounded_regular_file(
     path: Path,
     *,
     label: str,
     max_bytes: int,
     expected_size: int | None = None,
     expected_sha256: str | None = None,
-) -> _BoundedFileRead:
+) -> BoundedFileRead:
     """Read one unaliased regular file through a bounded descriptor snapshot."""
     candidate = Path(path)
     if candidate.is_symlink() or _is_junction(candidate):
@@ -514,7 +514,7 @@ def _bounded_read_regular_file(
     digest = hashlib.sha256(raw).hexdigest()
     if expected_sha256 is not None and digest != expected_sha256:
         raise SemanticDimensionsError(f"{label} SHA differs from report")
-    return _BoundedFileRead(
+    return BoundedFileRead(
         path=candidate,
         label=label,
         raw=raw,
@@ -525,8 +525,8 @@ def _bounded_read_regular_file(
     )
 
 
-def _read_report_file(path: Path) -> tuple[_BoundedFileRead, Report]:
-    file_read = _bounded_read_regular_file(
+def _read_report_file(path: Path) -> tuple[BoundedFileRead, Report]:
+    file_read = read_bounded_regular_file(
         path,
         label="authority report",
         max_bytes=MAX_AUTHORITY_REPORT_BYTES,
@@ -551,14 +551,14 @@ def _read_report_file(path: Path) -> tuple[_BoundedFileRead, Report]:
 
 def _verified_source_binding(
     *, source_root: Path, snapshot: DocumentSnapshot, side: str
-) -> tuple[_BoundedFileRead, VerifiedSourceBinding]:
+) -> tuple[BoundedFileRead, VerifiedSourceBinding]:
     if snapshot.source_ref_mode != "source_root_relative":
         raise SemanticDimensionsError(f"{side} source is not source-root-relative")
     try:
         path, source_ref = resolve_declared_under_root(source_root, snapshot.path)
     except PortableRefError as exc:
         raise SemanticDimensionsError(f"{side} source resolution failed: {exc}") from exc
-    file_read = _bounded_read_regular_file(
+    file_read = read_bounded_regular_file(
         path,
         label=f"{side} source",
         max_bytes=MAX_AUTHORITY_SOURCE_BYTES,
@@ -604,7 +604,7 @@ def _preflight_authority_inputs(report_path: Path, source_root: Path) -> _Author
     )
 
 
-def _authority_files(inputs: _AuthorityInputs) -> tuple[_BoundedFileRead, ...]:
+def _authority_files(inputs: _AuthorityInputs) -> tuple[BoundedFileRead, ...]:
     return (inputs.report_file, inputs.old_source_file, inputs.new_source_file)
 
 

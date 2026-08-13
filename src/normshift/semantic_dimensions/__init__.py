@@ -1,6 +1,7 @@
 """M2 semantic-dimension foundation (separate from primary M0 classification)."""
 
 from normshift.semantic_dimensions.authority import (
+    BoundedFileRead,
     FullVerificationReceipt,
     VerifiedReportAuthority,
     VerifiedSourceBinding,
@@ -12,6 +13,7 @@ from normshift.semantic_dimensions.authority import (
     full_verification_receipt_json_bytes,
     full_verification_receipt_json_schema,
     parse_full_verification_receipt_bytes,
+    read_bounded_regular_file,
 )
 from normshift.semantic_dimensions.builder import (
     build_semantic_dimensions,
@@ -35,6 +37,7 @@ from normshift.semantic_dimensions.serialization import (
 
 __all__ = [
     "DimensionDisposition",
+    "BoundedFileRead",
     "FullVerificationReceipt",
     "NormalizedTextSpan",
     "ObservationVerification",
@@ -55,6 +58,7 @@ __all__ = [
     "full_verification_receipt_json_schema",
     "parse_semantic_dimensions_bytes",
     "parse_full_verification_receipt_bytes",
+    "read_bounded_regular_file",
     "semantic_dimensions_json_bytes",
     "semantic_dimensions_json_schema",
     "verify_semantic_dimensions",
