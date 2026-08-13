@@ -66,7 +66,10 @@
     "m2": [
       "persistent lineage instance identity",
       "lineage graph integrity and evidence validation",
-      "typed semantic change dimensions bound to FULL source-replay receipts"
+      "externally anchored LineageGraph v1 exact replay against caller-supplied ordered source bytes",
+      "typed semantic change dimensions bound to FULL source-replay receipts",
+      "adjacent DefinitionTransition v1 add/change/remove replay-only sidecars",
+      "lexical DefinitionReferenceCandidate v1 replay-only sidecars that do not assert semantic cross-references or indirect impact"
     ]
   },
   "implemented_delivery_foundations": [
@@ -89,6 +92,8 @@
     "docs/M1_SOURCE_ACQUISITION.md",
     "docs/M1_M2_GOVERNANCE_CONTRACT.md",
     "docs/M2_SEMANTIC_DIMENSIONS_FOUNDATION.md",
+    "docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md",
+    "docs/M2_DEFINITION_REFERENCE_CANDIDATES.md",
     "docs/M0_AUDIT_CONTRACT.md",
     ".github/workflows/ci.yml",
     "scripts/normalize_wheel.py",
@@ -108,10 +113,10 @@
   ],
   "unresolved_risks": [
     "M1 actual-source blind evaluation, per-class support and metric gates, and independent external acceptance remain incomplete",
-    "M2 semantic dimensions, definitions and cross-references, split/merge and moved-and-rewritten coverage, blind per-class gates, and independent external acceptance remain incomplete",
+    "M2 semantic adjudication, true cross-reference and indirect-impact authority, real-chain split/merge and moved-and-rewritten blind per-class gates, and independent external acceptance remain incomplete",
     "The canonical distribution and package-verifier work is an internal delivery foundation; the authoritative package must still bind and replay the final combined M0-M2 evidence rather than only the historical M0 subject",
     "The final version, exact scorer freeze, authoritative package, detached audit, annotated tag, release assets, and download-only re-verification do not yet exist",
     "Historical clause heuristics are deterministic but are not universal natural-language understanding"
   ],
-  "next_action": "Finish and review the remaining M1 and M2 implementation without inspecting blind outcomes, complete the final version and scorer freeze, then freeze one merged default SHA for blind scoring, authoritative packaging, detached clean-room audit, release, and download-only re-verification."
+  "next_action": "Stop general semantic feature expansion, appoint separated external authorities, and freeze the artifact-interface, custody, and evaluation-ordering contract without exposing blind outcomes; only then implement an authority-approved versioned combined package, complete the final version and scorer freeze, and freeze one merged default SHA for blind scoring, detached clean-room audit, release, and download-only re-verification."
 }
