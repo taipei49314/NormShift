@@ -132,6 +132,7 @@ jobs:
               "package_manifest_v1.schema.json",
               "command_log_v1.schema.json",
               "m1_source_manifest_v1.schema.json",
+              "definition_transitions_v1.schema.json",
               "lineage_graph_v1.schema.json",
           ):
               assert schemas.joinpath(name).is_file(), name

@@ -158,6 +158,15 @@ explicitly `LINEAGE_GRAPH_REPLAY_ONLY external_acceptance=false`: it binds only
 the caller-supplied ordered source bytes, profile, and adapter. It deliberately
 does not assert source custody, official identity, adjudication, or M2 acceptance.
 
+`normshift definition-transitions build GRAPH DOC... --graph-sha256 SHA` and
+`normshift definition-transitions verify TRANSITIONS GRAPH DOC... --transitions-sha256
+SHA --graph-sha256 SHA` are a separate opt-in, canonical DefinitionTransition v1
+foundation. They first bind the existing exact LineageGraph replay and then describe
+only adjacent lexical `DEFINITION_ADDED`, `DEFINITION_CHANGED`, or
+`DEFINITION_REMOVED` facts. They never emit or infer cross-references or indirect
+impacts, and make no source-custody, adjudication, or M2-acceptance claim. See
+[`docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md`](docs/M2_DEFINITION_TRANSITIONS_FOUNDATION.md).
+
 ## What this is not
 
 - Not a general HTML pretty-diff for arbitrary web pages
