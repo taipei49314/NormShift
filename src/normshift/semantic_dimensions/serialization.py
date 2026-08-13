@@ -19,7 +19,10 @@ SEMANTIC_DIMENSIONS_SCHEMA_ID = (
 
 def semantic_dimensions_json_bytes(document: SemanticDimensionsDocument) -> bytes:
     """Serialize a validated document to byte-identical canonical JSON."""
-    return canonical_json_bytes(document.model_dump(mode="json"))
+    raw = canonical_json_bytes(document.model_dump(mode="json"))
+    if len(raw) > MAX_SEMANTIC_DIMENSIONS_BYTES:
+        raise SemanticDimensionsError("semantic dimension document exceeds size limit")
+    return raw
 
 
 def parse_semantic_dimensions_bytes(raw: bytes) -> SemanticDimensionsDocument:

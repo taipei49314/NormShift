@@ -134,9 +134,20 @@ The versioned semantic-dimensions foundation is documented in
 `docs/M2_SEMANTIC_DIMENSIONS_FOUNDATION.md`. It can describe move/rewrite form
 and eight independent semantic slots while retaining exact requirement
 provenance from a typed-receipt FULL source replay and the unchanged primary M0
-classification. It is not wired into the M0 report/CLI; caller object/scope
-spans remain unverified `UNKNOWN` candidates and cannot emit classes. This
-foundation does not claim M2 acceptance.
+classification. It is not embedded in the M0 report or standard `diff`/`verify`
+flow; caller object/scope spans remain unverified `UNKNOWN` candidates and
+cannot emit classes. The separate opt-in `semantic-dimensions build` and
+`semantic-dimensions verify` commands use canonical sidecars only through a
+FULL source-replay binding; they do not alter the M0 report format or its bytes.
+`build` writes exact canonical bytes only to binary standard output, leaving
+capture, storage, and SHA-256 computation to an external custodian; that stream
+is not custody or atomic-file authority. Capture must preserve bytes; Windows
+PowerShell text pipelines or text redirection can transcode Unicode and are not
+safe capture mechanisms. Discard any capture from a nonzero command exit, then
+hash a successful capture externally before `verify`. The commands require pre-existing
+receipts and caller-provided report, receipt, and sidecar SHA-256 anchors as
+applicable, but those anchors do not prove independent custody or adjudication.
+Neither command claims M2 acceptance.
 
 ## What this is not
 

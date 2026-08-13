@@ -36,6 +36,7 @@ from normshift.semantic_dimensions import (
     NormalizedTextSpan,
     ObservationVerification,
     SemanticChangeClass,
+    SemanticDimensionsDocument,
     SemanticDimensionsError,
     StructuralForm,
     VerifiedReportAuthority,
@@ -54,6 +55,7 @@ from normshift.semantic_dimensions import (
     verify_semantic_dimensions,
 )
 from normshift.semantic_dimensions.models import canonical_sha256
+from normshift.semantic_dimensions.serialization import MAX_SEMANTIC_DIMENSIONS_BYTES
 
 ROOT = Path(__file__).resolve().parents[2]
 _TEMPORARY_AUTHORITIES: list[TemporaryDirectory[str]] = []
@@ -521,6 +523,38 @@ def test_canonical_serialization_schema_and_replay_are_deterministic() -> None:
     invalid_digest_receipt = json.loads(authority.receipt_bytes)
     invalid_digest_receipt["report_file_sha256"] = "not-a-sha256"
     assert list(Draft202012Validator(receipt_schema).iter_errors(invalid_digest_receipt))
+
+
+def test_semantic_serialization_enforces_the_same_boundary_as_parsing() -> None:
+    old = _req("old-serialization-boundary", "Clients MUST send frames.")
+    new = _req("new-serialization-boundary", "Clients MUST send frames promptly.")
+    authority, change = _authority(old, new)
+    document = build_semantic_dimensions(
+        authority=authority,
+        primary_change_id=change.change_id,
+    )
+
+    def with_actor_reason(reason: str) -> SemanticDimensionsDocument:
+        data = document.model_dump()
+        data["change"]["slots"]["actor"]["reason"] = reason
+        change_payload = {
+            key: value for key, value in data["change"].items() if key != "semantic_change_id"
+        }
+        data["change"]["semantic_change_id"] = canonical_sha256(change_payload)
+        document_payload = {
+            key: value for key, value in data.items() if key != "integrity_sha256"
+        }
+        data["integrity_sha256"] = canonical_sha256(document_payload)
+        return SemanticDimensionsDocument.model_validate(data)
+
+    baseline = len(semantic_dimensions_json_bytes(with_actor_reason("x")))
+    at_limit = with_actor_reason("x" * (MAX_SEMANTIC_DIMENSIONS_BYTES - baseline + 1))
+    assert len(semantic_dimensions_json_bytes(at_limit)) == MAX_SEMANTIC_DIMENSIONS_BYTES
+    over_limit = with_actor_reason(
+        "x" * (MAX_SEMANTIC_DIMENSIONS_BYTES - baseline + 2)
+    )
+    with pytest.raises(SemanticDimensionsError, match="exceeds size limit"):
+        semantic_dimensions_json_bytes(over_limit)
 
 
 @pytest.mark.parametrize(

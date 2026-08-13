@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from enum import StrEnum
+from hashlib import sha256
 from pathlib import Path
+from re import fullmatch
 
 import typer
 
@@ -30,11 +32,24 @@ from normshift.governance.verify import (
     verify_blind_split,
     verify_labeling_governance,
 )
-from normshift.io_safety import PathSafetyError, assert_outputs_safe, atomic_write_text
+from normshift.io_safety import (
+    PathSafetyError,
+    assert_outputs_safe,
+    atomic_write_text,
+)
 from normshift.measure.runner import MeasureError, run_measure, write_metrics
 from normshift.model.types import AdapterName, ProfileName
 from normshift.paths_root import SourceRootError
 from normshift.pipeline import run_diff
+from normshift.semantic_dimensions import (
+    SemanticDimensionsError,
+    bind_verified_report_file,
+    build_semantic_dimensions,
+    parse_semantic_dimensions_bytes,
+    read_bounded_regular_file,
+    semantic_dimensions_json_bytes,
+    verify_semantic_dimensions,
+)
 from normshift.source import load_immutable_source
 from normshift.verify.verifier import verify_report_file
 
@@ -54,6 +69,11 @@ governance_app = typer.Typer(
     no_args_is_help=True,
 )
 app.add_typer(governance_app, name="governance")
+semantic_dimensions_app = typer.Typer(
+    help="Experimental M2 semantic-dimension sidecars (not M2 acceptance).",
+    no_args_is_help=True,
+)
+app.add_typer(semantic_dimensions_app, name="semantic-dimensions")
 
 
 def _version_callback(value: bool) -> None:
@@ -94,6 +114,124 @@ def _to_profile(p: ProfileOpt) -> ProfileName:
 
 def _to_adapter(a: AdapterOpt) -> AdapterName:
     return AdapterName(a.value)
+
+
+def _require_external_sha256(value: str, *, label: str) -> None:
+    if fullmatch(r"[0-9a-f]{64}", value) is None:
+        raise SemanticDimensionsError(f"{label} must be a lowercase SHA-256 digest")
+
+
+def _write_all_binary_stdout(raw: bytes) -> None:
+    """Write exactly ``raw`` to binary stdout or fail without reporting success."""
+    stream = typer.get_binary_stream("stdout")
+    view = memoryview(raw)
+    offset = 0
+    while offset < len(view):
+        written = stream.write(view[offset:])
+        remaining = len(view) - offset
+        if type(written) is not int or written <= 0 or written > remaining:
+            raise SemanticDimensionsError("binary stdout made invalid write progress")
+        offset += written
+    stream.flush()
+
+
+@semantic_dimensions_app.command("build")
+def semantic_dimensions_build_cmd(
+    report_path: Path = typer.Argument(..., help="Canonical primary M0 report JSON"),
+    primary_change_id: str = typer.Argument(..., help="Exact primary report change ID"),
+    receipt_path: Path = typer.Option(..., "--receipt", help="Canonical FULL receipt JSON"),
+    report_sha256: str = typer.Option(
+        ..., "--report-sha256", help="Independently held SHA-256 of exact report bytes"
+    ),
+    receipt_sha256: str = typer.Option(
+        ..., "--receipt-sha256", help="Independently held SHA-256 of exact receipt bytes"
+    ),
+    source_root: Path = typer.Option(
+        ..., "--source-root", help="Root resolving the report's portable source refs"
+    ),
+) -> None:
+    """Write an experimental canonical semantic sidecar to binary standard output."""
+    try:
+        _require_external_sha256(report_sha256, label="--report-sha256")
+        _require_external_sha256(receipt_sha256, label="--receipt-sha256")
+        receipt_bytes = read_bounded_regular_file(
+            receipt_path, label="FULL receipt", max_bytes=100_000
+        ).raw
+        authority = bind_verified_report_file(
+            report_path,
+            source_root=source_root,
+            receipt_bytes=receipt_bytes,
+            expected_report_file_sha256=report_sha256,
+            expected_receipt_sha256=receipt_sha256,
+        )
+        document = build_semantic_dimensions(
+            authority=authority,
+            primary_change_id=primary_change_id,
+        )
+        raw = semantic_dimensions_json_bytes(document)
+        _write_all_binary_stdout(raw)
+    except PathSafetyError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    except (OSError, SemanticDimensionsError) as exc:
+        typer.echo(f"error: FULL source-replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+@semantic_dimensions_app.command("verify")
+def semantic_dimensions_verify_cmd(
+    semantic_path: Path = typer.Argument(..., help="Canonical semantic sidecar JSON"),
+    primary_change_id: str = typer.Argument(..., help="Exact primary report change ID"),
+    semantic_sha256: str = typer.Option(
+        ..., "--semantic-sha256", help="Independently held SHA-256 of exact sidecar bytes"
+    ),
+    receipt_path: Path = typer.Option(..., "--receipt", help="Canonical FULL receipt JSON"),
+    report_sha256: str = typer.Option(
+        ..., "--report-sha256", help="Independently held SHA-256 of exact report bytes"
+    ),
+    receipt_sha256: str = typer.Option(
+        ..., "--receipt-sha256", help="Independently held SHA-256 of exact receipt bytes"
+    ),
+    source_root: Path = typer.Option(
+        ..., "--source-root", help="Root resolving the report's portable source refs"
+    ),
+    report_path: Path = typer.Option(..., "--report", help="Canonical primary M0 report JSON"),
+) -> None:
+    """Verify a canonical sidecar solely through an anchored FULL source replay."""
+    try:
+        _require_external_sha256(semantic_sha256, label="--semantic-sha256")
+        _require_external_sha256(report_sha256, label="--report-sha256")
+        _require_external_sha256(receipt_sha256, label="--receipt-sha256")
+        semantic_bytes = read_bounded_regular_file(
+            semantic_path,
+            label="semantic sidecar",
+            max_bytes=1_000_000,
+        ).raw
+        if sha256(semantic_bytes).hexdigest() != semantic_sha256:
+            raise SemanticDimensionsError("semantic sidecar bytes differ from external SHA-256")
+        document = parse_semantic_dimensions_bytes(semantic_bytes)
+        receipt_bytes = read_bounded_regular_file(
+            receipt_path, label="FULL receipt", max_bytes=100_000
+        ).raw
+        authority = bind_verified_report_file(
+            report_path,
+            source_root=source_root,
+            receipt_bytes=receipt_bytes,
+            expected_report_file_sha256=report_sha256,
+            expected_receipt_sha256=receipt_sha256,
+        )
+        verify_semantic_dimensions(
+            document,
+            authority=authority,
+            primary_change_id=primary_change_id,
+        )
+    except (OSError, SemanticDimensionsError) as exc:
+        typer.echo(f"error: FULL source-replay binding failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(
+        "OK experimental semantic-dimensions sidecar verified through FULL source-replay binding "
+        f"integrity_sha256={document.integrity_sha256}"
+    )
 
 
 def _echo_corpus_result(result: CorpusReplayResult) -> None:
