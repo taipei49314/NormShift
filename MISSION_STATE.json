@@ -78,12 +78,39 @@
     "exact-run retained distribution artifacts with canonical wheel re-verification"
   ],
   "working_branch_validation_authority": "LOCAL_IMPLEMENTATION_EVIDENCE_ONLY_NOT_EXACT_SHA_EXTERNAL_ACCEPTANCE",
+  "working_branch_internal_reproduction": {
+    "commit": "fb3c0656b8150e56604502450c46ff0e2ee027f1",
+    "tree": "e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27",
+    "ci_run": "https://github.com/taipei49314/NormShift/actions/runs/31690202157",
+    "ci_conclusion": "success",
+    "subject_relationship": "MEASURED_MASTER_TIP_CI_AND_LOCAL_GATES_NOT_CURRENT_COMBINED_AUDIT_OR_RELEASE",
+    "ci_platforms": [
+      "ubuntu-latest",
+      "windows-latest",
+      "macos-latest"
+    ],
+    "delivery_foundation": {
+      "status": "INTERNAL_CI_PASS_NOT_EXTERNAL_ACCEPTANCE",
+      "canonical_wheel_sha256": "20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349",
+      "sdist_sha256": "b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d",
+      "artifact_count": 3,
+      "ci_job_ids": {
+        "macos-latest": 94415516457,
+        "ubuntu-latest": 94415516538,
+        "windows-latest": 94415516497,
+        "cross-platform-distribution-byte-equality": 94416252666
+      },
+      "authority": "DELIVERY_FOUNDATION_ONLY_NOT_COMBINED_AUDIT_OR_RELEASE"
+    },
+    "authority": "INTERNAL_CI_AND_LOCAL_GATES_ONLY_NOT_EXTERNAL_ACCEPTANCE"
+  },
   "commands_run": [
     "uv run --frozen ruff check . # exit 0",
-    "uv run --frozen mypy --no-incremental src # exit 0, 71 source files",
-    "uv run --frozen pytest -q -ra --color=no # exit 0, 643 passed",
+    "uv run --frozen mypy --no-incremental src # exit 0, 87 source files",
+    "uv run --frozen pytest -q -ra --color=no # exit 0, 904 passed",
     "uv run --frozen normshift benchmark --ground-truth benchmark/ground_truth.jsonl # exit 0, 17/17",
-    "uv run --frozen normshift measure --ground-truth benchmark/measure_suite.jsonl --out <external-path> # exit 0, 15/15, extraction/alignment/classification F1 1.0"
+    "uv run --frozen normshift measure --ground-truth benchmark/measure_suite.jsonl --out <external-path> # exit 0, 15/15, extraction/alignment/classification F1 1.0",
+    "uv run --frozen normshift diff+verify fixtures/synthetic spec-v1/v2 --profile rfc2119 # exit 0, FULL"
   ],
   "verified_artifacts": [
     "acceptance/m1_m2_prereg_v1.json",

@@ -21,7 +21,14 @@ The final wheel SHA-256 was
 sdist SHA-256 was
 `fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760`.
 It checks no box below: the later final subject must rerun every gate and obtain its
-own combined detached audit and release evidence.
+own combined detached audit and release evidence. A later measured master tip
+`fb3c0656b8150e56604502450c46ff0e2ee027f1`, tree
+`e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27`, and push CI
+[run 31690202157](https://github.com/taipei49314/NormShift/actions/runs/31690202157)
+likewise checks no box: wheel SHA-256
+`20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349` and sdist
+SHA-256 `b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d` are
+internal delivery evidence only.
 
 ## 0. Authority and candidate variables
 

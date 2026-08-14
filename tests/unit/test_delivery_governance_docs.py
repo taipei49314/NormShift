@@ -18,6 +18,11 @@ CURRENT_BASELINE_TREE = "34cde504fab42da8f9423cd1ca226fe492307c36"
 CURRENT_CI_URL = "https://github.com/taipei49314/NormShift/actions/runs/31462052663"
 CURRENT_WHEEL_SHA256 = "b5ebc295dadb63ab2969185551ca62409e9290d9f9fba41916d188e6a833886d"
 CURRENT_SDIST_SHA256 = "fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760"
+MEASURED_TIP_COMMIT = "fb3c0656b8150e56604502450c46ff0e2ee027f1"
+MEASURED_TIP_TREE = "e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27"
+MEASURED_TIP_CI_URL = "https://github.com/taipei49314/NormShift/actions/runs/31690202157"
+MEASURED_TIP_WHEEL_SHA256 = "20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349"
+MEASURED_TIP_SDIST_SHA256 = "b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d"
 EVIDENCE_URL = (
     "https://github.com/taipei49314/NormShift/releases/tag/"
     "m0-audit-20260809-b3af3dc"
@@ -145,6 +150,28 @@ def test_mission_state_separates_historical_audit_from_current_subject() -> None
         "DELIVERY_FOUNDATION_ONLY_NOT_COMBINED_AUDIT_OR_RELEASE"
     )
 
+    measured = state["working_branch_internal_reproduction"]
+    assert measured["commit"] == MEASURED_TIP_COMMIT
+    assert measured["tree"] == MEASURED_TIP_TREE
+    assert measured["ci_run"] == MEASURED_TIP_CI_URL
+    assert measured["ci_conclusion"] == "success"
+    assert measured["subject_relationship"] == (
+        "MEASURED_MASTER_TIP_CI_AND_LOCAL_GATES_NOT_CURRENT_COMBINED_AUDIT_OR_RELEASE"
+    )
+    measured_foundation = measured["delivery_foundation"]
+    assert measured_foundation["status"] == "INTERNAL_CI_PASS_NOT_EXTERNAL_ACCEPTANCE"
+    assert measured_foundation["canonical_wheel_sha256"] == MEASURED_TIP_WHEEL_SHA256
+    assert measured_foundation["sdist_sha256"] == MEASURED_TIP_SDIST_SHA256
+    assert measured_foundation["artifact_count"] == 3
+    assert measured_foundation["authority"] == (
+        "DELIVERY_FOUNDATION_ONLY_NOT_COMBINED_AUDIT_OR_RELEASE"
+    )
+    assert measured["authority"] == (
+        "INTERNAL_CI_AND_LOCAL_GATES_ONLY_NOT_EXTERNAL_ACCEPTANCE"
+    )
+    assert "904 passed" in "\n".join(state["commands_run"])
+    assert "87 source files" in "\n".join(state["commands_run"])
+
     milestones = state["milestones"]
     assert milestones["m1"] == "EXPERIMENTAL_NOT_ADJUDICATED"
     assert milestones["m2"] == "EXPERIMENTAL_NOT_ADJUDICATED"
@@ -208,6 +235,28 @@ def test_delivery_foundation_is_exact_and_not_release_authority() -> None:
     assert "Internal delivery foundation only" in documents["CLAIMS.md"]
     assert "not a combined audit or release verdict" in documents["CHANGELOG.md"]
     assert "It checks no box below" in documents["RELEASE_CHECKLIST.md"]
+
+
+def test_measured_tip_ci_is_recorded_and_not_release_authority() -> None:
+    documents = {
+        name: _text(name)
+        for name in (
+            "CHANGELOG.md",
+            "CLAIMS.md",
+            "DECISIONS.md",
+            "RELEASE_CHECKLIST.md",
+        )
+    }
+
+    for document in documents.values():
+        assert MEASURED_TIP_COMMIT in document
+        assert MEASURED_TIP_TREE in document
+        assert MEASURED_TIP_CI_URL in document
+        assert MEASURED_TIP_WHEEL_SHA256 in document
+        assert MEASURED_TIP_SDIST_SHA256 in document
+    assert "does not inherit the M0 verdict or unblock release" in documents["CLAIMS.md"]
+    assert "does **not** transplant" in documents["DECISIONS.md"]
+    assert "likewise checks no box" in documents["RELEASE_CHECKLIST.md"]
 
 
 def test_release_checklist_is_unchecked_and_covers_every_final_gate() -> None:

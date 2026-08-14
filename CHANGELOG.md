@@ -45,6 +45,16 @@ It does not promote an implementation or CI result to an external verdict.
   the sdists shared SHA-256
   `fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760`.
   This is internal delivery evidence, not a combined audit or release verdict.
+- Master commit `fb3c0656b8150e56604502450c46ff0e2ee027f1`, tree
+  `e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27`, and push CI
+  [run 31690202157](https://github.com/taipei49314/NormShift/actions/runs/31690202157)
+  reproduced the deterministic gates locally (ruff 0, mypy 87 files, pytest 904,
+  benchmark 17/17, measure 15/15) and produced byte-identical canonical wheels and
+  sdists across Ubuntu, Windows, and macOS. The retained final wheel SHA-256 was
+  `20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349`; the sdist
+  SHA-256 was
+  `b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d`.
+  This is internal delivery evidence, not a combined audit or release verdict.
 
 ### Not yet delivered
 
