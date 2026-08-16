@@ -24,6 +24,7 @@ is implementation evidence; it is not an external-audit verdict.
 | M1 | `EXPERIMENTAL_NOT_ADJUDICATED` | No blind acceptance result or external M1 verdict |
 | M2 | `EXPERIMENTAL_NOT_ADJUDICATED` | Foundations only; no blind acceptance result or external M2 verdict |
 | Distribution delivery foundation at `f6897f71834a50d2273fda033a72b31254c65935` | `INTERNAL_CI_PASS_NOT_EXTERNAL_ACCEPTANCE` | Three-OS canonical wheel and final distribution equality only; not a combined package audit |
+| Later measured master tip `fb3c0656b8150e56604502450c46ff0e2ee027f1` | `INTERNAL_CI_PASS_NOT_EXTERNAL_ACCEPTANCE` | Local gates plus three-OS canonical wheel equality only; does not inherit the M0 verdict or unblock release |
 | Final combined package / release | **`BLOCKED`** | Exact subject is not frozen, audited, tagged, or released |
 
 The historical M0 evidence is published as the
@@ -47,6 +48,7 @@ release as `BLOCKED`.
 | C8 | The exact ancestor master tree `34cde504fab42da8f9423cd1ca226fe492307c36` produced byte-identical canonical wheels and sdists on Ubuntu, Windows, and macOS | Push CI [run 31462052663](https://github.com/taipei49314/NormShift/actions/runs/31462052663); wheel SHA-256 `b5ebc295dadb63ab2969185551ca62409e9290d9f9fba41916d188e6a833886d`; sdist SHA-256 `fb8f1f0add5a752cfa3a070edf0ed984835961b4f93a5c672c0f02ea6b2c4760` | Internal delivery foundation only; rerun and re-audit the later final subject |
 | C9 | DefinitionTransition v1 can derive deterministic adjacent lexical definition add/change/remove records only after an exact caller-supplied LineageGraph replay, with canonical sidecar and graph digest anchors | `src/normshift/definition_transitions/`, bundled schema, CLI, and synthetic tests | `EXPERIMENTAL_NOT_ADJUDICATED`; replay-only is not source custody, adjudication, M2 acceptance, a cross-reference, or an indirect-impact claim |
 | C10 | DefinitionReferenceCandidate v1 can preserve exact replay-bound lexical requirement-to-definition link evidence as canonical sidecars | `src/normshift/definition_reference_candidates/`, bundled schema, CLI, and synthetic tests | `EXPERIMENTAL_NOT_ADJUDICATED`; a lexical candidate is not a semantic cross-reference, indirect-impact, custody, adjudication, or M2 acceptance claim |
+| C11 | The measured master commit `fb3c0656b8150e56604502450c46ff0e2ee027f1`, tree `e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27`, produced byte-identical canonical wheels and sdists on Ubuntu, Windows, and macOS, and the local M0 gate reproduced ruff/mypy/pytest/benchmark/measure | Push CI [run 31690202157](https://github.com/taipei49314/NormShift/actions/runs/31690202157); wheel SHA-256 `20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349`; sdist SHA-256 `b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d`; Windows local pytest 904 / mypy 87 files | Internal delivery evidence only; does not transplant the historical M0 verdict or authorize a software release |
 
 ## Non-claims
 

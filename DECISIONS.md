@@ -1,5 +1,19 @@
 # Design Decisions
 
+## D023 — Later master CI does not inherit or release (2026-08-15)
+
+**Decision:** Local and CI reproduction of master commit
+`fb3c0656b8150e56604502450c46ff0e2ee027f1`, tree
+`e9ed7ed05e505231a8ad2241ea6a6d83b15b6d27`, and push CI
+[run 31690202157](https://github.com/taipei49314/NormShift/actions/runs/31690202157)
+is implementation evidence only. Canonical wheel SHA-256
+`20570a5cb65ace7dd4a0366667735491f0118a44273d501172f2c07d4c1b2349` and sdist
+SHA-256 `b0588d45aae6a1fad2e051a70d0312d41d996d08d265843da896bee8ab38142d` do
+**not** transplant the historical M0 verdict, replace the ancestor delivery
+foundation in D022, satisfy the final combined audit, or authorize a software
+release. `last_verified_commit` remains null and `release_status` remains
+`BLOCKED`.
+
 ## D022 — Cross-platform distribution equality is delivery evidence (2026-08-11)
 
 **Decision:** Strict wheel validation normalizes only supported platform metadata
